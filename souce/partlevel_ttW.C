@@ -149,5 +149,12 @@ void partlevel_ttW::Terminate()
   // a query. It always runs on the client, it can be used to present
   // the results graphically or save the results to file.
   printf("\nTotal Number of Events: %d\n", fNumberOfEvents);
+
+  string outname="Res_"+input_name+".root";
+  TFile hfile(outname.c_str(),"RECREATE"); //,"tHq"
+  h_cutflow_2l[0]->Write(); 
+  h_cutflow_2l[1]->Write(); 
+  fOutput->Write();
+
   
 }

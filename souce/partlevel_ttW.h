@@ -26,6 +26,14 @@ public :
    TTreeReader     fReader;  //!the tree reader
    TTree          *fChain = 0;   //!pointer to the analyzed TTree or TChain
 
+   Bool_t sel_array[10];
+   int nJet;
+   int nEl;
+   int nMu;
+   int Nlep;
+   Double_t weight_tot;
+   Int_t       fNumberOfEvents; 
+
    // Readers to access the data (delete the ones you do not need).
    TTreeReaderValue<Float_t> weight_mc = {fReader, "weight_mc"};
    TTreeReaderValue<ULong64_t> eventNumber = {fReader, "eventNumber"};
@@ -72,7 +80,7 @@ public :
    TTreeReaderValue<Int_t> particle_level_ttW = {fReader, "particle_level_ttW"};
 
 
-   partlevel_ttW(TTree * /*tree*/ =0) { }
+ partlevel_ttW(TTree * /*tree*/ =0):fNumberOfEvents(0)  { }
    virtual ~partlevel_ttW() { }
    virtual Int_t   Version() const { return 2; }
    virtual void    Begin(TTree *tree);

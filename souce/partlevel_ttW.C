@@ -110,14 +110,10 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
   float l0_charge=0,l1_charge=0;  
   float l0_pt=-999,l1_pt=-999;
   float l0_eta=-999,l1_eta=-999;
-  //float l_charge[2]; float l_pt[2]; float l_eta[2];
-  //TLorentzVector lep_4v[2];
-  //ROOT::Math::PtEtaPhiEVector lep_4v[2]; 
-  //ROOT::Math::LorentzVector<Scalar> lep_4v[2]; 
   TLorentzVector lep_4v[2];
 
   if ( dilep_type==1 ){ 
-    lep_4v[0].SetPtEtaPhiE(mu_pt[0]/1e3,mu_eta[0],mu_phi[0],mu_e[0]);// sets pt,eta,phi,e for a PtEtaPhiEVector
+    lep_4v[0].SetPtEtaPhiE(mu_pt[0]/1e3,mu_eta[0],mu_phi[0],mu_e[0]);
     lep_4v[1].SetPtEtaPhiE(mu_pt[1]/1e3,mu_eta[1],mu_phi[1],mu_e[1]);
 
     l0_charge= mu_charge[0]; l1_charge= mu_charge[1];
@@ -125,7 +121,7 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
     l0_pt= mu_pt[0]/1e3; l1_pt= mu_pt[1]/1e3;
   }
   else if ( dilep_type==3 ){ 
-    lep_4v[0].SetPtEtaPhiE(el_pt[0]/1e3,el_eta[0],el_phi[0],el_e[0]);// sets pt,eta,phi,e for a PtEtaPhiEVector
+    lep_4v[0].SetPtEtaPhiE(el_pt[0]/1e3,el_eta[0],el_phi[0],el_e[0]);
     lep_4v[1].SetPtEtaPhiE(el_pt[1]/1e3,el_eta[1],el_phi[1],el_e[1]);
 
     l0_charge= el_charge[0]; l1_charge= el_charge[1];
@@ -134,7 +130,7 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
   }
   else if ( dilep_type==2 ){ 
     if(mu_pt[0]>el_pt[0]){ 
-      lep_4v[0].SetPtEtaPhiE(mu_pt[0]/1e3,mu_eta[0],mu_phi[0],mu_e[0]);// sets pt,eta,phi,e for a PtEtaPhiEVector
+      lep_4v[0].SetPtEtaPhiE(mu_pt[0]/1e3,mu_eta[0],mu_phi[0],mu_e[0]);
       lep_4v[1].SetPtEtaPhiE(el_pt[0]/1e3,el_eta[0],el_phi[0],el_e[0]);
 
       l0_charge= mu_charge[0]; l1_charge= el_charge[0];
@@ -143,7 +139,7 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
     }
     else{    
       lep_4v[0].SetPtEtaPhiE(el_pt[0]/1e3,el_eta[0],el_phi[0],el_e[0]);
-      lep_4v[1].SetPtEtaPhiE(mu_pt[0]/1e3,mu_eta[0],mu_phi[0],mu_e[0]);// sets pt,eta,phi,e for a PtEtaPhiEVector
+      lep_4v[1].SetPtEtaPhiE(mu_pt[0]/1e3,mu_eta[0],mu_phi[0],mu_e[0]);
 
       l1_charge= mu_charge[0]; l0_charge= el_charge[0];
       l1_eta= mu_eta[0]; l0_eta= el_eta[0];
@@ -171,7 +167,7 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
 
 
   //lep eta cuts
-  if(abs(l0_eta)>2.5||abs(l1_eta)>2.5) return 0;  
+  if(abs(lep_4v[lead_lep].Eta())>2.5||abs(lep_4v[sublead_lep].Eta())>2.5) return 0;  
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
 
@@ -185,6 +181,8 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
 
   int Njets=0, Nbjets=0;
   float HTall=0, HTjet=0; 
+  vector<TLorentzVector> jets_vec;
+
   //loop over jet vectors
   for(unsigned int j=0;j<jet_pt.GetSize(); j++){
     if(jet_pt[j]/1000.<25) return 0;
@@ -192,6 +190,11 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
     if(fabs(jet_eta[j])>2.5) return 0;
   
     Njets+=1;
+
+    TLorentzVector jj;
+    jj.SetPtEtaPhiE(jet_pt[j],jet_eta[j],jet_phi[j],jet_e[j]);
+    jets_vec.push_back(jj);
+
     if(jet_nGhosts_bHadron[j]>0) Nbjets+=1;
 
     HTjet+=jet_pt[j];

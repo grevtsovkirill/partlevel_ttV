@@ -39,7 +39,7 @@ void partlevel_ttW::SlaveBegin(TTree * /*tree*/)
   input_name=option;
   
   const std::vector<TString> s_cutDescs =
-    {  "Preselections","Nleps","lepPt1>20","lepPt0>25","lepCentr","SS","jPt/eta",
+    {  "Preselections","Nleps","lepPt1>20","lepPt0>25","lepCentr","SS","jPt/eta","3j1b",
        "0t 1b 4j", "0t 2b 4j","0t 1b 3j", "0t 2b 3j"};
   int Ncuts = s_cutDescs.size();
   h_cutflow_2l[0] = new TH1F("cf2l","cf2l",Ncuts,0,Ncuts);
@@ -112,19 +112,19 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
   float l0_eta=-999,l1_eta=-999;
   //float l_charge[2]; float l_pt[2]; float l_eta[2];
   //TLorentzVector lep_4v[2];
-  //  ROOT::Math::PtEtaPhiEVector lep_4v[2]; 
+  ROOT::Math::PtEtaPhiEVector lep_4v[2]; 
 
   if ( dilep_type==1 ){ 
-    //lep_4v[0].SetCoordinates(mu_pt[0]/1e3,mu_eta[0],mu_phi[0],mu_e[0]);// sets pt,eta,phi,e for a PtEtaPhiEVector
-    //lep_4v[1].SetCoordinates(mu_pt[1]/1e3,mu_eta[1],mu_phi[1],mu_e[1]);
+    lep_4v[0].SetCoordinates(mu_pt[0]/1e3,mu_eta[0],mu_phi[0],mu_e[0]);// sets pt,eta,phi,e for a PtEtaPhiEVector
+    lep_4v[1].SetCoordinates(mu_pt[1]/1e3,mu_eta[1],mu_phi[1],mu_e[1]);
 
     l0_charge= mu_charge[0]; l1_charge= mu_charge[1];
     l0_eta= mu_eta[0]; l1_eta= mu_eta[1];
     l0_pt= mu_pt[0]/1e3; l1_pt= mu_pt[1]/1e3;
   }
   else if ( dilep_type==3 ){ 
-    //lep_4v[0].SetCoordinates(el_pt[0]/1e3,el_eta[0],el_phi[0],el_e[0]);// sets pt,eta,phi,e for a PtEtaPhiEVector
-    //lep_4v[1].SetCoordinates(el_pt[1]/1e3,el_eta[1],el_phi[1],el_e[1]);
+    lep_4v[0].SetCoordinates(el_pt[0]/1e3,el_eta[0],el_phi[0],el_e[0]);// sets pt,eta,phi,e for a PtEtaPhiEVector
+    lep_4v[1].SetCoordinates(el_pt[1]/1e3,el_eta[1],el_phi[1],el_e[1]);
 
     l0_charge= el_charge[0]; l1_charge= el_charge[1];
     l0_eta= el_eta[0]; l1_eta= el_eta[1];
@@ -132,16 +132,16 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
   }
   else if ( dilep_type==2 ){ 
     if(mu_pt[0]>el_pt[0]){ 
-      //lep_4v[0].SetCoordinates(mu_pt[0]/1e3,mu_eta[0],mu_phi[0],mu_e[0]);// sets pt,eta,phi,e for a PtEtaPhiEVector
-      //lep_4v[1].SetCoordinates(el_pt[0]/1e3,el_eta[0],el_phi[0],el_e[0]);
+      lep_4v[0].SetCoordinates(mu_pt[0]/1e3,mu_eta[0],mu_phi[0],mu_e[0]);// sets pt,eta,phi,e for a PtEtaPhiEVector
+      lep_4v[1].SetCoordinates(el_pt[0]/1e3,el_eta[0],el_phi[0],el_e[0]);
 
       l0_charge= mu_charge[0]; l1_charge= el_charge[0];
       l0_eta= mu_eta[0]; l1_eta= el_eta[0];
       l0_pt= mu_pt[0]/1e3; l1_pt= el_pt[0]/1e3;
     }
     else{    
-      //lep_4v[0].SetCoordinates(el_pt[0]/1e3,el_eta[0],el_phi[0],el_e[0]);
-      //lep_4v[1].SetCoordinates(mu_pt[0]/1e3,mu_eta[0],mu_phi[0],mu_e[0]);// sets pt,eta,phi,e for a PtEtaPhiEVector
+      lep_4v[0].SetCoordinates(el_pt[0]/1e3,el_eta[0],el_phi[0],el_e[0]);
+      lep_4v[1].SetCoordinates(mu_pt[0]/1e3,mu_eta[0],mu_phi[0],mu_e[0]);// sets pt,eta,phi,e for a PtEtaPhiEVector
 
       l1_charge= mu_charge[0]; l0_charge= el_charge[0];
       l1_eta= mu_eta[0]; l0_eta= el_eta[0];
@@ -157,6 +157,7 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
   if(l0_pt<25) return 0;  
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
+
 
   //lep eta cuts
   if(abs(l0_eta)>2.5||abs(l1_eta)>2.5) return 0;  
@@ -175,8 +176,9 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
   float HTall=0, HTjet=0; 
   //loop over jet vectors
   for(unsigned int j=0;j<jet_pt.GetSize(); j++){
-    if(jet_pt[j]/1000.<25) continue;
-    if(fabs(jet_eta[j])>2.5) continue;
+    if(jet_pt[j]/1000.<25) return 0;
+
+    if(fabs(jet_eta[j])>2.5) return 0;
   
     Njets+=1;
     if(jet_nGhosts_bHadron[j]>0) Nbjets+=1;
@@ -187,10 +189,20 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
   //central jets above 25 gev
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
+  
+  if(Njets<3 || Nbjets<1) return 0;
+  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
+  cf_counter++;
 
   HTall=HTjet+(l0_pt+l1_pt)*1000;
-  //  if(Njets<4 || Nbjets<3) continue;
   
+  int lead_lep=9999, sublead_lep=9999;
+  if(  lep_4v[0].pt()>lep_4v[1].pt()){
+    lead_lep=0;sublead_lep=1;}
+  else {    lead_lep=1;sublead_lep=0;}
+  
+  //  if(lead_lep!=0)     cout <<  " 0  "<< lep_4v[0].pt()<< "   1 " << lep_4v[1].pt()<< ",  leading is "<< lead_lep<< endl;
+
 
   int Ntaus = 0; //in case we will process taus
   //2 same sign charged leptons (e,mu) with pT>25(20)GeV 

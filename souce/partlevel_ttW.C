@@ -4,7 +4,7 @@
 #include "partlevel_ttW.h"
 #include <TH2.h>
 #include <TStyle.h>
-#include "Math/Vector4D.h"
+#include <TLorentzVector.h>
 
 TH1F *h_cutflow_2l[2];
 string input_name="";
@@ -112,19 +112,21 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
   float l0_eta=-999,l1_eta=-999;
   //float l_charge[2]; float l_pt[2]; float l_eta[2];
   //TLorentzVector lep_4v[2];
-  ROOT::Math::PtEtaPhiEVector lep_4v[2]; 
+  //ROOT::Math::PtEtaPhiEVector lep_4v[2]; 
+  //ROOT::Math::LorentzVector<Scalar> lep_4v[2]; 
+  TLorentzVector lep_4v[2];
 
   if ( dilep_type==1 ){ 
-    lep_4v[0].SetCoordinates(mu_pt[0]/1e3,mu_eta[0],mu_phi[0],mu_e[0]);// sets pt,eta,phi,e for a PtEtaPhiEVector
-    lep_4v[1].SetCoordinates(mu_pt[1]/1e3,mu_eta[1],mu_phi[1],mu_e[1]);
+    lep_4v[0].SetPtEtaPhiE(mu_pt[0]/1e3,mu_eta[0],mu_phi[0],mu_e[0]);// sets pt,eta,phi,e for a PtEtaPhiEVector
+    lep_4v[1].SetPtEtaPhiE(mu_pt[1]/1e3,mu_eta[1],mu_phi[1],mu_e[1]);
 
     l0_charge= mu_charge[0]; l1_charge= mu_charge[1];
     l0_eta= mu_eta[0]; l1_eta= mu_eta[1];
     l0_pt= mu_pt[0]/1e3; l1_pt= mu_pt[1]/1e3;
   }
   else if ( dilep_type==3 ){ 
-    lep_4v[0].SetCoordinates(el_pt[0]/1e3,el_eta[0],el_phi[0],el_e[0]);// sets pt,eta,phi,e for a PtEtaPhiEVector
-    lep_4v[1].SetCoordinates(el_pt[1]/1e3,el_eta[1],el_phi[1],el_e[1]);
+    lep_4v[0].SetPtEtaPhiE(el_pt[0]/1e3,el_eta[0],el_phi[0],el_e[0]);// sets pt,eta,phi,e for a PtEtaPhiEVector
+    lep_4v[1].SetPtEtaPhiE(el_pt[1]/1e3,el_eta[1],el_phi[1],el_e[1]);
 
     l0_charge= el_charge[0]; l1_charge= el_charge[1];
     l0_eta= el_eta[0]; l1_eta= el_eta[1];
@@ -132,16 +134,16 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
   }
   else if ( dilep_type==2 ){ 
     if(mu_pt[0]>el_pt[0]){ 
-      lep_4v[0].SetCoordinates(mu_pt[0]/1e3,mu_eta[0],mu_phi[0],mu_e[0]);// sets pt,eta,phi,e for a PtEtaPhiEVector
-      lep_4v[1].SetCoordinates(el_pt[0]/1e3,el_eta[0],el_phi[0],el_e[0]);
+      lep_4v[0].SetPtEtaPhiE(mu_pt[0]/1e3,mu_eta[0],mu_phi[0],mu_e[0]);// sets pt,eta,phi,e for a PtEtaPhiEVector
+      lep_4v[1].SetPtEtaPhiE(el_pt[0]/1e3,el_eta[0],el_phi[0],el_e[0]);
 
       l0_charge= mu_charge[0]; l1_charge= el_charge[0];
       l0_eta= mu_eta[0]; l1_eta= el_eta[0];
       l0_pt= mu_pt[0]/1e3; l1_pt= el_pt[0]/1e3;
     }
     else{    
-      lep_4v[0].SetCoordinates(el_pt[0]/1e3,el_eta[0],el_phi[0],el_e[0]);
-      lep_4v[1].SetCoordinates(mu_pt[0]/1e3,mu_eta[0],mu_phi[0],mu_e[0]);// sets pt,eta,phi,e for a PtEtaPhiEVector
+      lep_4v[0].SetPtEtaPhiE(el_pt[0]/1e3,el_eta[0],el_phi[0],el_e[0]);
+      lep_4v[1].SetPtEtaPhiE(mu_pt[0]/1e3,mu_eta[0],mu_phi[0],mu_e[0]);// sets pt,eta,phi,e for a PtEtaPhiEVector
 
       l1_charge= mu_charge[0]; l0_charge= el_charge[0];
       l1_eta= mu_eta[0]; l0_eta= el_eta[0];
@@ -151,19 +153,19 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
 
 
   int lead_lep=9999, sublead_lep=9999;
-  if(  lep_4v[0].pt()>lep_4v[1].pt()){
+  if(  lep_4v[0].Pt()>lep_4v[1].Pt()){
     lead_lep=0;sublead_lep=1;}
   else {    lead_lep=1;sublead_lep=0;}
   
-  //  if(lead_lep!=0)     cout <<  " 0  "<< lep_4v[0].pt()<< "   1 " << lep_4v[1].pt()<< ",  leading is "<< lead_lep<< endl;
-  //if ((abs(lep_4v[lead_lep].pt()-l0_pt)>0.0001) || (abs(lep_4v[sublead_lep].pt()-l1_pt)>0.0001)) cout <<  " 0  "<< lep_4v[0].pt()<< "   1 " << lep_4v[1].pt()<< ",  leading is "<< lead_lep <<  ",  l0pt="<<l0_pt <<  ",  l1pt="<<l1_pt << endl;
+  //  if(lead_lep!=0)     cout <<  " 0  "<< lep_4v[0].Pt()<< "   1 " << lep_4v[1].Pt()<< ",  leading is "<< lead_lep<< endl;
+  //if ((abs(lep_4v[lead_lep].Pt()-l0_pt)>0.0001) || (abs(lep_4v[sublead_lep].Pt()-l1_pt)>0.0001)) cout <<  " 0  "<< lep_4v[0].Pt()<< "   1 " << lep_4v[1].Pt()<< ",  leading is "<< lead_lep <<  ",  l0pt="<<l0_pt <<  ",  l1pt="<<l1_pt << endl;
 
 
   //lep Pt cuts
-  if(lep_4v[sublead_lep].pt()<20) return 0;  
+  if(lep_4v[sublead_lep].Pt()<20) return 0;  
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
-  if(lep_4v[lead_lep].pt()<25) return 0;  
+  if(lep_4v[lead_lep].Pt()<25) return 0;  
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
 
@@ -204,7 +206,17 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
   cf_counter++;
 
   HTall=HTjet+(l0_pt+l1_pt)*1000;
+
+  // DeltaRs for 
+  float DRll01=-9999;
+  //DRll01= sqrt( pow((lep_4v[lead_lep].eta()-lep_4v[sublead_lep].eta() ), 2.0) + pow( (acos(cos( lep_4v[lead_lep].phi()-lep_4v[sublead_lep].phi() ) ), 2.0) ) );
+  //float  deltaR=lep_4v[lead_lep].DeltaR( lep_4v[sublead_lep] );
+  //if (deltaR!=DRll01) cout << DRll01 << ", dR "<< deltaR;
+    //float  DR_LJ_0_tmp  = sqrt(pow((ntup.m_jet_eta->at(index_jets) - ntup.lep_Eta_0), 2.0) + pow((acos(cos(ntup.m_jet_phi->at(index_jets) - ntup.lep_Phi_0))), 2.0));
   
+
+
+
   int Ntaus = 0; //in case we will process taus
   //2 same sign charged leptons (e,mu) with pT>25(20)GeV 
   sel_array[0]=(Ntaus == 0 && Nbjets == 1 && Njets >= 4 );  // Region 1 

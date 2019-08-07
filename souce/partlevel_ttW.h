@@ -27,7 +27,6 @@ public :
    TTree          *fChain = 0;   //!pointer to the analyzed TTree or TChain
 
    Bool_t sel_array[10];
-   int nJet;
    int nEl;
    int nMu;
    int Nlep;

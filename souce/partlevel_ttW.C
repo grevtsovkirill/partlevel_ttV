@@ -150,11 +150,20 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
   }
 
 
+  int lead_lep=9999, sublead_lep=9999;
+  if(  lep_4v[0].pt()>lep_4v[1].pt()){
+    lead_lep=0;sublead_lep=1;}
+  else {    lead_lep=1;sublead_lep=0;}
+  
+  //  if(lead_lep!=0)     cout <<  " 0  "<< lep_4v[0].pt()<< "   1 " << lep_4v[1].pt()<< ",  leading is "<< lead_lep<< endl;
+  //if ((abs(lep_4v[lead_lep].pt()-l0_pt)>0.0001) || (abs(lep_4v[sublead_lep].pt()-l1_pt)>0.0001)) cout <<  " 0  "<< lep_4v[0].pt()<< "   1 " << lep_4v[1].pt()<< ",  leading is "<< lead_lep <<  ",  l0pt="<<l0_pt <<  ",  l1pt="<<l1_pt << endl;
+
+
   //lep Pt cuts
-  if(l1_pt<20) return 0;  
+  if(lep_4v[sublead_lep].pt()<20) return 0;  
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
-  if(l0_pt<25) return 0;  
+  if(lep_4v[lead_lep].pt()<25) return 0;  
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
 
@@ -196,14 +205,6 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
 
   HTall=HTjet+(l0_pt+l1_pt)*1000;
   
-  int lead_lep=9999, sublead_lep=9999;
-  if(  lep_4v[0].pt()>lep_4v[1].pt()){
-    lead_lep=0;sublead_lep=1;}
-  else {    lead_lep=1;sublead_lep=0;}
-  
-  //  if(lead_lep!=0)     cout <<  " 0  "<< lep_4v[0].pt()<< "   1 " << lep_4v[1].pt()<< ",  leading is "<< lead_lep<< endl;
-
-
   int Ntaus = 0; //in case we will process taus
   //2 same sign charged leptons (e,mu) with pT>25(20)GeV 
   sel_array[0]=(Ntaus == 0 && Nbjets == 1 && Njets >= 4 );  // Region 1 

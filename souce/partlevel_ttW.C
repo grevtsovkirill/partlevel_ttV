@@ -211,16 +211,24 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
 
   HTall=HTjet+(l0_pt+l1_pt)*1000;
 
-  // DeltaRs for 
+  // DeltaRs
+  // ll 
   float DRll01=-9999;
   //DRll01= sqrt( pow( (lep_4v[lead_lep].Eta()-lep_4v[sublead_lep].Eta()) ,2) + pow ( ( acos( cos( lep_4v[lead_lep].Phi()-lep_4v[sublead_lep].Phi() )  ) ) ,2) );
   DRll01=lep_4v[lead_lep].DeltaR( lep_4v[sublead_lep] ); // provide SAME results as "by hand"!!!
-
   //if (deltaR!=DRll01)   cout << DRll01 << ", dR "<< deltaR<< endl;
     //float  DR_LJ_0_tmp  = sqrt(pow((ntup.m_jet_eta->at(index_jets) - ntup.lep_Eta_0), 2.0) + pow((acos(cos(ntup.m_jet_phi->at(index_jets) - ntup.lep_Phi_0))), 2.0));
   
-
-
+  // l-jet
+  vector<float> dRl0j;  vector<float> dRl1j;
+  for(int i=0; i<Njets;i++){
+    dRl0j.push_back( lep_4v[lead_lep].DeltaR( jets_vec[i] ) );
+    dRl1j.push_back( lep_4v[sublead_lep].DeltaR( jets_vec[i] ) );
+  }
+  
+  float min_DRl0j=-9999, min_DRl1j=-9999;
+  min_DRl0j= *min_element(dRl0j.begin(),dRl0j.end());
+  min_DRl1j= *min_element(dRl1j.begin(),dRl1j.end());
 
   int Ntaus = 0; //in case we will process taus
   //2 same sign charged leptons (e,mu) with pT>25(20)GeV 
@@ -238,8 +246,8 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
       hist_DRll01[i]->Fill(DRll01, weight_tot);
       hist_lep_Pt_0[i]->Fill(l0_pt, weight_tot);
       hist_lep_Pt_1[i]->Fill(l1_pt, weight_tot);
-      //hist_min_DRl0j[i]->Fill(min_DRl0j, weight_tot);
-      //hist_min_DRl1j[i]->Fill(min_DRl1j, weight_tot);
+      hist_min_DRl0j[i]->Fill(min_DRl0j, weight_tot);
+      hist_min_DRl1j[i]->Fill(min_DRl1j, weight_tot);
       hist_maxEta_ll[i]->Fill(max_eta, weight_tot);
       hist_HT_jets[i]->Fill(HTjet/1000, weight_tot);
       hist_HT[i]->Fill(HTall/1000, weight_tot);
@@ -269,11 +277,11 @@ void partlevel_ttW::Terminate()
   h_cutflow_2l[1]->Write(); 
 
   for(int i=0; i<(int)region_names.size();i++){
-    //hist_DRll01[i]->Write();
+    hist_DRll01[i]->Write();
     hist_lep_Pt_0[i]->Write();
     hist_lep_Pt_1[i]->Write();
-    //hist_min_DRl0j[i]->Write();
-    //hist_min_DRl1j[i]->Write();
+    hist_min_DRl0j[i]->Write();
+    hist_min_DRl1j[i]->Write();
     hist_maxEta_ll[i]->Write();
     hist_HT_jets[i]->Write();
     hist_HT[i]->Write();

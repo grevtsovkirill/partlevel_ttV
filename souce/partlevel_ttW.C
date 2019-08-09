@@ -35,9 +35,27 @@ void partlevel_ttW::Begin(TTree * /*tree*/)
 
 void partlevel_ttW::SlaveBegin(TTree * /*tree*/)
 {
+  stoploop=false;
+  nom_w=false; scaleup_w=false;  scaledown_w=false;    
   TString option = GetOption();
   std::cout << "option ="<< option << std::endl;
+  std::cout << "variation =";
   input_name=option;
+
+  if(input_name.compare("Sherpa")==0 || input_name.compare("MG")==0){
+    std::cout << " nominal"<<  std::endl;
+    nom_w=true;
+  }
+  else if (input_name.find("ScaleUp")!= std::string::npos){
+    std::cout << " ScaleUp"<<  std::endl;
+    scaleup_w=true;
+  }
+  else if (input_name.find("ScaleDown")!= std::string::npos){
+    std::cout << " ScaleDown"<<  std::endl;
+    scaledown_w=true;
+  }
+  else {std::cout << " error - incorrect variation. Stop."<<  std::endl; stoploop=true;}
+
   
   const std::vector<TString> s_cutDescs =
     {  "Preselections","Nleps","lepPt1>20","lepPt0>25","lepCentr","SS","jPt/eta","3j1b",
@@ -75,7 +93,7 @@ void partlevel_ttW::SlaveBegin(TTree * /*tree*/)
 
 Bool_t partlevel_ttW::Process(Long64_t entry)
 {
-  
+  if(stoploop) return 0;
   //fReader.SetEntry(entry);
   fReader.SetLocalEntry(entry);
   // print some information about the current entry
@@ -84,8 +102,20 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
 
   // increase the total number of entries
   ++fNumberOfEvents;
+
+  //weight definitions
+  Double_t weight_to_use=1;
+  //nom_w=false; scaleup_w=false;  scaledown_w=false;
+  if (nom_w) weight_to_use = *weight_mc;
+  else if (scaleup_w) weight_to_use = mc_generator_weights[10];
+  else if (scaledown_w) weight_to_use = mc_generator_weights[4];
+  else return 0;
+
   
-  weight_tot=*weight_mc * *weight_pileup;
+  weight_tot=weight_to_use * *weight_pileup;
+
+
+
   int cf_counter=0;
 
 
@@ -271,26 +301,27 @@ void partlevel_ttW::Terminate()
 {
   printf("\nTotal Number of Events: %d\n", fNumberOfEvents);
 
-  string outname="Res_"+input_name+".root";
-  TFile hfile(outname.c_str(),"RECREATE"); //,"tHq"
-  h_cutflow_2l[0]->Write(); 
-  h_cutflow_2l[1]->Write(); 
-
-  for(int i=0; i<(int)region_names.size();i++){
-    hist_DRll01[i]->Write();
-    hist_lep_Pt_0[i]->Write();
-    hist_lep_Pt_1[i]->Write();
-    hist_min_DRl0j[i]->Write();
-    hist_min_DRl1j[i]->Write();
-    hist_maxEta_ll[i]->Write();
-    hist_HT_jets[i]->Write();
-    hist_HT[i]->Write();
-    hist_nJets[i]->Write();
-    hist_nBtagJets[i]->Write();
-    hist_MET[i]->Write();
+  if(!stoploop){
+    string outname="Res_"+input_name+".root";
+    TFile hfile(outname.c_str(),"RECREATE"); //,"tHq"
+    h_cutflow_2l[0]->Write(); 
+    h_cutflow_2l[1]->Write(); 
+    
+    for(int i=0; i<(int)region_names.size();i++){
+      hist_DRll01[i]->Write();
+      hist_lep_Pt_0[i]->Write();
+      hist_lep_Pt_1[i]->Write();
+      hist_min_DRl0j[i]->Write();
+      hist_min_DRl1j[i]->Write();
+      hist_maxEta_ll[i]->Write();
+      hist_HT_jets[i]->Write();
+      hist_HT[i]->Write();
+      hist_nJets[i]->Write();
+      hist_nBtagJets[i]->Write();
+      hist_MET[i]->Write();
+    }
+    
+    fOutput->Write();
   }
-
-  fOutput->Write();
-
   
 }

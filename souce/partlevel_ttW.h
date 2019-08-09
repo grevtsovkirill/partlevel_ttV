@@ -26,6 +26,7 @@ public :
    TTreeReader     fReader;  //!the tree reader
    TTree          *fChain = 0;   //!pointer to the analyzed TTree or TChain
 
+   Bool_t stoploop; Bool_t nom_w; Bool_t scaleup_w; Bool_t scaledown_w;
    Bool_t sel_array[10];
    int nEl;
    int nMu;

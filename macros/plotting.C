@@ -24,25 +24,30 @@ void plotting()
   //sprintf(text1,"#sqrt{s} = 13 TeV, 2b %s 2lSS",lep_flav.c_str());
   sprintf(text2,"");
   
-  TH1D* h_var[5][5][5][2];
-  //vector<string> region_names={"0t 1b 4j", "0t 2b 4j","0t 1b 3j", "0t 2b 3j",
+  TH1D* h_var[5][15][5][5];
+
+  //  vector<string> region_names={"0t 1b 3j","0t 2b 3j"}; vector<string>  nj_reg={"2","3"};
+
+  //vector<string> region_names={"0t 1b 4j", "0t 2b 4j","0t 1b 3j", "0t 2b 3j", "1t 1b 3j"};
+  vector<string> region_names={"0t 1b 4j", "0t 2b 4j","0t 1b 3j", "0t 2b 3j"};
   //			       "1t 1b 4j", "1t 2b 4j","1t 1b 3j", "1t 2b 3j"};
   
   //vector<string> region_names={"0t 1b 4j"}; vector<string>  nj_reg={"0"};
   //vector<string> region_names={"0t 2b 4j"}; vector<string>  nj_reg={"1"};
   //vector<string> region_names={"0t 1b 3j"}; vector<string>  nj_reg={"2"};
-  vector<string> region_names={"0t 2b 3j"}; vector<string>  nj_reg={"3"};
+  //vector<string> region_names={"0t 2b 3j"}; vector<string>  nj_reg={"3"};
+
   //taus
   //vector<string> region_names={"1t 1b 4j"}; vector<string>  nj_reg={"4"};
   //vector<string> region_names={"1t 2b 4j"}; vector<string>  nj_reg={"5"};
   //vector<string> region_names={"1t 1b 3j"}; vector<string>  nj_reg={"6"};
   //vector<string> region_names={"1t 2b 3j"}; vector<string>  nj_reg={"7"};
-//vector<string>  nj_reg={"0","1","2","3"};    //"1"
-  vector<string> variable={"DRll01","lep_Pt_0","lep_Pt_1","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT","nJets","nBtagJets","MET"};
-  //vector<string> type={"nominal","MG","rfup","rfdown"}; //,ttW"Other"};,""Data
+//
+  vector<string>  nj_reg={"0","1","2","3"};
+  vector<string> variable={"DRll01","lep_Pt_0","lep_Pt_1","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT","nJets","nBtagJets","MET"}; //
+
   vector<string> type={"Sherpa","MG","SherpaScaleUp","SherpaScaleDown"};
   char sf_name[1000] ;char band_name[1000] ;
-  int i=1,j=1,k=1,t=99999;
   TLegend* legend[100][100];
   TCanvas * canv[100][100];
   TPad * pad1[100][100];
@@ -57,34 +62,32 @@ void plotting()
   //string base_name="input/mc_histos_ttW"; //reco  
   string base_name="input/Res";  
   string file_name;
-//   for(i=0;i<nj_reg.size();i++){
-//     for(j=0;j<variable.size();j++){
 
-  for(t=0;t<type.size();t++){ 
+  Double_t norm_hist=1;
+  cout <<"loop to load histos"<< endl;
+  for(int t=0;t<type.size();t++){ 
     file_name=base_name+"_"+type[t]+".root";
     cout<< "file_name  - " << file_name<< endl;
     file[0][t] = TFile::Open(file_name.c_str());
-
+    
     //region
-    for(i=0;i<nj_reg.size();i++){
+    for(int i=0;i<nj_reg.size();i++){
       //variable
-      for(j=0;j<variable.size();j++){
+      for(int j=0;j<variable.size();j++){
 	sprintf(sf_name,"%s_%s",variable[j].c_str(),nj_reg[i].c_str());   
-	cout << "sf_name " << sf_name<< " reg = "<< region_names[i]<< endl;
-	for(k=0;k<1;k++){
-	  h_var[i][j][k][t] = (TH1D *)file[0][t]->Get(sf_name);		 
-	  if (variable[j]!="nBtagJets") h_var[i][j][k][t]->Scale(1/h_var[i][j][k][t]->GetSumOfWeights());
-	  //h_var[i][j][k][t]->Rebin(rebin_val);
-	}//k?!
-
+	cout << "sf_name " << sf_name<< " reg = "<< region_names[i]<< ", variable in histo - "<< variable[j]<< endl;
+	h_var[i][j][0][t] = (TH1D *)file[0][t]->Get(sf_name);		 
+	norm_hist = h_var[i][j][0][t]->GetSumOfWeights();
+	h_var[i][j][0][t]->Scale(1/norm_hist);
+	norm_hist=1;
       }//variable - j
     }// region - i
   }// file
-
   
-  for(i=0;i<nj_reg.size();i++){
-    //for(i=0;i<1;i++){
-    for(j=0;j<variable.size();j++){
+  cout <<"histos are load "<< endl;
+  cout << "=============================="<<'\n'<<'\n'<<'\n'<<"loop to make plots using loaded histos"<< endl;
+  for(int i=0;i<nj_reg.size();i++){
+    for(int j=0;j<variable.size();j++){
       
       sprintf(canvas_name,"c_Region_%s_%s",nj_reg[i].c_str(), variable[j].c_str() );
       cout << "canvas_name "<< canvas_name<< endl;
@@ -111,28 +114,31 @@ void plotting()
       legend[i][j] = new TLegend(0.6,0.7,0.9,0.9);
       legend[i][j]->SetTextFont(42);legend[i][j]->SetFillColor(0);  legend[i][j]->SetBorderSize(0); legend[i][j]->SetFillStyle(0);  legend[i][j]->SetTextSize(0.05);
       
-      for(t=0;t<type.size();t++){
-	k=0;
+
+      for(int t=0;t<type.size();t++){
+	cout << " - load file: "<< t << " - "<<  type[t] << endl;
 	if(t==0){	  
-	  if (variable[j]!="nBtagJets") h_var[i][j][k][t]->SetYTitle("Normalized");
-	  else h_var[i][j][k][t]->SetYTitle("Events");
-	  h_var[i][j][k][t]->SetXTitle((variable[j]).c_str());
-	  h_var[i][j][k][t]->GetYaxis()->SetTitleSize(0.06); 
-	  h_var[i][j][k][t]->GetYaxis()->SetTitleOffset(0.7); 
-	  //h_var[i][j][k][t]->GetXaxis()->SetRangeUser(20,500);
-	  h_var[i][j][k][t]->SetMaximum(h_var[i][j][k][t]->GetMaximum()*1.5);
-	  h_var[i][j][k][t]->Draw("E1");
+
+	  //if (variable[j]!="nBtagJets") h_var[i][j][k][t]->SetYTitle("Normalized");
+	  //else h_var[i][j][k][t]->SetYTitle("Events");
+	  h_var[i][j][0][t]->SetYTitle("Normalized");
+	  h_var[i][j][0][t]->SetXTitle((variable[j]).c_str());
+	  h_var[i][j][0][t]->GetYaxis()->SetTitleSize(0.06); 
+	  h_var[i][j][0][t]->GetYaxis()->SetTitleOffset(0.7); 
+	  //h_var[i][j][0][t]->GetXaxis()->SetRangeUser(20,500);
+	  h_var[i][j][0][t]->SetMaximum(h_var[i][j][0][t]->GetMaximum()*1.5);
+	  h_var[i][j][0][t]->Draw("E1");
 	}
 	
-	h_var[i][j][k][t]->SetLineColor(color_sample[t]);
-	h_var[i][j][k][t]->SetMarkerColor(color_sample[t]);
-	h_var[i][j][k][t]->SetMarkerStyle(20+t);
+	h_var[i][j][0][t]->SetLineColor(color_sample[t]);
+	h_var[i][j][0][t]->SetMarkerColor(color_sample[t]);
+	h_var[i][j][0][t]->SetMarkerStyle(20+t);
 	
-	h_var[i][j][k][t]->SetLineWidth(2);
-	h_var[i][j][k][t]->SetLineStyle(linestyle[t]);
-	//if(h_var[i][j][k][t]->Integral()>0){
-	h_var[i][j][k][t]->Draw("E1histsame");
-	legend[i][j]->AddEntry(h_var[i][j][k][t],(type[t]+ " ").c_str(),"LP");
+	h_var[i][j][0][t]->SetLineWidth(2);
+	h_var[i][j][0][t]->SetLineStyle(linestyle[t]);
+	//if(h_var[i][j][0][t]->Integral()>0){
+	h_var[i][j][0][t]->Draw("E1histsame");
+	legend[i][j]->AddEntry(h_var[i][j][0][t],(type[t]+ " ").c_str(),"LP");
 	//}//
 	sprintf(sf_name,"ratio_%s_%s_%s",variable[j].c_str(),nj_reg[i].c_str(),type[t].c_str());   
 	cout<< "ratio name "<< sf_name<< endl;
@@ -174,7 +180,7 @@ void plotting()
 
       h_var[i][j][3][0]->SetYTitle("Ratio to Sherpa");
       h_var[i][j][3][0]->Draw("hist");
-      for(t=1;t<type.size();t++){
+      for(int t=1;t<type.size();t++){
 	h_var[i][j][3][t]->SetLineWidth(3);
 	h_var[i][j][3][t]->SetLineColor(color_sample[t]);
 	h_var[i][j][3][t]->SetMarkerColor(color_sample[t]);

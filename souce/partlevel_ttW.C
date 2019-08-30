@@ -24,7 +24,7 @@ TH1D *hist_nJets[10];
 TH1D *hist_nBtagJets[10];
 TH1D *hist_MET[10];
 
-vector<string> region_names={"0t 1b 4j", "0t 2b 4j","0t 1b 3j", "0t 2b 3j"};
+vector<string> region_names={"0t 1b 4j", "0t 2b 4j","0t 1b 3j", "0t 2b 3j","1t 1b 3j"};
 //,
 			     //"1t 1b 4j", "1t 2b 4j","1t 1b 3j", "1t 2b 3j"};
 
@@ -59,7 +59,7 @@ void partlevel_ttW::SlaveBegin(TTree * /*tree*/)
   
   const std::vector<TString> s_cutDescs =
     {  "Preselections","Nleps","lepPt1>20","lepPt0>25","lepCentr","SS","jPt/eta","3j1b",
-       "0t 1b 4j", "0t 2b 4j","0t 1b 3j", "0t 2b 3j"};
+       "0t 1b 4j", "0t 2b 4j","0t 1b 3j", "0t 2b 3j","1t >1b >3j"};
   int Ncuts = s_cutDescs.size();
   h_cutflow_2l[0] = new TH1F("cf2l","cf2l",Ncuts,0,Ncuts);
   h_cutflow_2l[1] = new TH1F("cf2l_raw","cf2l_raw",Ncuts,0,Ncuts);
@@ -266,6 +266,7 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
   sel_array[1]=(Ntaus == 0 && Nbjets >= 2 && Njets >= 4 );  // Region 2
   sel_array[2]=(Ntaus == 0 && Nbjets == 1 && Njets == 3 );  // Region 3 
   sel_array[3]=(Ntaus == 0 && Nbjets >= 2 && Njets == 3 );  // Region 4
+  sel_array[4]=(Ntaus == 1 && Nbjets >= 1 && Njets >= 3 );  // Region 5
 
   float met = *met_met/1000.;
 

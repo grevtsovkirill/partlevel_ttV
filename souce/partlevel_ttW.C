@@ -261,12 +261,23 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
   min_DRl1j= *min_element(dRl1j.begin(),dRl1j.end());
 
   int Ntaus = 0; //in case we will process taus
+  int Nhtaus = 0;
+  for(unsigned int t=0;t<tau_pt.GetSize(); t++){
+    if(tau_pt[t]/1000.<25) return 0;
+
+    if(fabs(tau_eta[t])>2.5) return 0;
+  
+    Ntaus+=1;
+    if(tau_isHadronic[t]!=0) Nhtaus+=1;
+  }
+
+  //cout <<"Ntaus ="<<Ntaus<<", Nhtaus="<< Nhtaus   << endl;
   //2 same sign charged leptons (e,mu) with pT>25(20)GeV 
-  sel_array[0]=(Ntaus == 0 && Nbjets == 1 && Njets >= 4 );  // Region 1 
-  sel_array[1]=(Ntaus == 0 && Nbjets >= 2 && Njets >= 4 );  // Region 2
-  sel_array[2]=(Ntaus == 0 && Nbjets == 1 && Njets == 3 );  // Region 3 
-  sel_array[3]=(Ntaus == 0 && Nbjets >= 2 && Njets == 3 );  // Region 4
-  sel_array[4]=(Ntaus == 1 && Nbjets >= 1 && Njets >= 3 );  // Region 5
+  sel_array[0]=(Nhtaus == 0 && Nbjets == 1 && Njets >= 4 );  // Region 1 
+  sel_array[1]=(Nhtaus == 0 && Nbjets >= 2 && Njets >= 4 );  // Region 2
+  sel_array[2]=(Nhtaus == 0 && Nbjets == 1 && Njets == 3 );  // Region 3 
+  sel_array[3]=(Nhtaus == 0 && Nbjets >= 2 && Njets == 3 );  // Region 4
+  sel_array[4]=(Nhtaus == 1 && Nbjets >= 1 && Njets >= 3 );  // Region 5
 
   float met = *met_met/1000.;
 

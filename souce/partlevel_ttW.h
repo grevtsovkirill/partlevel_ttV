@@ -78,6 +78,12 @@ public :
    TTreeReaderArray<float> PDFinfo_XF2 = {fReader, "PDFinfo_XF2"};
    TTreeReaderArray<float> mc_generator_weights = {fReader, "mc_generator_weights"};
    TTreeReaderValue<Int_t> particle_level_ttW = {fReader, "particle_level_ttW"};
+   //add taus 020919
+   TTreeReaderArray<float> tau_pt = {fReader, "tau_pt"};
+   TTreeReaderArray<float> tau_eta = {fReader, "tau_eta"};
+   TTreeReaderArray<float> tau_phi = {fReader, "tau_phi"};
+   TTreeReaderArray<float> tau_e = {fReader, "tau_e"};
+   TTreeReaderArray<char> tau_isHadronic = {fReader, "tau_isHadronic"};
 
 
  partlevel_ttW(TTree * /*tree*/ =0):fNumberOfEvents(0)  { }

@@ -14,5 +14,5 @@ void Zrun(string name="Sherpa", string comp="a"){
   //eventually, start Proof Lite on cores
   //TProof::Open("workers=4");
   //ch->SetProof();
-  ch->Process("souce/partlevel_ttZ.C+",name.c_str());
+  ch->Process("souce/partlevel_ttZ.C+",name.c_str(),10000);
 }

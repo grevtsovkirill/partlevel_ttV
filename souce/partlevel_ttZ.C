@@ -163,48 +163,12 @@ Bool_t partlevel_ttZ::Process(Long64_t entry)
   h_cutflow_3l[0]->Fill(cf_counter,weight_tot);  h_cutflow_3l[1]->Fill(cf_counter,1);
   cf_counter++;
 
-
-  //if (lep_it!=2) 
   for (int i=0;i<lep_it;i++) cout<< i  <<  "   "<< lep_4v[i].Pt()<< " pdg="<<lep_charge[i] *lep_flav[i]<< '\t';
   cout<<'\n';
-  /*
-  if ( trilep_type==1 ){ 
-    lep_4v[0].SetPtEtaPhiE(mu_pt[0]/1e3,mu_eta[0],mu_phi[0],mu_e[0]);
-    lep_4v[1].SetPtEtaPhiE(mu_pt[1]/1e3,mu_eta[1],mu_phi[1],mu_e[1]);
-    lep_4v[1].SetPtEtaPhiE(mu_pt[1]/1e3,mu_eta[1],mu_phi[1],mu_e[1]);
 
-    l0_charge= mu_charge[0]; l1_charge= mu_charge[1];
-    l0_eta= mu_eta[0]; l1_eta= mu_eta[1];
-    l0_pt= mu_pt[0]/1e3; l1_pt= mu_pt[1]/1e3;
-  }
-  else if ( trilep_type==3 ){ 
-    lep_4v[0].SetPtEtaPhiE(el_pt[0]/1e3,el_eta[0],el_phi[0],el_e[0]);
-    lep_4v[1].SetPtEtaPhiE(el_pt[1]/1e3,el_eta[1],el_phi[1],el_e[1]);
-
-    l0_charge= el_charge[0]; l1_charge= el_charge[1];
-    l0_eta= el_eta[0]; l1_eta= el_eta[1];
-    l0_pt= el_pt[0]/1e3; l1_pt= el_pt[1]/1e3;
-  }
-  else if ( trilep_type==2 ){ 
-    if(mu_pt[0]>el_pt[0]){ 
-      lep_4v[0].SetPtEtaPhiE(mu_pt[0]/1e3,mu_eta[0],mu_phi[0],mu_e[0]);
-      lep_4v[1].SetPtEtaPhiE(el_pt[0]/1e3,el_eta[0],el_phi[0],el_e[0]);
-
-      l0_charge= mu_charge[0]; l1_charge= el_charge[0];
-      l0_eta= mu_eta[0]; l1_eta= el_eta[0];
-      l0_pt= mu_pt[0]/1e3; l1_pt= el_pt[0]/1e3;
-    }
-    else{    
-      lep_4v[0].SetPtEtaPhiE(el_pt[0]/1e3,el_eta[0],el_phi[0],el_e[0]);
-      lep_4v[1].SetPtEtaPhiE(mu_pt[0]/1e3,mu_eta[0],mu_phi[0],mu_e[0]);
-
-      l1_charge= mu_charge[0]; l0_charge= el_charge[0];
-      l1_eta= mu_eta[0]; l0_eta= el_eta[0];
-      l1_pt= mu_pt[0]/1e3; l0_pt= el_pt[0]/1e3;
-    }
-  }
-
-  //*/
+  // sort leptons:
+  // lepton0 is defined as the one that has opposite sign to the total charge.
+  // then lepton1 is the closest to lepton0 in DR
 
   int lead_lep=9999, sublead_lep=9999;
   if(  lep_4v[0].Pt()>lep_4v[1].Pt()){

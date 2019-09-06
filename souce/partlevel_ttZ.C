@@ -7,7 +7,7 @@
 #include <TLorentzVector.h>
 #include <math.h>
 
-TH1F *h_cutflow_2l[2];
+TH1F *h_cutflow_3l[2];
 string input_name="";
 /////////////////////////////
 // Histograms booking 2lSS ttW:
@@ -58,14 +58,14 @@ void partlevel_ttZ::SlaveBegin(TTree * /*tree*/)
 
   
   const std::vector<TString> s_cutDescs =
-    {  "Preselections","Nleps","lepPt1>20","lepPt0>25","lepCentr","SS","jPt/eta","3j1b",
+    {  "Preselections","Nleps=3","|TotCharge|=1","lepPt1>20","lepPt0>25","lepCentr","jPt/eta","3j1b",
        "0t 1b 4j", "0t 2b 4j","0t 1b 3j", "0t 2b 3j","1t >1b >3j"};
   int Ncuts = s_cutDescs.size();
-  h_cutflow_2l[0] = new TH1F("cf2l","cf2l",Ncuts,0,Ncuts);
-  h_cutflow_2l[1] = new TH1F("cf2l_raw","cf2l_raw",Ncuts,0,Ncuts);
+  h_cutflow_3l[0] = new TH1F("cf3l","cf3l",Ncuts,0,Ncuts);
+  h_cutflow_3l[1] = new TH1F("cf3l_raw","cf3l_raw",Ncuts,0,Ncuts);
   for (int bin=1;bin<=Ncuts;++bin){
-    h_cutflow_2l[0]->GetXaxis()->SetBinLabel(bin,s_cutDescs[bin-1]);
-    h_cutflow_2l[1]->GetXaxis()->SetBinLabel(bin,s_cutDescs[bin-1]);
+    h_cutflow_3l[0]->GetXaxis()->SetBinLabel(bin,s_cutDescs[bin-1]);
+    h_cutflow_3l[1]->GetXaxis()->SetBinLabel(bin,s_cutDescs[bin-1]);
   }
 
 
@@ -123,35 +123,61 @@ Bool_t partlevel_ttZ::Process(Long64_t entry)
   nEl = el_pt.GetSize();
   nMu = mu_pt.GetSize();
   const int totleptons = nEl+nMu;
-  int dilep_type = 1 + nEl;//  1(mumu) 2(OF) 3(ee)
+  int trilep_type = 1 + nEl;//  1(mumu) 2(OF) 3(ee)
   //Nlep
 
 
   //presel
-  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
+  h_cutflow_3l[0]->Fill(cf_counter,weight_tot);  h_cutflow_3l[1]->Fill(cf_counter,1);
   cf_counter++;
 
   //Nleps
-  if(totleptons!=2) return 0;
-  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
+  if(totleptons!=3) return 0;
+  h_cutflow_3l[0]->Fill(cf_counter,weight_tot);  h_cutflow_3l[1]->Fill(cf_counter,1);
   cf_counter++;
 
   //define lead/sublead lepton and it's charge
+  TLorentzVector lep_4v[3]; float lep_charge[3];float lep_flav[3];
+  int lep_it=0;
+  if(nEl!=0){
+    for (int ie=0;ie<nEl;ie++){
+      lep_4v[lep_it].SetPtEtaPhiE(el_pt[ie]/1e3,el_eta[ie],el_phi[ie],el_e[ie]);
+      lep_charge[lep_it]=el_charge[ie];
+      lep_flav[lep_it]=11;
+      lep_it++;
+    }
+  }
 
-  float l0_charge=0,l1_charge=0;  
-  float l0_pt=-999,l1_pt=-999;
-  float l0_eta=-999,l1_eta=-999;
-  TLorentzVector lep_4v[2];
+  if(nMu!=0){
+    for (int im=0;im<nMu;im++){
+      lep_4v[lep_it].SetPtEtaPhiE(mu_pt[im]/1e3,mu_eta[im],mu_phi[im],mu_e[im]);
+      lep_charge[lep_it]=mu_charge[im];
+      lep_flav[lep_it]=13;
+      lep_it++;
+    }
+  }
 
-  if ( dilep_type==1 ){ 
+  float charges=lep_charge[0]+lep_charge[1]+lep_charge[2];
+  //Charge
+  if(abs(charges)!=1) return 0;
+  h_cutflow_3l[0]->Fill(cf_counter,weight_tot);  h_cutflow_3l[1]->Fill(cf_counter,1);
+  cf_counter++;
+
+
+  //if (lep_it!=2) 
+  for (int i=0;i<lep_it;i++) cout<< i  <<  "   "<< lep_4v[i].Pt()<< " pdg="<<lep_charge[i] *lep_flav[i]<< '\t';
+  cout<<'\n';
+  /*
+  if ( trilep_type==1 ){ 
     lep_4v[0].SetPtEtaPhiE(mu_pt[0]/1e3,mu_eta[0],mu_phi[0],mu_e[0]);
+    lep_4v[1].SetPtEtaPhiE(mu_pt[1]/1e3,mu_eta[1],mu_phi[1],mu_e[1]);
     lep_4v[1].SetPtEtaPhiE(mu_pt[1]/1e3,mu_eta[1],mu_phi[1],mu_e[1]);
 
     l0_charge= mu_charge[0]; l1_charge= mu_charge[1];
     l0_eta= mu_eta[0]; l1_eta= mu_eta[1];
     l0_pt= mu_pt[0]/1e3; l1_pt= mu_pt[1]/1e3;
   }
-  else if ( dilep_type==3 ){ 
+  else if ( trilep_type==3 ){ 
     lep_4v[0].SetPtEtaPhiE(el_pt[0]/1e3,el_eta[0],el_phi[0],el_e[0]);
     lep_4v[1].SetPtEtaPhiE(el_pt[1]/1e3,el_eta[1],el_phi[1],el_e[1]);
 
@@ -159,7 +185,7 @@ Bool_t partlevel_ttZ::Process(Long64_t entry)
     l0_eta= el_eta[0]; l1_eta= el_eta[1];
     l0_pt= el_pt[0]/1e3; l1_pt= el_pt[1]/1e3;
   }
-  else if ( dilep_type==2 ){ 
+  else if ( trilep_type==2 ){ 
     if(mu_pt[0]>el_pt[0]){ 
       lep_4v[0].SetPtEtaPhiE(mu_pt[0]/1e3,mu_eta[0],mu_phi[0],mu_e[0]);
       lep_4v[1].SetPtEtaPhiE(el_pt[0]/1e3,el_eta[0],el_phi[0],el_e[0]);
@@ -178,35 +204,36 @@ Bool_t partlevel_ttZ::Process(Long64_t entry)
     }
   }
 
+  //*/
 
   int lead_lep=9999, sublead_lep=9999;
   if(  lep_4v[0].Pt()>lep_4v[1].Pt()){
     lead_lep=0;sublead_lep=1;}
   else {    lead_lep=1;sublead_lep=0;}
-  
+
+
+  float l0_pt=lep_4v[lead_lep].Pt(); 
+  float l1_pt=lep_4v[sublead_lep].Pt(); 
+  float l0_eta=lep_4v[lead_lep].Eta(); 
+  float l1_eta=lep_4v[sublead_lep].Eta(); 
   //  if(lead_lep!=0)     cout <<  " 0  "<< lep_4v[0].Pt()<< "   1 " << lep_4v[1].Pt()<< ",  leading is "<< lead_lep<< endl;
   //if ((abs(lep_4v[lead_lep].Pt()-l0_pt)>0.0001) || (abs(lep_4v[sublead_lep].Pt()-l1_pt)>0.0001)) cout <<  " 0  "<< lep_4v[0].Pt()<< "   1 " << lep_4v[1].Pt()<< ",  leading is "<< lead_lep <<  ",  l0pt="<<l0_pt <<  ",  l1pt="<<l1_pt << endl;
 
 
   //lep Pt cuts
   if(lep_4v[sublead_lep].Pt()<20) return 0;  
-  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
+  h_cutflow_3l[0]->Fill(cf_counter,weight_tot);  h_cutflow_3l[1]->Fill(cf_counter,1);
   cf_counter++;
   if(lep_4v[lead_lep].Pt()<25) return 0;  
-  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
+  h_cutflow_3l[0]->Fill(cf_counter,weight_tot);  h_cutflow_3l[1]->Fill(cf_counter,1);
   cf_counter++;
 
 
   //lep eta cuts
   if(abs(lep_4v[lead_lep].Eta())>2.5||abs(lep_4v[sublead_lep].Eta())>2.5) return 0;  
-  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
+  h_cutflow_3l[0]->Fill(cf_counter,weight_tot);  h_cutflow_3l[1]->Fill(cf_counter,1);
   cf_counter++;
 
-  float charges=l0_charge*l1_charge;
-  //SS
-  if(charges<0) return 0;
-  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
-  cf_counter++;
  
   float max_eta=  max ( fabs( l0_eta ), fabs( l1_eta ) ); 
 
@@ -232,11 +259,11 @@ Bool_t partlevel_ttZ::Process(Long64_t entry)
     
   }
   //central jets above 25 gev
-  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
+  h_cutflow_3l[0]->Fill(cf_counter,weight_tot);  h_cutflow_3l[1]->Fill(cf_counter,1);
   cf_counter++;
   
   if(Njets<3 || Nbjets<1) return 0;
-  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
+  h_cutflow_3l[0]->Fill(cf_counter,weight_tot);  h_cutflow_3l[1]->Fill(cf_counter,1);
   cf_counter++;
 
   HTall=HTjet+(l0_pt+l1_pt)*1000;
@@ -283,7 +310,7 @@ Bool_t partlevel_ttZ::Process(Long64_t entry)
 
   for(int i=0; i<(int)region_names.size();i++){
     if(sel_array[i]){
-      h_cutflow_2l[0]->Fill(cf_counter+i,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter+i,1);
+      h_cutflow_3l[0]->Fill(cf_counter+i,weight_tot);  h_cutflow_3l[1]->Fill(cf_counter+i,1);
       
       hist_DRll01[i]->Fill(DRll01, weight_tot);
       hist_lep_Pt_0[i]->Fill(l0_pt, weight_tot);
@@ -316,8 +343,8 @@ void partlevel_ttZ::Terminate()
   if(!stoploop){
     string outname="Res_TTZ_"+input_name+".root";
     TFile hfile(outname.c_str(),"RECREATE"); //,"tHq"
-    h_cutflow_2l[0]->Write(); 
-    h_cutflow_2l[1]->Write(); 
+    h_cutflow_3l[0]->Write(); 
+    h_cutflow_3l[1]->Write(); 
     
     for(int i=0; i<(int)region_names.size();i++){
       hist_DRll01[i]->Write();

@@ -147,8 +147,8 @@ void plotting()
 	//*
 	
 	// i region, j - variable, t -nom/variation, 
-	h_var[i][j][3][t] = (TH1D*) h_var[i][j][0][0]->Clone(sf_name);
-	h_var[i][j][3][t]->Divide(h_var[i][j][0][t]);
+	h_var[i][j][3][t] = (TH1D*) h_var[i][j][0][t]->Clone(sf_name);
+	h_var[i][j][3][t]->Divide(h_var[i][j][0][0]);
 	
 	h_var[i][j][3][t]->GetXaxis()->SetTitleSize(0.14); 
 	h_var[i][j][3][t]->GetYaxis()->SetTitleSize(0.14); 
@@ -189,7 +189,7 @@ void plotting()
 	
       }
       
-      sprintf(o_name,"Plots_pl_87_v1/%s.pdf",canvas_name);
+      sprintf(o_name,"Plots_pl_87_v2/%s.pdf",canvas_name);
       canv[i][j]->Print(o_name);
       //*/
     }//j loop: variable

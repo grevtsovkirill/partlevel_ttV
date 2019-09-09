@@ -173,21 +173,30 @@ Bool_t partlevel_ttZ::Process(Long64_t entry)
   // then lepton1 is the closest to lepton0 in DR
   Int_t idx[3]; Int_t non0idx[2];
   int non0i=0;
-  cout << "lep_it" << lep_it <<'\n'<<endl;
+  //lep0
   for (int i=0;i<lep_it;i++) {
-    //lep0
-    if(lep_charge[i]== -charges){
-      cout << "lep0 = "<< i<< endl;
+    if(lep_charge[i]== -charges)
       idx[0]=i;    
-    }
     else{
-      cout << "npn- lep0 = "<< i<< endl;
       non0idx[non0i]=i;
       non0i++;
     }
   }
   cout << "idx0= "<< idx[0]<< ", non0 - "<< non0idx[0] << "  "<< non0idx[1]<<endl;
-  float minDRll = 9999;
+  int tmp0=non0idx[0];  int tmp1=non0idx[1];  int tmpF=idx[0];
+  //cout << "closest to lep0 = ";
+  //order lep1 and lep2 accordint to dR wrt lep0
+  if (lep_4v[tmpF].DeltaR( lep_4v[tmp0]) > lep_4v[tmpF].DeltaR( lep_4v[tmp1] )){
+    //cout <<"(if) "<< non0idx[1]<<endl;
+    idx[1]=non0idx[1];
+    idx[2]=non0idx[0];
+  }
+  else{ 
+    //cout <<"(else)  "<<non0idx[0]<<endl;
+    idx[1]=non0idx[0];
+    idx[2]=non0idx[1];
+
+  }
   //for (int i=0;i<lep_it;i++) {
     //lep1
     //if(i==idx[0]) continue;

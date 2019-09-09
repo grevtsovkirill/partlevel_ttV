@@ -58,7 +58,7 @@ void partlevel_ttZ::SlaveBegin(TTree * /*tree*/)
 
   
   const std::vector<TString> s_cutDescs =
-    {  "Preselections","Nleps=3","|TotCharge|=1","lepPt1>20","lepPt0>25","lepCentr","jPt/eta","3j1b",
+    {  "Preselections","Nleps=3","|TotCharge|=1","lepPt0>25","lepPt1>15","lepPt2>15","lepCentr","SFZ-veto","SFjphi-veto","jPt/eta","3j1b",
        "0t 1b 4j", "0t 2b 4j","0t 1b 3j", "0t 2b 3j","1t >1b >3j"};
   int Ncuts = s_cutDescs.size();
   h_cutflow_3l[0] = new TH1F("cf3l","cf3l",Ncuts,0,Ncuts);
@@ -197,14 +197,44 @@ Bool_t partlevel_ttZ::Process(Long64_t entry)
     idx[2]=non0idx[1];
 
   }
-  //for (int i=0;i<lep_it;i++) {
-    //lep1
-    //if(i==idx[0]) continue;
-    //lep_4v[lead_lep].DeltaR( lep_4v[sublead_lep] );
-    
-  //}
 
   // Version 2 - orderd by pT 
+  //tbd
+
+
+  // Ordered leps:
+  int lep0= idx[0];  int lep1= idx[1];  int lep2= idx[2];
+
+
+  float l0_pt=lep_4v[lep0].Pt(); 
+  float l1_pt=lep_4v[lep1].Pt(); 
+  float l2_pt=lep_4v[lep2].Pt(); 
+  float l0_eta=lep_4v[lep0].Eta(); 
+  float l1_eta=lep_4v[lep1].Eta(); 
+  float l2_eta=lep_4v[lep2].Eta(); 
+  //  if(lead_lep!=0)     cout <<  " 0  "<< lep_4v[0].Pt()<< "   1 " << lep_4v[1].Pt()<< ",  leading is "<< lead_lep<< endl;
+  //if ((abs(lep_4v[lead_lep].Pt()-l0_pt)>0.0001) || (abs(lep_4v[lep1].Pt()-l1_pt)>0.0001)) cout <<  " 0  "<< lep_4v[0].Pt()<< "   1 " << lep_4v[1].Pt()<< ",  leading is "<< lead_lep <<  ",  l0pt="<<l0_pt <<  ",  l1pt="<<l1_pt << endl;
+
+
+  //lep Pt cuts
+  if(lep_4v[lep0].Pt()<25) return 0;  
+  h_cutflow_3l[0]->Fill(cf_counter,weight_tot);  h_cutflow_3l[1]->Fill(cf_counter,1);
+  cf_counter++;
+  if(lep_4v[lep1].Pt()<15) return 0;  
+  h_cutflow_3l[0]->Fill(cf_counter,weight_tot);  h_cutflow_3l[1]->Fill(cf_counter,1);
+  cf_counter++;
+  if(lep_4v[lep0].Pt()<15) return 0;  
+  h_cutflow_3l[0]->Fill(cf_counter,weight_tot);  h_cutflow_3l[1]->Fill(cf_counter,1);
+  cf_counter++;
+
+
+  //lep eta cuts
+  if(abs(lep_4v[lep0].Eta())>2.5||abs(lep_4v[lep1].Eta())>2.5||abs(lep_4v[lep2].Eta())>2.5) return 0;  
+  h_cutflow_3l[0]->Fill(cf_counter,weight_tot);  h_cutflow_3l[1]->Fill(cf_counter,1);
+  cf_counter++;
+
+
+
   //Dilepton mass definitions
   TLorentzVector ll_4v[3];
   //0 - 01;
@@ -225,35 +255,6 @@ Bool_t partlevel_ttZ::Process(Long64_t entry)
   
   ll_4v[1]=lep_4v[0]+lep_4v[2]; 
   ll_4v[2]=lep_4v[1]+lep_4v[2]; 
-
-
-  int lead_lep=9999, sublead_lep=9999;
-  if(  lep_4v[0].Pt()>lep_4v[1].Pt()){
-    lead_lep=0;sublead_lep=1;}
-  else {    lead_lep=1;sublead_lep=0;}
-
-
-  float l0_pt=lep_4v[lead_lep].Pt(); 
-  float l1_pt=lep_4v[sublead_lep].Pt(); 
-  float l0_eta=lep_4v[lead_lep].Eta(); 
-  float l1_eta=lep_4v[sublead_lep].Eta(); 
-  //  if(lead_lep!=0)     cout <<  " 0  "<< lep_4v[0].Pt()<< "   1 " << lep_4v[1].Pt()<< ",  leading is "<< lead_lep<< endl;
-  //if ((abs(lep_4v[lead_lep].Pt()-l0_pt)>0.0001) || (abs(lep_4v[sublead_lep].Pt()-l1_pt)>0.0001)) cout <<  " 0  "<< lep_4v[0].Pt()<< "   1 " << lep_4v[1].Pt()<< ",  leading is "<< lead_lep <<  ",  l0pt="<<l0_pt <<  ",  l1pt="<<l1_pt << endl;
-
-
-  //lep Pt cuts
-  if(lep_4v[sublead_lep].Pt()<20) return 0;  
-  h_cutflow_3l[0]->Fill(cf_counter,weight_tot);  h_cutflow_3l[1]->Fill(cf_counter,1);
-  cf_counter++;
-  if(lep_4v[lead_lep].Pt()<25) return 0;  
-  h_cutflow_3l[0]->Fill(cf_counter,weight_tot);  h_cutflow_3l[1]->Fill(cf_counter,1);
-  cf_counter++;
-
-
-  //lep eta cuts
-  if(abs(lep_4v[lead_lep].Eta())>2.5||abs(lep_4v[sublead_lep].Eta())>2.5) return 0;  
-  h_cutflow_3l[0]->Fill(cf_counter,weight_tot);  h_cutflow_3l[1]->Fill(cf_counter,1);
-  cf_counter++;
 
  
   float max_eta=  max ( fabs( l0_eta ), fabs( l1_eta ) ); 
@@ -292,16 +293,16 @@ Bool_t partlevel_ttZ::Process(Long64_t entry)
   // DeltaRs
   // ll 
   float DRll01=-9999;
-  //DRll01= sqrt( pow( (lep_4v[lead_lep].Eta()-lep_4v[sublead_lep].Eta()) ,2) + pow ( ( acos( cos( lep_4v[lead_lep].Phi()-lep_4v[sublead_lep].Phi() )  ) ) ,2) );
-  DRll01=lep_4v[lead_lep].DeltaR( lep_4v[sublead_lep] ); // provide SAME results as "by hand"!!!
+  //DRll01= sqrt( pow( (lep_4v[lead_lep].Eta()-lep_4v[lep1].Eta()) ,2) + pow ( ( acos( cos( lep_4v[lead_lep].Phi()-lep_4v[lep1].Phi() )  ) ) ,2) );
+  DRll01=lep_4v[lep0].DeltaR( lep_4v[lep1] ); // provide SAME results as "by hand"!!!
   //if (deltaR!=DRll01)   cout << DRll01 << ", dR "<< deltaR<< endl;
     //float  DR_LJ_0_tmp  = sqrt(pow((ntup.m_jet_eta->at(index_jets) - ntup.lep_Eta_0), 2.0) + pow((acos(cos(ntup.m_jet_phi->at(index_jets) - ntup.lep_Phi_0))), 2.0));
   
   // l-jet
   vector<float> dRl0j;  vector<float> dRl1j;
   for(int i=0; i<Njets;i++){
-    dRl0j.push_back( lep_4v[lead_lep].DeltaR( jets_vec[i] ) );
-    dRl1j.push_back( lep_4v[sublead_lep].DeltaR( jets_vec[i] ) );
+    dRl0j.push_back( lep_4v[lep0].DeltaR( jets_vec[i] ) );
+    dRl1j.push_back( lep_4v[lep1].DeltaR( jets_vec[i] ) );
   }
   
   float min_DRl0j=-9999, min_DRl1j=-9999;

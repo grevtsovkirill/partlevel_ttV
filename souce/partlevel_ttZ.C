@@ -157,18 +157,66 @@ Bool_t partlevel_ttZ::Process(Long64_t entry)
     }
   }
 
+
   float charges=lep_charge[0]+lep_charge[1]+lep_charge[2];
-  //Charge
+  //Charge  cout<< " tot charge = "<< charges;
   if(abs(charges)!=1) return 0;
   h_cutflow_3l[0]->Fill(cf_counter,weight_tot);  h_cutflow_3l[1]->Fill(cf_counter,1);
   cf_counter++;
 
-  for (int i=0;i<lep_it;i++) cout<< i  <<  "   "<< lep_4v[i].Pt()<< " pdg="<<lep_charge[i] *lep_flav[i]<< '\t';
-  cout<<'\n';
+  //for (int i=0;i<lep_it;i++) cout<< i  <<  "   "<< lep_4v[i].Pt()<< " pdg="<<lep_charge[i] *lep_flav[i]<< '\t'<< "mll="<<ll_4v[i].M();
+  //cout<<'\n';
 
   // sort leptons:
+  // Version ttH-ML:
   // lepton0 is defined as the one that has opposite sign to the total charge.
   // then lepton1 is the closest to lepton0 in DR
+  Int_t idx[3]; Int_t non0idx[2];
+  int non0i=0;
+  cout << "lep_it" << lep_it <<'\n'<<endl;
+  for (int i=0;i<lep_it;i++) {
+    //lep0
+    if(lep_charge[i]== -charges){
+      cout << "lep0 = "<< i<< endl;
+      idx[0]=i;    
+    }
+    else{
+      cout << "npn- lep0 = "<< i<< endl;
+      non0idx[non0i]=i;
+      non0i++;
+    }
+  }
+  cout << "idx0= "<< idx[0]<< ", non0 - "<< non0idx[0] << "  "<< non0idx[1]<<endl;
+  float minDRll = 9999;
+  //for (int i=0;i<lep_it;i++) {
+    //lep1
+    //if(i==idx[0]) continue;
+    //lep_4v[lead_lep].DeltaR( lep_4v[sublead_lep] );
+    
+  //}
+
+  // Version 2 - orderd by pT 
+  //Dilepton mass definitions
+  TLorentzVector ll_4v[3];
+  //0 - 01;
+  //1 - 02
+  //2 - 12
+  for(int i1=0;i1<2;i1++){
+    for(int i2=1;i2<3;i2++){
+      if(i1==i2) continue;
+      
+      if (abs(lep_flav[i1])==abs(lep_flav[i2])) {
+	cout << "SF pair  "<< i1<< " " << i2 << endl;;
+	//(ll_4v[0].M()) >12e3;
+	//(ll_4v[0].M()-91.1876e3) >10e3;
+      }
+    }
+  }
+  ll_4v[0]=lep_4v[0]+lep_4v[1];
+  
+  ll_4v[1]=lep_4v[0]+lep_4v[2]; 
+  ll_4v[2]=lep_4v[1]+lep_4v[2]; 
+
 
   int lead_lep=9999, sublead_lep=9999;
   if(  lep_4v[0].Pt()>lep_4v[1].Pt()){

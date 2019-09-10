@@ -46,14 +46,17 @@ void plotting()
   vector<string>  nj_reg={"0","1","2","3","4"};
   vector<string> variable={"DRll01","lep_Pt_0","lep_Pt_1","jet_Pt_4","jet_Pt_5","jet_Pt_6","Bjet_Pt_0","Bjet_Pt_0","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT_leps","HT","nJets","nBtagJets","MET"}; //
 
-  //  vector<string> type={"Sherpa","MG","SherpaScaleUp","SherpaScaleDown"};
-  //Int_t color_sample[6]={1,633,601,418,617,799};
-  //Int_t linestyle[6]={1,1,7,9,4,10};
- 
+  //*
+  vector<string> type={"Sherpa","MG","SherpaScaleUp","SherpaScaleDown"};
+  Int_t color_sample[6]={1,633,601,418,617,799};
+  Int_t linestyle[6]={1,1,7,9,4,10};
+  //*/
+
+  /* MG vars
   vector<string> type={"MG","MGScaleUp","MGScaleDown"};
   Int_t color_sample[6]={633,601,418,617,799,1};
   Int_t linestyle[6]={1,7,9,4,10,1};
-  
+  //*/
 
 
   char sf_name[1000] ;char band_name[1000] ;

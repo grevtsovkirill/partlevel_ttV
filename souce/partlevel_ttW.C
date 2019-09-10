@@ -19,6 +19,7 @@ TH1D *hist_min_DRl0j[10];
 TH1D *hist_min_DRl1j[10];
 TH1D *hist_maxEta_ll[10];
 TH1D *hist_HT_jets[10];
+TH1D *hist_HT_leps[10];
 TH1D *hist_HT[10];
 TH1D *hist_nJets[10]; 
 TH1D *hist_nBtagJets[10];
@@ -71,6 +72,7 @@ void partlevel_ttW::SlaveBegin(TTree * /*tree*/)
 
     Float_t ht_bins[]={0,120,180,240,300,360,440,540,680,900,1500}; Int_t  ht_binnum = sizeof(ht_bins)/sizeof(Float_t) - 1;
     Float_t ht_j_bins[]={0,90,140,180,240,300,380,460,540,650,850,1500}; Int_t  ht_j_binnum = sizeof(ht_j_bins)/sizeof(Float_t) - 1;
+    Float_t ht_l_bins[]={0,20,50,80,110,150,200,300,400,550,800}; Int_t  ht_l_binnum = sizeof(ht_l_bins)/sizeof(Float_t) - 1;
     Float_t met_bins[]={0,20,50,80,120,180,300,500,1200}; Int_t  met_binnum = sizeof(met_bins)/sizeof(Float_t) - 1;
     Float_t lep_bins[]={0,20,25,33,45,60,80,110,160,500}; Int_t  lep_binnum = sizeof(lep_bins)/sizeof(Float_t) - 1;
     Float_t dr_max=4.8; Int_t dr_bins=12; 
@@ -82,6 +84,7 @@ void partlevel_ttW::SlaveBegin(TTree * /*tree*/)
       hist_min_DRl1j[i] = new TH1D(("min_DRl1j_"+to_string(i)).c_str(), ("min #DeltaR_{l_{1},j} 2lSS"+region_names[i]+";min#DeltaR_{l_{1},j};Events").c_str(), dr_bins, 0., dr_max);
       hist_maxEta_ll[i] = new TH1D(("maxEta_ll_"+to_string(i)).c_str(), ("Max(#|{#eta}_{l}|) 2lSS"+region_names[i]+";Max(#|{#eta}_{l}|);Events").c_str(), 13, 0, 2.6); // maxEta = max( fabs( lep_Eta_0 ), fabs( lep_Eta_1 ) );
       hist_HT_jets[i] = new TH1D(("HT_jets_"+to_string(i)).c_str(), ( "H_{T}^{jets} 2lSS"+region_names[i]+";H_{T}^{jets}[GeV];Events").c_str(), ht_j_binnum, ht_j_bins);
+      hist_HT_leps[i] = new TH1D(("HT_leps_"+to_string(i)).c_str(), ( "H_{T}^{leps} 2lSS"+region_names[i]+";H_{T}^{leps}[GeV];Events").c_str(), ht_l_binnum, ht_l_bins);
       hist_HT[i] = new TH1D(("HT_"+to_string(i)).c_str(), ("H_{T}^{all} 2lSS"+region_names[i]+";H_{T}^{all}[GeV];Events").c_str(),ht_binnum, ht_bins);// 100, 0., 1000.
       hist_nJets[i] = new TH1D(("nJets_"+to_string(i)).c_str(),("N_{j} 2lSS"+region_names[i]+";N_{j};Events").c_str(), 7, 2.5, 9.5);
       hist_nBtagJets[i] = new TH1D(("nBtagJets_"+to_string(i)).c_str(),("N_{b} 2lSS"+region_names[i]+";N_{b};Events").c_str(), 3, 0.5, 3.5);
@@ -292,6 +295,7 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
       hist_min_DRl1j[i]->Fill(min_DRl1j, weight_tot);
       hist_maxEta_ll[i]->Fill(max_eta, weight_tot);
       hist_HT_jets[i]->Fill(HTjet/1000, weight_tot);
+      hist_HT_leps[i]->Fill((l0_pt+l1_pt), weight_tot);
       hist_HT[i]->Fill(HTall/1000, weight_tot);
       hist_nJets[i]->Fill(Njets, weight_tot);
       hist_nBtagJets[i]->Fill(Nbjets, weight_tot);
@@ -327,6 +331,7 @@ void partlevel_ttW::Terminate()
       hist_min_DRl1j[i]->Write();
       hist_maxEta_ll[i]->Write();
       hist_HT_jets[i]->Write();
+      hist_HT_leps[i]->Write();
       hist_HT[i]->Write();
       hist_nJets[i]->Write();
       hist_nBtagJets[i]->Write();

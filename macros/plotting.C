@@ -44,7 +44,7 @@ void plotting()
   //vector<string> region_names={"1t 2b 3j"}; vector<string>  nj_reg={"7"};
 //
   vector<string>  nj_reg={"0","1","2","3","4"};
-  vector<string> variable={"DRll01","lep_Pt_0","lep_Pt_1","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT","nJets","nBtagJets","MET"}; //
+  vector<string> variable={"DRll01","lep_Pt_0","lep_Pt_1","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT_leps","HT","nJets","nBtagJets","MET"}; //
 
   vector<string> type={"Sherpa","MG","SherpaScaleUp","SherpaScaleDown"};
   char sf_name[1000] ;char band_name[1000] ;
@@ -189,7 +189,7 @@ void plotting()
 	
       }
       
-      sprintf(o_name,"Plots_pl_87_v2/%s.pdf",canvas_name);
+      sprintf(o_name,"Plots_pl_87_v3/%s.pdf",canvas_name);
       canv[i][j]->Print(o_name);
       //*/
     }//j loop: variable

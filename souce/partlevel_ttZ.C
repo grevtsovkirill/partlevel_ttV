@@ -13,10 +13,13 @@ string input_name="";
 // Histograms booking 2lSS ttW:
 ////////////////////////////
 TH1D *hist_DRll01[10];
+TH1D *hist_DRll02[10];
+TH1D *hist_DRll12[10];
 TH1D *hist_lep_Pt_0[10];
 TH1D *hist_lep_Pt_1[10];
+TH1D *hist_lep_Pt_2[10];
+// OS lepton
 TH1D *hist_min_DRl0j[10];
-TH1D *hist_min_DRl1j[10];
 TH1D *hist_maxEta_ll[10];
 TH1D *hist_HT_jets[10];
 TH1D *hist_HT[10];
@@ -24,10 +27,8 @@ TH1D *hist_nJets[10];
 TH1D *hist_nBtagJets[10];
 TH1D *hist_MET[10];
 
-vector<string> region_names={"0t 1b 4j", "0t 2b 4j","0t 1b 3j", "0t 2b 3j","1t 1b 3j"};
-//,
-			     //"1t 1b 4j", "1t 2b 4j","1t 1b 3j", "1t 2b 3j"};
-
+vector<string> region_names={"0t 1b", "0t 2b"};
+//,"1t 1b"
 void partlevel_ttZ::Begin(TTree * /*tree*/)
 {
   TString option = GetOption();
@@ -42,7 +43,7 @@ void partlevel_ttZ::SlaveBegin(TTree * /*tree*/)
   std::cout << "variation =";
   input_name=option;
 
-  if(input_name.compare("Sherpa")==0 || input_name.compare("MG")==0){
+  if(input_name.compare("sherpa")==0 ||input_name.compare("Sherpa")==0 || input_name.compare("MG")==0){
     std::cout << " nominal"<<  std::endl;
     nom_w=true;
   }
@@ -58,8 +59,9 @@ void partlevel_ttZ::SlaveBegin(TTree * /*tree*/)
 
   
   const std::vector<TString> s_cutDescs =
-    {  "Preselections","Nleps=3","|TotCharge|=1","lepPt0>25","lepPt1>15","lepPt2>15","lepCentr","SFZ-veto","SFjphi-veto","jPt/eta","3j1b",
-       "0t 1b 4j", "0t 2b 4j","0t 1b 3j", "0t 2b 3j","1t >1b >3j"};
+    {  "Preselections","Nleps=3","|TotCharge|=1","lepPt0>25","lepPt1>15","lepPt2>15","lepCentr","SFZ-veto","SFjpsi-veto","jPt/eta","2j>1b",
+       "0t 1b", "0t 2b"};
+  //,"1t >1b >2j"
   int Ncuts = s_cutDescs.size();
   h_cutflow_3l[0] = new TH1F("cf3l","cf3l",Ncuts,0,Ncuts);
   h_cutflow_3l[1] = new TH1F("cf3l_raw","cf3l_raw",Ncuts,0,Ncuts);
@@ -75,17 +77,18 @@ void partlevel_ttZ::SlaveBegin(TTree * /*tree*/)
     Float_t lep_bins[]={0,20,25,33,45,60,80,110,160,500}; Int_t  lep_binnum = sizeof(lep_bins)/sizeof(Float_t) - 1;
     Float_t dr_max=4.8; Int_t dr_bins=12; 
     for(int i=0; i<(int)region_names.size();i++){
-      hist_DRll01[i] = new TH1D(("DRll01_"+to_string(i)).c_str(), ("#DeltaR_{l_{0},l_{1}} 2lSS"+region_names[i]+";#DeltaR_{l_{0},l_{1}};Events").c_str(), dr_bins, 0., dr_max);
-      hist_lep_Pt_0[i] = new TH1D(("lep_Pt_0_"+to_string(i)).c_str(), ("Leading lepton Pt 2lSS"+region_names[i]+";p_{T}(l_{0})[GeV];Events").c_str(), lep_binnum, lep_bins);//100, 0, 500
-      hist_lep_Pt_1[i] = new TH1D(("lep_Pt_1_"+to_string(i)).c_str(), ("Subleading lepton Pt 2lSS"+region_names[i]+";p_{T}(l_{1})[GeV];Events").c_str(),lep_binnum, lep_bins);
-      hist_min_DRl0j[i] = new TH1D(("min_DRl0j_"+to_string(i)).c_str(), ("min #DeltaR_{l_{0},j} 2lSS"+region_names[i]+";min#DeltaR_{l_{0},j};Events").c_str(), dr_bins, 0., dr_max);
-      hist_min_DRl1j[i] = new TH1D(("min_DRl1j_"+to_string(i)).c_str(), ("min #DeltaR_{l_{1},j} 2lSS"+region_names[i]+";min#DeltaR_{l_{1},j};Events").c_str(), dr_bins, 0., dr_max);
-      hist_maxEta_ll[i] = new TH1D(("maxEta_ll_"+to_string(i)).c_str(), ("Max(#|{#eta}_{l}|) 2lSS"+region_names[i]+";Max(#|{#eta}_{l}|);Events").c_str(), 13, 0, 2.6); // maxEta = max( fabs( lep_Eta_0 ), fabs( lep_Eta_1 ) );
-      hist_HT_jets[i] = new TH1D(("HT_jets_"+to_string(i)).c_str(), ( "H_{T}^{jets} 2lSS"+region_names[i]+";H_{T}^{jets}[GeV];Events").c_str(), ht_j_binnum, ht_j_bins);
-      hist_HT[i] = new TH1D(("HT_"+to_string(i)).c_str(), ("H_{T}^{all} 2lSS"+region_names[i]+";H_{T}^{all}[GeV];Events").c_str(),ht_binnum, ht_bins);// 100, 0., 1000.
-      hist_nJets[i] = new TH1D(("nJets_"+to_string(i)).c_str(),("N_{j} 2lSS"+region_names[i]+";N_{j};Events").c_str(), 7, 2.5, 9.5);
-      hist_nBtagJets[i] = new TH1D(("nBtagJets_"+to_string(i)).c_str(),("N_{b} 2lSS"+region_names[i]+";N_{b};Events").c_str(), 3, 0.5, 3.5);
-      hist_MET[i] = new TH1D(("MET_"+to_string(i)).c_str(),("MET 2lSS"+region_names[i]+";E_{T}^{miss}[GeV];Events").c_str(), met_binnum, met_bins);//100, 0., 1000.
+      //hist_DRll01[i] = new TH1D(("DRll01_"+to_string(i)).c_str(), ("#DeltaR_{l_{0},l_{1}} 3l"+region_names[i]+";#DeltaR_{l_{0},l_{1}};Events").c_str(), dr_bins, 0., dr_max);
+      hist_lep_Pt_0[i] = new TH1D(("lep_Pt_0_"+to_string(i)).c_str(), ("OS lepton Pt 3l"+region_names[i]+";p_{T}(l_{0})[GeV];Events").c_str(), lep_binnum, lep_bins);//100, 0, 500
+      hist_lep_Pt_1[i] = new TH1D(("lep_Pt_1_"+to_string(i)).c_str(), ("Second lepton Pt 3l"+region_names[i]+";p_{T}(l_{1})[GeV];Events").c_str(),lep_binnum, lep_bins);
+      hist_lep_Pt_2[i] = new TH1D(("lep_Pt_2_"+to_string(i)).c_str(), ("Third lepton Pt 3l"+region_names[i]+";p_{T}(l_{1})[GeV];Events").c_str(),lep_binnum, lep_bins);
+      //os lep
+      hist_min_DRl0j[i] = new TH1D(("min_DRl0j_"+to_string(i)).c_str(), ("min #DeltaR_{l_{0},j} 3l"+region_names[i]+";min#DeltaR_{l_{0},j};Events").c_str(), dr_bins, 0., dr_max);
+      hist_maxEta_ll[i] = new TH1D(("maxEta_ll_"+to_string(i)).c_str(), ("Max(#|{#eta}_{l}|) 3l"+region_names[i]+";Max(#|{#eta}_{l}|);Events").c_str(), 13, 0, 2.6); // maxEta = max( fabs( lep_Eta_0 ), fabs( lep_Eta_1 ) );
+      hist_HT_jets[i] = new TH1D(("HT_jets_"+to_string(i)).c_str(), ( "H_{T}^{jets} 3l"+region_names[i]+";H_{T}^{jets}[GeV];Events").c_str(), ht_j_binnum, ht_j_bins);
+      hist_HT[i] = new TH1D(("HT_"+to_string(i)).c_str(), ("H_{T}^{all} 3l"+region_names[i]+";H_{T}^{all}[GeV];Events").c_str(),ht_binnum, ht_bins);// 100, 0., 1000.
+      hist_nJets[i] = new TH1D(("nJets_"+to_string(i)).c_str(),("N_{j} 3l"+region_names[i]+";N_{j};Events").c_str(), 7, 2.5, 9.5);
+      hist_nBtagJets[i] = new TH1D(("nBtagJets_"+to_string(i)).c_str(),("N_{b} 3l"+region_names[i]+";N_{b};Events").c_str(), 3, 0.5, 3.5);
+      hist_MET[i] = new TH1D(("MET_"+to_string(i)).c_str(),("MET 3l"+region_names[i]+";E_{T}^{miss}[GeV];Events").c_str(), met_binnum, met_bins);//100, 0., 1000.
     }
 
   
@@ -97,7 +100,7 @@ Bool_t partlevel_ttZ::Process(Long64_t entry)
   //fReader.SetEntry(entry);
   fReader.SetLocalEntry(entry);
   // print some information about the current entry
-  if ((entry)%50000 == 0)
+  if ((entry)%100000 == 0)
     printf("Processing Entry  %llu \n", entry);
 
   // increase the total number of entries
@@ -265,8 +268,9 @@ Bool_t partlevel_ttZ::Process(Long64_t entry)
   cf_counter++;
 
 
- 
-  float max_eta=  max ( fabs( l0_eta ), fabs( l1_eta ) ); 
+  float max_eta_tmp0 =  max ( fabs( l0_eta ), fabs( l1_eta ) ); 
+  float max_eta=-9999;
+  max_eta=max ( fabs(max_eta_tmp0),  fabs( l2_eta ) );
 
   int Njets=0, Nbjets=0;
   float HTall=0, HTjet=0; 
@@ -290,10 +294,12 @@ Bool_t partlevel_ttZ::Process(Long64_t entry)
     
   }
   //central jets above 25 gev
+  //jPt/eta
   h_cutflow_3l[0]->Fill(cf_counter,weight_tot);  h_cutflow_3l[1]->Fill(cf_counter,1);
   cf_counter++;
   
-  if(Njets<3 || Nbjets<1) return 0;
+  //2j>1b 
+  if(Njets<2 || Nbjets<1) return 0;
   h_cutflow_3l[0]->Fill(cf_counter,weight_tot);  h_cutflow_3l[1]->Fill(cf_counter,1);
   cf_counter++;
 
@@ -329,13 +335,8 @@ Bool_t partlevel_ttZ::Process(Long64_t entry)
     if(tau_isHadronic[t]!=0) Nhtaus+=1;
   }
 
-  //cout <<"Ntaus ="<<Ntaus<<", Nhtaus="<< Nhtaus   << endl;
-  //2 same sign charged leptons (e,mu) with pT>25(20)GeV 
-  sel_array[0]=(Nhtaus == 0 && Nbjets == 1 && Njets >= 4 );  // Region 1 
-  sel_array[1]=(Nhtaus == 0 && Nbjets >= 2 && Njets >= 4 );  // Region 2
-  sel_array[2]=(Nhtaus == 0 && Nbjets == 1 && Njets == 3 );  // Region 3 
-  sel_array[3]=(Nhtaus == 0 && Nbjets >= 2 && Njets == 3 );  // Region 4
-  sel_array[4]=(Nhtaus == 1 && Nbjets >= 1 && Njets >= 3 );  // Region 5
+  sel_array[0]=(Nhtaus == 0 && Nbjets == 1 && Njets >= 2 );  // Region 1 
+  sel_array[1]=(Nhtaus == 0 && Nbjets >= 2 && Njets >= 2 );  // Region 2
 
   float met = *met_met/1000.;
 
@@ -343,11 +344,11 @@ Bool_t partlevel_ttZ::Process(Long64_t entry)
     if(sel_array[i]){
       h_cutflow_3l[0]->Fill(cf_counter+i,weight_tot);  h_cutflow_3l[1]->Fill(cf_counter+i,1);
       
-      hist_DRll01[i]->Fill(DRll01, weight_tot);
+      //hist_DRll01[i]->Fill(DRll01, weight_tot);
       hist_lep_Pt_0[i]->Fill(l0_pt, weight_tot);
       hist_lep_Pt_1[i]->Fill(l1_pt, weight_tot);
+      hist_lep_Pt_2[i]->Fill(l2_pt, weight_tot);
       hist_min_DRl0j[i]->Fill(min_DRl0j, weight_tot);
-      hist_min_DRl1j[i]->Fill(min_DRl1j, weight_tot);
       hist_maxEta_ll[i]->Fill(max_eta, weight_tot);
       hist_HT_jets[i]->Fill(HTjet/1000, weight_tot);
       hist_HT[i]->Fill(HTall/1000, weight_tot);
@@ -378,11 +379,12 @@ void partlevel_ttZ::Terminate()
     h_cutflow_3l[1]->Write(); 
     
     for(int i=0; i<(int)region_names.size();i++){
-      hist_DRll01[i]->Write();
+      //hist_DRll01[i]->Write();
       hist_lep_Pt_0[i]->Write();
       hist_lep_Pt_1[i]->Write();
+      hist_lep_Pt_2[i]->Write();
       hist_min_DRl0j[i]->Write();
-      hist_min_DRl1j[i]->Write();
+      //hist_min_DRl1j[i]->Write();
       hist_maxEta_ll[i]->Write();
       hist_HT_jets[i]->Write();
       hist_HT[i]->Write();

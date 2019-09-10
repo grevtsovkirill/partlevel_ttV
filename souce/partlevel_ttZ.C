@@ -182,7 +182,7 @@ Bool_t partlevel_ttZ::Process(Long64_t entry)
       non0i++;
     }
   }
-  cout << "idx0= "<< idx[0]<< ", non0 - "<< non0idx[0] << "  "<< non0idx[1]<<endl;
+  //cout << "idx0= "<< idx[0]<< ", non0 - "<< non0idx[0] << "  "<< non0idx[1]<<endl;
   int tmp0=non0idx[0];  int tmp1=non0idx[1];  int tmpF=idx[0];
   //cout << "closest to lep0 = ";
   //order lep1 and lep2 accordint to dR wrt lep0
@@ -240,21 +240,30 @@ Bool_t partlevel_ttZ::Process(Long64_t entry)
   //0 - 01;
   //1 - 02
   //2 - 12
-  for(int i1=0;i1<2;i1++){
-    for(int i2=1;i2<3;i2++){
-      if(i1==i2) continue;
-      
-      if (abs(lep_flav[i1])==abs(lep_flav[i2])) {
-	cout << "SF pair  "<< i1<< " " << i2 << endl;;
-	//(ll_4v[0].M()) >12e3;
-	//(ll_4v[0].M()-91.1876e3) >10e3;
-      }
-    }
+  bool sf[3]; sf[0]=false;sf[0]=false;sf[1]=false;sf[2]=false;
+  ll_4v[0]=lep_4v[lep0]+lep_4v[lep1]; if (abs(lep_flav[lep0])==abs(lep_flav[lep1])) sf[0]=true;
+  ll_4v[1]=lep_4v[lep0]+lep_4v[lep2]; if (abs(lep_flav[lep0])==abs(lep_flav[lep2])) sf[1]=true; 
+  ll_4v[2]=lep_4v[lep1]+lep_4v[lep2];  if (abs(lep_flav[lep1])==abs(lep_flav[lep2])) sf[2]=true;
+
+  for(int i1=0;i1<3;i1++){
+    if (sf[i1]) {
+      if( (ll_4v[i1].M()-91.1876e3) < 10e3) return 0;  
+      //cout << "SF pair  "<< i1 << " m= "<<ll_4v[i1].M()<<"  lfs:"<<lep_flav[lep0]<<", "<<lep_flav[lep1]<< ", "<<lep_flav[lep2]<< endl;;
+    }    
   }
-  ll_4v[0]=lep_4v[0]+lep_4v[1];
-  
-  ll_4v[1]=lep_4v[0]+lep_4v[2]; 
-  ll_4v[2]=lep_4v[1]+lep_4v[2]; 
+  // Zveto
+  h_cutflow_3l[0]->Fill(cf_counter,weight_tot);  h_cutflow_3l[1]->Fill(cf_counter,1);
+  cf_counter++;
+
+  for(int i1=0;i1<3;i1++){
+    if (sf[i1]) {
+      if( ll_4v[i1].M() <12e3) return 0;  
+    }    
+  }
+  // SF mll>12
+  h_cutflow_3l[0]->Fill(cf_counter,weight_tot);  h_cutflow_3l[1]->Fill(cf_counter,1);
+  cf_counter++;
+
 
  
   float max_eta=  max ( fabs( l0_eta ), fabs( l1_eta ) ); 

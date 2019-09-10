@@ -80,7 +80,7 @@ void partlevel_ttW::SlaveBegin(TTree * /*tree*/)
     Float_t ht_l_bins[]={0,20,50,80,110,150,200,300,400,550,800}; Int_t  ht_l_binnum = sizeof(ht_l_bins)/sizeof(Float_t) - 1;
     Float_t met_bins[]={0,20,50,80,120,180,300,500,1200}; Int_t  met_binnum = sizeof(met_bins)/sizeof(Float_t) - 1;
     Float_t lep_bins[]={0,20,25,33,45,60,80,110,160,500}; Int_t  lep_binnum = sizeof(lep_bins)/sizeof(Float_t) - 1;
-    Float_t jet_bins[]={0,20,25,33,45,60,80,110,160,500}; Int_t  jet_binnum = sizeof(jet_bins)/sizeof(Float_t) - 1;
+    Float_t jet_bins[]={0,20,25,33,45,60,80,110,200}; Int_t  jet_binnum = sizeof(jet_bins)/sizeof(Float_t) - 1;
     Float_t bjet_bins[]={0,20,25,33,45,60,80,110,150,200,300,500}; Int_t  bjet_binnum = sizeof(bjet_bins)/sizeof(Float_t) - 1;
     Float_t dr_max=4.8; Int_t dr_bins=12; 
     for(int i=0; i<(int)region_names.size();i++){

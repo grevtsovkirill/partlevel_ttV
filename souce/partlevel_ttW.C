@@ -42,7 +42,7 @@ void partlevel_ttW::Begin(TTree * /*tree*/)
 void partlevel_ttW::SlaveBegin(TTree * /*tree*/)
 {
   stoploop=false;
-  nom_w=false; scaleup_w=false;  scaledown_w=false;    
+  nom_w=false; scaleupS_w=false;  scaledownS_w=false;    scaleupM_w=false;  scaledownM_w=false;    
   TString option = GetOption();
   std::cout << "option ="<< option << std::endl;
   std::cout << "variation =";
@@ -52,13 +52,20 @@ void partlevel_ttW::SlaveBegin(TTree * /*tree*/)
     std::cout << " nominal"<<  std::endl;
     nom_w=true;
   }
-  else if (input_name.find("ScaleUp")!= std::string::npos){
+  else if (input_name.find("SherpaScaleUp")!= std::string::npos){
     std::cout << " ScaleUp"<<  std::endl;
-    scaleup_w=true;
+    scaleupS_w=true;
   }
-  else if (input_name.find("ScaleDown")!= std::string::npos){
+  else if (input_name.find("SherpaScaleDown")!= std::string::npos){
     std::cout << " ScaleDown"<<  std::endl;
-    scaledown_w=true;
+    scaledownS_w=true;
+  }  else if (input_name.find("MGScaleUp")!= std::string::npos){
+    std::cout << " ScaleUp"<<  std::endl;
+    scaleupM_w=true;
+  }
+  else if (input_name.find("MGScaleDown")!= std::string::npos){
+    std::cout << " ScaleDown"<<  std::endl;
+    scaledownM_w=true;
   }
   else {std::cout << " error - incorrect variation. Stop."<<  std::endl; stoploop=true;}
 
@@ -123,12 +130,18 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
 
   //weight definitions
   Double_t weight_to_use=1;
-  //nom_w=false; scaleup_w=false;  scaledown_w=false;
+
   if (nom_w) weight_to_use = *weight_mc;
-  else if (scaleup_w) weight_to_use = mc_generator_weights[10];
-  else if (scaledown_w) weight_to_use = mc_generator_weights[4];
+  else if (scaleupS_w) weight_to_use = mc_generator_weights[10];//10 *            MUR2_MUF2_PDF261000 *
+  else if (scaledownS_w) weight_to_use = mc_generator_weights[4];//4 *          MUR05_MUF05_PDF261000 *
+  else if (scaleupM_w) weight_to_use = mc_generator_weights[4]; //4 *   muR=020000E+01muF=020000E+01
+  else if (scaledownM_w) weight_to_use = mc_generator_weights[8];//8 *   muR=050000E+00muF=050000E+00
   else return 0;
 
+  // access names of the weights:
+  // sumWeights->Scan("names_mc_generator_weights","","colsize=30")
+  // check values:
+  //
   
   weight_tot=weight_to_use * *weight_pileup;
 

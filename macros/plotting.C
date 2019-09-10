@@ -47,12 +47,18 @@ void plotting()
   vector<string> variable={"DRll01","lep_Pt_0","lep_Pt_1","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT_leps","HT","nJets","nBtagJets","MET"}; //
 
   vector<string> type={"Sherpa","MG","SherpaScaleUp","SherpaScaleDown"};
+  Int_t color_sample[6]={1,633,601,418,617,799};
+
+  //  vector<string> type={"MG","MGScaleUp","MGScaleDown"};
+  //Int_t color_sample[6]={633,601,418,617,799,1};
+
+
+
   char sf_name[1000] ;char band_name[1000] ;
   TLegend* legend[100][100];
   TCanvas * canv[100][100];
   TPad * pad1[100][100];
   TPad * pad2[100][100];
-  Int_t color_sample[6]={1,633,601,418,617,799};
   Int_t linestyle[6]={1,1,7,9,4,10};
   char canvas_name[1000];char p1_name[1000];  char p2_name[1000]; char o_name[1000];
   int rebin_val=1;
@@ -190,6 +196,7 @@ void plotting()
       }
       
       sprintf(o_name,"Plots_pl_87_v3/%s.pdf",canvas_name);
+      //sprintf(o_name,"Plots_MGvar_1/%s.pdf",canvas_name);
       canv[i][j]->Print(o_name);
       //*/
     }//j loop: variable

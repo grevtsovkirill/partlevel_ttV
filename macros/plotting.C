@@ -24,7 +24,7 @@ void plotting()
   //sprintf(text1,"#sqrt{s} = 13 TeV, 2b %s 2lSS",lep_flav.c_str());
   sprintf(text2,"");
   
-  TH1D* h_var[5][15][5][5];
+  TH1D* h_var[5][35][5][5];
 
   //  vector<string> region_names={"0t 1b 3j","0t 2b 3j"}; vector<string>  nj_reg={"2","3"};
 
@@ -44,14 +44,16 @@ void plotting()
   //vector<string> region_names={"1t 2b 3j"}; vector<string>  nj_reg={"7"};
 //
   vector<string>  nj_reg={"0","1","2","3","4"};
-  vector<string> variable={"DRll01","lep_Pt_0","lep_Pt_1","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT_leps","HT","nJets","nBtagJets","MET"}; //
+  vector<string> variable={"DRll01","lep_Pt_0","lep_Pt_1","jet_Pt_4","jet_Pt_5","jet_Pt_6","Bjet_Pt_0","Bjet_Pt_0","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT_leps","HT","nJets","nBtagJets","MET"}; //
 
-  vector<string> type={"Sherpa","MG","SherpaScaleUp","SherpaScaleDown"};
-  Int_t color_sample[6]={1,633,601,418,617,799};
-
-  //  vector<string> type={"MG","MGScaleUp","MGScaleDown"};
-  //Int_t color_sample[6]={633,601,418,617,799,1};
-
+  //  vector<string> type={"Sherpa","MG","SherpaScaleUp","SherpaScaleDown"};
+  //Int_t color_sample[6]={1,633,601,418,617,799};
+  //Int_t linestyle[6]={1,1,7,9,4,10};
+ 
+  vector<string> type={"MG","MGScaleUp","MGScaleDown"};
+  Int_t color_sample[6]={633,601,418,617,799,1};
+  Int_t linestyle[6]={1,7,9,4,10,1};
+  
 
 
   char sf_name[1000] ;char band_name[1000] ;
@@ -59,7 +61,6 @@ void plotting()
   TCanvas * canv[100][100];
   TPad * pad1[100][100];
   TPad * pad2[100][100];
-  Int_t linestyle[6]={1,1,7,9,4,10};
   char canvas_name[1000];char p1_name[1000];  char p2_name[1000]; char o_name[1000];
   int rebin_val=1;
 

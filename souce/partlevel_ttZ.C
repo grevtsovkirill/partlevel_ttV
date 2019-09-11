@@ -86,7 +86,7 @@ void partlevel_ttZ::SlaveBegin(TTree * /*tree*/)
       hist_maxEta_ll[i] = new TH1D(("maxEta_ll_"+to_string(i)).c_str(), ("Max(#|{#eta}_{l}|) 3l"+region_names[i]+";Max(#|{#eta}_{l}|);Events").c_str(), 13, 0, 2.6); // maxEta = max( fabs( lep_Eta_0 ), fabs( lep_Eta_1 ) );
       hist_HT_jets[i] = new TH1D(("HT_jets_"+to_string(i)).c_str(), ( "H_{T}^{jets} 3l"+region_names[i]+";H_{T}^{jets}[GeV];Events").c_str(), ht_j_binnum, ht_j_bins);
       hist_HT[i] = new TH1D(("HT_"+to_string(i)).c_str(), ("H_{T}^{all} 3l"+region_names[i]+";H_{T}^{all}[GeV];Events").c_str(),ht_binnum, ht_bins);// 100, 0., 1000.
-      hist_nJets[i] = new TH1D(("nJets_"+to_string(i)).c_str(),("N_{j} 3l"+region_names[i]+";N_{j};Events").c_str(), 7, 2.5, 9.5);
+      hist_nJets[i] = new TH1D(("nJets_"+to_string(i)).c_str(),("N_{j} 3l"+region_names[i]+";N_{j};Events").c_str(), 8, 1.5, 9.5);
       hist_nBtagJets[i] = new TH1D(("nBtagJets_"+to_string(i)).c_str(),("N_{b} 3l"+region_names[i]+";N_{b};Events").c_str(), 3, 0.5, 3.5);
       hist_MET[i] = new TH1D(("MET_"+to_string(i)).c_str(),("MET 3l"+region_names[i]+";E_{T}^{miss}[GeV];Events").c_str(), met_binnum, met_bins);//100, 0., 1000.
     }

@@ -303,7 +303,7 @@ Bool_t partlevel_ttZ::Process(Long64_t entry)
   h_cutflow_3l[0]->Fill(cf_counter,weight_tot);  h_cutflow_3l[1]->Fill(cf_counter,1);
   cf_counter++;
 
-  HTall=HTjet+(l0_pt+l1_pt)*1000;
+  HTall=HTjet+(l0_pt+l1_pt+l2_pt)*1000;
 
   // DeltaRs
   // ll 

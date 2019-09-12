@@ -3,6 +3,7 @@ void Zrun(string name="Sherpa", string comp="a"){
   string choose_tag="";
   string name1="";
   if(name.find("Sherpa")!= std::string::npos) name1="413023"; 
+  else if(name.find("sherpa")!= std::string::npos) name1="413022"; 
   else if(name.find("MG")!= std::string::npos) name1="410156";
  
   //string path="/Users/grevtsov/Documents/working_files/ttH/ttH-ML/Combination_ttV/Files/particle_level/"+name1+"d_v3.root";
@@ -14,5 +15,6 @@ void Zrun(string name="Sherpa", string comp="a"){
   //eventually, start Proof Lite on cores
   //TProof::Open("workers=4");
   //ch->SetProof();
-  ch->Process("souce/partlevel_ttZ.C+",name.c_str(),10000);
+  //ch->Process("souce/partlevel_ttZ.C+",name.c_str(),1000);
+  ch->Process("souce/partlevel_ttZ.C+",name.c_str());
 }

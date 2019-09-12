@@ -29,6 +29,11 @@ TH1D *hist_HT[10];
 TH1D *hist_nJets[10]; 
 TH1D *hist_nBtagJets[10];
 TH1D *hist_MET[10];
+//
+TH1D *hist_lep_Eta_0[10];
+TH1D *hist_lep_Eta_1[10];
+TH1D *hist_lep_Phi_0[10];
+TH1D *hist_lep_Phi_1[10];
 
 vector<string> region_names={"0t 1b 4j", "0t 2b 4j","0t 1b 3j", "0t 2b 3j","1t 1b 3j"};
 //,
@@ -111,6 +116,12 @@ void partlevel_ttW::SlaveBegin(TTree * /*tree*/)
       hist_nJets[i] = new TH1D(("nJets_"+to_string(i)).c_str(),("N_{j} 2lSS"+region_names[i]+";N_{j};Events").c_str(), 7, 2.5, 9.5);
       hist_nBtagJets[i] = new TH1D(("nBtagJets_"+to_string(i)).c_str(),("N_{b} 2lSS"+region_names[i]+";N_{b};Events").c_str(), 3, 0.5, 3.5);
       hist_MET[i] = new TH1D(("MET_"+to_string(i)).c_str(),("MET 2lSS"+region_names[i]+";E_{T}^{miss}[GeV];Events").c_str(), met_binnum, met_bins);//100, 0., 1000.
+      //
+      hist_lep_Eta_0[i] = new TH1D(("lep_Eta_0_"+to_string(i)).c_str(), ("#{#eta}_{l0}) 2lSS"+region_names[i]+";#{#eta}_{l0};Events").c_str(), 13, -2.6, 2.6);
+      hist_lep_Eta_1[i] = new TH1D(("lep_Eta_1_"+to_string(i)).c_str(), ("#{#eta}_{l1}) 2lSS"+region_names[i]+";#{#eta}_{l1};Events").c_str(), 13, -2.6, 2.6);
+      hist_lep_Phi_0[i] = new TH1D(("lep_Phi_0_"+to_string(i)).c_str(), ("#{#phi}_{l0}) 2lSS"+region_names[i]+";#{#phi}_{l0};Events").c_str(), 16, -3.2, 3.2);
+      hist_lep_Phi_1[i] = new TH1D(("lep_Phi_1_"+to_string(i)).c_str(), ("#{#phi}_{l1}) 2lSS"+region_names[i]+";#{#phi}_{l1};Events").c_str(), 16, -3.2, 3.2);
+
     }
 
   
@@ -349,7 +360,10 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
       hist_nBtagJets[i]->Fill(Nbjets, weight_tot);
       hist_MET[i]->Fill(met, weight_tot);
       
-
+      hist_lep_Eta_0[i]->Fill(lep_4v[lead_lep].Eta(), weight_tot);
+      hist_lep_Eta_1[i]->Fill(lep_4v[sublead_lep].Eta(), weight_tot);
+      hist_lep_Phi_0[i]->Fill(lep_4v[lead_lep].Phi(), weight_tot);
+      hist_lep_Phi_1[i]->Fill(lep_4v[sublead_lep].Phi(), weight_tot);
     }
   }
   
@@ -389,6 +403,11 @@ void partlevel_ttW::Terminate()
       hist_nJets[i]->Write();
       hist_nBtagJets[i]->Write();
       hist_MET[i]->Write();
+      //      
+      hist_lep_Eta_0[i]->Write();
+      hist_lep_Eta_1[i]->Write();
+      hist_lep_Phi_0[i]->Write();
+      hist_lep_Phi_1[i]->Write();
     }
     
     fOutput->Write();

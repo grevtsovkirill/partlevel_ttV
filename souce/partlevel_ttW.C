@@ -47,15 +47,19 @@ void partlevel_ttW::Begin(TTree * /*tree*/)
 void partlevel_ttW::SlaveBegin(TTree * /*tree*/)
 {
   stoploop=false;
-  nom_w=false; scaleupS_w=false;  scaledownS_w=false;    scaleupM_w=false;  scaledownM_w=false;    
+  nomS_w=false; nomM_w=false; scaleupS_w=false;  scaledownS_w=false;    scaleupM_w=false;  scaledownM_w=false;    
   TString option = GetOption();
   std::cout << "option ="<< option << std::endl;
   std::cout << "variation =";
   input_name=option;
 
-  if(input_name.compare("Sherpa")==0 || input_name.compare("MG")==0){
-    std::cout << " nominal"<<  std::endl;
-    nom_w=true;
+  if(input_name.compare("Sherpa")==0){
+    std::cout << " nominal Sherpa"<<  std::endl;
+    nomS_w=true;
+  }
+  else if(input_name.compare("MG")==0){
+    std::cout << " nominal MG"<<  std::endl;
+    nomM_w=true;
   }
   else if (input_name.find("SherpaScaleUp")!= std::string::npos){
     std::cout << " ScaleUp"<<  std::endl;
@@ -74,6 +78,13 @@ void partlevel_ttW::SlaveBegin(TTree * /*tree*/)
   }
   else {std::cout << " error - incorrect variation. Stop."<<  std::endl; stoploop=true;}
 
+
+  //xs / (cutflow_mc->GetBinContent(1))
+  // xs from ami , 
+  // sherpa 413008: 652 fb;  7446700.5
+  // MG 410155: 548 fb ;  4111925.0
+  AccS=652./7446700.5;
+  AccM=548./4111925.0;
   
   const std::vector<TString> s_cutDescs =
     {  "Preselections","Nleps","lepPt1>20","lepPt0>25","lepCentr","SS","jPt/eta","3j1b",
@@ -142,11 +153,12 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
   //weight definitions
   Double_t weight_to_use=1;
 
-  if (nom_w) weight_to_use = *weight_mc;
-  else if (scaleupS_w) weight_to_use = mc_generator_weights[10];//10 *            MUR2_MUF2_PDF261000 *
-  else if (scaledownS_w) weight_to_use = mc_generator_weights[4];//4 *          MUR05_MUF05_PDF261000 *
-  else if (scaleupM_w) weight_to_use = mc_generator_weights[4]; //4 *   muR=020000E+01muF=020000E+01
-  else if (scaledownM_w) weight_to_use = mc_generator_weights[8];//8 *   muR=050000E+00muF=050000E+00
+  if (nomS_w) weight_to_use = *weight_mc *AccS ;
+  else if (nomM_w) weight_to_use = *weight_mc *AccM;
+  else if (scaleupS_w) weight_to_use = mc_generator_weights[10]  *AccS ;//10 *            MUR2_MUF2_PDF261000 *
+  else if (scaledownS_w) weight_to_use = mc_generator_weights[4] *AccS ;//4 *          MUR05_MUF05_PDF261000 *
+  else if (scaleupM_w) weight_to_use = mc_generator_weights[4] *AccM; //4 *   muR=020000E+01muF=020000E+01
+  else if (scaledownM_w) weight_to_use = mc_generator_weights[8] *AccM;//8 *   muR=050000E+00muF=050000E+00
   else return 0;
 
   // access names of the weights:

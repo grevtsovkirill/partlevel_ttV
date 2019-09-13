@@ -1,0 +1,6 @@
+rt -b -q 'run.C("Sherpa")'
+rt -b -q 'run.C("MG")'
+rt -b -q 'run.C("SherpaScaleUp")'
+rt -b -q 'run.C("SherpaScaleDown")'
+rt -b -q 'run.C("MGScaleUp")'
+rt -b -q 'run.C("MGScaleDown")'

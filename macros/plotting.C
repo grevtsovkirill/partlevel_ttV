@@ -44,10 +44,11 @@ void plotting()
   //vector<string> region_names={"1t 2b 3j"}; vector<string>  nj_reg={"7"};
 //
   vector<string>  nj_reg={"0","1","2","3","4"};
-  vector<string> variable={"DRll01","lep_Pt_0","lep_Pt_1","jet_Pt_4","jet_Pt_5","jet_Pt_6","Bjet_Pt_0","Bjet_Pt_1","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT_leps","HT","nJets","nBtagJets","MET"}; //
-
+  vector<string> variable={"DRll01","lep_Pt_0","lep_Pt_1","jet_Pt_4","jet_Pt_5","jet_Pt_6","Bjet_Pt_0","Bjet_Pt_1","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT_leps","HT","nJets","nBtagJets","MET","lep_Eta_0","lep_Eta_1","lep_Phi_0","lep_Phi_1"}; //
+  //vector<string> variable={"lep_Eta_0","lep_Eta_1","lep_Phi_0","lep_Phi_1"};
   //*
   vector<string> type={"Sherpa","MG","SherpaScaleUp","SherpaScaleDown"};
+  //vector<string> type={"Sherpa","MG"};
   Int_t color_sample[6]={1,633,601,418,617,799};
   Int_t linestyle[6]={1,1,7,9,4,10};
   //*/
@@ -88,7 +89,8 @@ void plotting()
 	cout << "sf_name " << sf_name<< " reg = "<< region_names[i]<< ", variable in histo - "<< variable[j]<< endl;
 	h_var[i][j][0][t] = (TH1D *)file[0][t]->Get(sf_name);		 
 	norm_hist = h_var[i][j][0][t]->GetSumOfWeights();
-	h_var[i][j][0][t]->Scale(1/norm_hist);
+	//1309: remove normalization
+	//h_var[i][j][0][t]->Scale(1/norm_hist);
 	norm_hist=1;
       }//variable - j
     }// region - i
@@ -199,7 +201,7 @@ void plotting()
 	
       }
       
-      sprintf(o_name,"Plots_pl_87_v3/%s.pdf",canvas_name);
+      sprintf(o_name,"Plots_87_acc1/%s.pdf",canvas_name);
       //sprintf(o_name,"Plots_MGvar_1/%s.pdf",canvas_name);
       canv[i][j]->Print(o_name);
       //*/

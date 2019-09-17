@@ -44,7 +44,7 @@ void plotting()
   //vector<string> region_names={"1t 2b 3j"}; vector<string>  nj_reg={"7"};
 //
   vector<string>  nj_reg={"0","1","2","3","4"};
-  vector<string> variable={"DRll01","lep_Pt_0","lep_Pt_1","jet_Pt_4","jet_Pt_5","jet_Pt_6","Bjet_Pt_0","Bjet_Pt_1","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT_leps","HT","nJets","nBtagJets","MET","lep_Eta_0","lep_Eta_1","lep_Phi_0","lep_Phi_1"}; //
+  vector<string> variable={"DRll01","lep_Pt_0","lep_Pt_1","jet_Pt_4","jet_Pt_5","jet_Pt_6","Bjet_Pt_0","Bjet_Pt_1","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT_leps","HT","nJets","nBtagJets","MET","lep_Eta_0","lep_Eta_1","lep_Phi_0","lep_Phi_1","lep_dPhi"}; //
   //vector<string> variable={"lep_Eta_0","lep_Eta_1","lep_Phi_0","lep_Phi_1"};
   //*
   vector<string> type={"Sherpa","MG","SherpaScaleUp","SherpaScaleDown"};

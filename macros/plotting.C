@@ -133,7 +133,7 @@ void plotting()
 
 	  //if (variable[j]!="nBtagJets") h_var[i][j][k][t]->SetYTitle("Normalized");
 	  //else h_var[i][j][k][t]->SetYTitle("Events");
-	  h_var[i][j][0][t]->SetYTitle("Normalized");
+	  h_var[i][j][0][t]->SetYTitle("Events"); //Normalized
 	  h_var[i][j][0][t]->SetXTitle((variable[j]).c_str());
 	  h_var[i][j][0][t]->GetYaxis()->SetTitleSize(0.06); 
 	  h_var[i][j][0][t]->GetYaxis()->SetTitleOffset(0.7); 

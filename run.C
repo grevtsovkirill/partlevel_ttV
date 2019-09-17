@@ -14,5 +14,5 @@ void run(string name="Sherpa", string comp="a"){
   //eventually, start Proof Lite on cores
   //TProof::Open("workers=4");
   //ch->SetProof();
-  ch->Process("souce/partlevel_ttW.C+",name.c_str());
+  ch->Process("source/partlevel_ttW.C+",name.c_str());
 }

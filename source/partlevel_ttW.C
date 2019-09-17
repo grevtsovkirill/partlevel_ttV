@@ -37,6 +37,24 @@ TH1D *hist_lep_Phi_1[10];
 
 TH1D *hist_lep_dPhi[10];
 
+TH1D *hist_Weights[10];
+
+/*
+ *        0 *        4 *          MUR05_MUF05_PDF261000 *
+ *        0 *        5 *           MUR05_MUF1_PDF261000 *
+ *        0 *        6 *           MUR1_MUF05_PDF261000 *
+ *        0 *        7 *            MUR1_MUF1_PDF261000 *
+ *        0 *        8 *            MUR1_MUF2_PDF261000 *
+ *        0 *        9 *            MUR2_MUF1_PDF261000 *
+ *        0 *       10 *            MUR2_MUF2_PDF261000 *
+
+*/
+
+vector<string> weight_names = {"MUR05_MUF05","MUR05_MUF1","MUR1_MUF05","MUR1_MUF1","MUR1_MUF2","MUR2_MUF1","MUR2_MUF2"};
+
+
+
+ 
 vector<string> region_names={"0t 1b 4j", "0t 2b 4j","0t 1b 3j", "0t 2b 3j","1t 1b 3j"};
 //,
 			     //"1t 1b 4j", "1t 2b 4j","1t 1b 3j", "1t 2b 3j"};
@@ -138,7 +156,11 @@ void partlevel_ttW::SlaveBegin(TTree * /*tree*/)
 
     }
 
-  
+
+    //(int)weight_names.size()
+    for(int i=0; i<(int)weight_names.size();i++){
+      hist_Weights[i] = new TH1D( (weight_names[i]).c_str(), (weight_names[i]+";weight;Events").c_str(), 300, -4, 4);
+    }  
 }
 
 Bool_t partlevel_ttW::Process(Long64_t entry)
@@ -338,6 +360,14 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
     if(tau_isHadronic[t]!=0) Nhtaus+=1;
   }
 
+
+  //fill weights
+  for(int i=0; i<(int)weight_names.size();i++){
+    hist_Weights[i]->Fill(mc_generator_weights[i+4]);
+  }  
+
+
+
   //cout <<"Ntaus ="<<Ntaus<<", Nhtaus="<< Nhtaus   << endl;
   //2 same sign charged leptons (e,mu) with pT>25(20)GeV 
   sel_array[0]=(Nhtaus == 0 && Nbjets == 1 && Njets >= 4 );  // Region 1 
@@ -398,6 +428,7 @@ void partlevel_ttW::Terminate()
   if(!stoploop){
     string outname="Res_"+input_name+".root";
     TFile hfile(outname.c_str(),"RECREATE"); //,"tHq"
+    //*
     h_cutflow_2l[0]->Write(); 
     h_cutflow_2l[1]->Write(); 
     
@@ -426,7 +457,14 @@ void partlevel_ttW::Terminate()
       hist_lep_Phi_1[i]->Write();
       hist_lep_dPhi[i]->Write();
     }
-    
+    //*/
+
+    /*
+    for(int i=0; i<(int)weight_names.size();i++){
+      hist_Weights[i]->Write();
+    }  
+    //*/
+
     fOutput->Write();
   }
   

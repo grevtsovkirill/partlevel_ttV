@@ -133,7 +133,8 @@ void plotting()
 
 	  //if (variable[j]!="nBtagJets") h_var[i][j][k][t]->SetYTitle("Normalized");
 	  //else h_var[i][j][k][t]->SetYTitle("Events");
-	  h_var[i][j][0][t]->SetYTitle("Events"); //Normalized
+	  h_var[i][j][0][t]->SetYTitle("Events"); 
+	  //h_var[i][j][0][t]->SetYTitle("Normalized"); 
 	  h_var[i][j][0][t]->SetXTitle((variable[j]).c_str());
 	  h_var[i][j][0][t]->GetYaxis()->SetTitleSize(0.06); 
 	  h_var[i][j][0][t]->GetYaxis()->SetTitleOffset(0.7); 
@@ -202,6 +203,7 @@ void plotting()
       }
       
       sprintf(o_name,"Plots_87_acc1/%s.pdf",canvas_name);
+      //sprintf(o_name,"Plots_87_acc1_norm/%s.pdf",canvas_name);
       //sprintf(o_name,"Plots_MGvar_1/%s.pdf",canvas_name);
       canv[i][j]->Print(o_name);
       //*/

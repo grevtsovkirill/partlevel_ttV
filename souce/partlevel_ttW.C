@@ -35,6 +35,8 @@ TH1D *hist_lep_Eta_1[10];
 TH1D *hist_lep_Phi_0[10];
 TH1D *hist_lep_Phi_1[10];
 
+TH1D *hist_lep_dPhi[10];
+
 vector<string> region_names={"0t 1b 4j", "0t 2b 4j","0t 1b 3j", "0t 2b 3j","1t 1b 3j"};
 //,
 			     //"1t 1b 4j", "1t 2b 4j","1t 1b 3j", "1t 2b 3j"};
@@ -128,10 +130,11 @@ void partlevel_ttW::SlaveBegin(TTree * /*tree*/)
       hist_nBtagJets[i] = new TH1D(("nBtagJets_"+to_string(i)).c_str(),("N_{b} 2lSS"+region_names[i]+";N_{b};Events").c_str(), 3, 0.5, 3.5);
       hist_MET[i] = new TH1D(("MET_"+to_string(i)).c_str(),("MET 2lSS"+region_names[i]+";E_{T}^{miss}[GeV];Events").c_str(), met_binnum, met_bins);//100, 0., 1000.
       //
-      hist_lep_Eta_0[i] = new TH1D(("lep_Eta_0_"+to_string(i)).c_str(), ("#{#eta}_{l0}) 2lSS"+region_names[i]+";#{#eta}_{l0};Events").c_str(), 13, -2.6, 2.6);
-      hist_lep_Eta_1[i] = new TH1D(("lep_Eta_1_"+to_string(i)).c_str(), ("#{#eta}_{l1}) 2lSS"+region_names[i]+";#{#eta}_{l1};Events").c_str(), 13, -2.6, 2.6);
-      hist_lep_Phi_0[i] = new TH1D(("lep_Phi_0_"+to_string(i)).c_str(), ("#{#phi}_{l0}) 2lSS"+region_names[i]+";#{#phi}_{l0};Events").c_str(), 16, -3.2, 3.2);
-      hist_lep_Phi_1[i] = new TH1D(("lep_Phi_1_"+to_string(i)).c_str(), ("#{#phi}_{l1}) 2lSS"+region_names[i]+";#{#phi}_{l1};Events").c_str(), 16, -3.2, 3.2);
+      hist_lep_Eta_0[i] = new TH1D(("lep_Eta_0_"+to_string(i)).c_str(), ("#{#eta}_{l0}} 2lSS"+region_names[i]+";#{#eta}_{l0};Events").c_str(), 13, -2.6, 2.6);
+      hist_lep_Eta_1[i] = new TH1D(("lep_Eta_1_"+to_string(i)).c_str(), ("#{#eta}_{l1}} 2lSS"+region_names[i]+";#{#eta}_{l1};Events").c_str(), 13, -2.6, 2.6);
+      hist_lep_Phi_0[i] = new TH1D(("lep_Phi_0_"+to_string(i)).c_str(), ("#{#phi}_{l0}} 2lSS"+region_names[i]+";#{#phi}_{l0};Events").c_str(), 16, -3.2, 3.2);
+      hist_lep_Phi_1[i] = new TH1D(("lep_Phi_1_"+to_string(i)).c_str(), ("#{#phi}_{l1}} 2lSS"+region_names[i]+";#{#phi}_{l1};Events").c_str(), 16, -3.2, 3.2);
+      hist_lep_dPhi[i] = new TH1D(("lep_dPhi_"+to_string(i)).c_str(), ("#Delta#{#phi}_{ll}} 2lSS"+region_names[i]+";#{#Delta#phi}_{ll};Events").c_str(), 8, 0, 3.2);
 
     }
 
@@ -376,6 +379,7 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
       hist_lep_Eta_1[i]->Fill(lep_4v[sublead_lep].Eta(), weight_tot);
       hist_lep_Phi_0[i]->Fill(lep_4v[lead_lep].Phi(), weight_tot);
       hist_lep_Phi_1[i]->Fill(lep_4v[sublead_lep].Phi(), weight_tot);
+      hist_lep_dPhi[i]->Fill(abs(lep_4v[lead_lep].Phi()-lep_4v[sublead_lep].Phi()), weight_tot);
     }
   }
   
@@ -420,6 +424,7 @@ void partlevel_ttW::Terminate()
       hist_lep_Eta_1[i]->Write();
       hist_lep_Phi_0[i]->Write();
       hist_lep_Phi_1[i]->Write();
+      hist_lep_dPhi[i]->Write();
     }
     
     fOutput->Write();

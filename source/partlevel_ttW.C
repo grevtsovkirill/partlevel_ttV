@@ -9,6 +9,7 @@
 
 TH1F *h_cutflow_2l[2];
 string input_name="";
+string input_option="";
 /////////////////////////////
 // Histograms booking 2lSS ttW:
 ////////////////////////////
@@ -70,9 +71,12 @@ void partlevel_ttW::SlaveBegin(TTree * /*tree*/)
   nomS_w=false; nomM_w=false; scaleupS_w=false;  scaledownS_w=false;    scaleupM_w=false;  scaledownM_w=false;    
   TString option = GetOption();
   std::cout << "option ="<< option << std::endl;
-  std::cout << "variation =";
-  input_name=option;
+  input_option = option;
+  string tmp = input_option.substr(0,input_option.find("_"));
+  std::cout << "SumW ="<< tmp << std::endl;
+  input_name=input_option.substr(input_option.find("_")+1);
 
+  std::cout << "variation =";
   if(input_name.compare("Sherpa")==0){
     std::cout << " nominal Sherpa"<<  std::endl;
     nomS_w=true;

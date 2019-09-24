@@ -51,5 +51,7 @@ void run(string name="Sherpa", string comp="a"){
   }
   cout<<" total sw:"<<to_string(sum_w)<<endl;
 
-  ch->Process("source/partlevel_ttW.C+",name.c_str());
+  //new option definition; "sm"_"opt"
+  string  option=to_string(sum_w)+"_"+name;
+  ch->Process("source/partlevel_ttW.C+",option.c_str());
 }

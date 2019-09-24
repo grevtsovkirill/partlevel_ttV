@@ -11,8 +11,13 @@ void run(string name="Sherpa", string comp="a"){
 
   ch->Add(path.c_str());
   cout << ch->GetNtrees()<< ", entr: "<< ch->GetEntries()<< endl;
-  //eventually, start Proof Lite on cores
-  //TProof::Open("workers=4");
-  //ch->SetProof();
+
+
+  Double_t  sum_w=0;
+  Float_t totalEventsWeighted;
+  vector<float> *totalEventsWeighted_mc_generator_weights=0;
+  ch->SetBranchAddress("totalEventsWeighted",&totalEventsWeighted);
+  ch->SetBranchAddress("totalEventsWeighted_mc_generator_weights",&totalEventsWeighted_mc_generator_weights);
+
   ch->Process("source/partlevel_ttW.C+",name.c_str());
 }

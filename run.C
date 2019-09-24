@@ -44,5 +44,12 @@ void run(string name="Sherpa", string comp="a"){
   else {std::cout << " error - incorrect variation. "<<  std::endl;
   }
 
+  for(int i=0; i<ch->GetEntries();i++){
+    ch->GetEntry(i);
+    if(i==0)    cout<< "mc_weight_index= "<< mc_weight_index<< endl;
+    sum_w+=totalEventsWeighted_mc_generator_weights->at(mc_weight_index);
+  }
+  cout<<" total sw:"<<to_string(sum_w)<<endl;
+
   ch->Process("source/partlevel_ttW.C+",name.c_str());
 }

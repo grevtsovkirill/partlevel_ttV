@@ -19,5 +19,30 @@ void run(string name="Sherpa", string comp="a"){
   ch->SetBranchAddress("totalEventsWeighted",&totalEventsWeighted);
   ch->SetBranchAddress("totalEventsWeighted_mc_generator_weights",&totalEventsWeighted_mc_generator_weights);
 
+
+  // MG nominal =0;    scaleup = 4, scaledown = 8
+  // Sherpa nom = 0/7, scaleup = 10, scaledown= 4
+  int mc_weight_index=9999;
+  
+  if(name.compare("Sherpa")==0){ 
+    mc_weight_index=0;
+  }
+  else if(name.compare("MG")==0){
+    mc_weight_index=0;
+  }
+  else if (name.find("SherpaScaleUp")!= std::string::npos){
+    mc_weight_index=10;
+  }
+  else if (name.find("SherpaScaleDown")!= std::string::npos){
+    mc_weight_index=4;
+  }  else if (name.find("MGScaleUp")!= std::string::npos){
+    mc_weight_index=4;
+  }
+  else if (name.find("MGScaleDown")!= std::string::npos){
+    mc_weight_index=8;
+  }
+  else {std::cout << " error - incorrect variation. "<<  std::endl;
+  }
+
   ch->Process("source/partlevel_ttW.C+",name.c_str());
 }

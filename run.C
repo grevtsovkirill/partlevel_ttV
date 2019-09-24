@@ -9,15 +9,15 @@ void run(string name="Sherpa", string comp="a"){
   string path="/Users/grevtsov/Documents/working_files/ttH/ttH-ML/Combination_ttV/Files/particle_level/"+name1+"d_87_v1.root";
   cout << "path = " << path<< endl;
 
-  ch->Add(path.c_str());
-  cout << ch->GetNtrees()<< ", entr: "<< ch->GetEntries()<< endl;
 
 
+  TChain *weight_chain=new TChain("sumWeights");
+  weight_chain->Add(path.c_str());
   Double_t  sum_w=0;
   Float_t totalEventsWeighted;
   vector<float> *totalEventsWeighted_mc_generator_weights=0;
-  ch->SetBranchAddress("totalEventsWeighted",&totalEventsWeighted);
-  ch->SetBranchAddress("totalEventsWeighted_mc_generator_weights",&totalEventsWeighted_mc_generator_weights);
+  weight_chain->SetBranchAddress("totalEventsWeighted",&totalEventsWeighted);
+  weight_chain->SetBranchAddress("totalEventsWeighted_mc_generator_weights",&totalEventsWeighted_mc_generator_weights);
 
 
   // MG nominal =0;    scaleup = 4, scaledown = 8
@@ -44,14 +44,16 @@ void run(string name="Sherpa", string comp="a"){
   else {std::cout << " error - incorrect variation. "<<  std::endl;
   }
 
-  for(int i=0; i<ch->GetEntries();i++){
-    ch->GetEntry(i);
+  for(int i=0; i<weight_chain->GetEntries();i++){
+    weight_chain->GetEntry(i);
     if(i==0)    cout<< "mc_weight_index= "<< mc_weight_index<< endl;
     sum_w+=totalEventsWeighted_mc_generator_weights->at(mc_weight_index);
   }
   cout<<" total sw:"<<to_string(sum_w)<<endl;
 
   //new option definition; "sm"_"opt"
+  ch->Add(path.c_str());
+  cout << ch->GetNtrees()<< ", entr: "<< ch->GetEntries()<< endl;
   string  option=to_string(sum_w)+"_"+name;
   ch->Process("source/partlevel_ttW.C+",option.c_str());
 }

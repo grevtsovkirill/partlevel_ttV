@@ -202,7 +202,7 @@ void plotting()
 	
       }
       
-      sprintf(o_name,"Plots_87_acc1/%s.pdf",canvas_name);
+      sprintf(o_name,"Plots_90_v1/%s.pdf",canvas_name);
       //sprintf(o_name,"Plots_87_acc1_norm/%s.pdf",canvas_name);
       //sprintf(o_name,"Plots_MGvar_1/%s.pdf",canvas_name);
       canv[i][j]->Print(o_name);

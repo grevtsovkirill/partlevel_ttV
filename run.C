@@ -1,4 +1,7 @@
+
+
 void run(string name="Sherpa", string comp="a"){
+  
   TChain *ch=new TChain("particleLevel");
   string choose_tag="";
   string name1="";
@@ -55,5 +58,14 @@ void run(string name="Sherpa", string comp="a"){
   ch->Add(path.c_str());
   cout << ch->GetNtrees()<< ", entr: "<< ch->GetEntries()<< endl;
   string  option=to_string(sum_w)+"_"+name;
-  ch->Process("source/partlevel_ttW.C+",option.c_str());
+
+  ch->Process("source/partlevel_ttW.C+",option.c_str();
+
+
+  //gROOT->LoadMacro("source/partlevel_ttW.C");
+  //gROOT->ProcessLine(".L source/partlevel_ttW.C+");
+  //partlevel_ttW *sel_run = new partlevel_ttW();
+  //sel_run->ReadOpt(sum_w,mc_weight_index);
+  //ch->Process(sel_run);
+
 }

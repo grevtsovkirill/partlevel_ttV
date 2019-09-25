@@ -9,7 +9,8 @@ void run(string name="Sherpa", string comp="a"){
   else if(name.find("MG")!= std::string::npos) name1="410155";
  
   //string path="/Users/grevtsov/Documents/working_files/ttH/ttH-ML/Combination_ttV/Files/particle_level/"+name1+"d_v3.root";
-  string path="/Users/grevtsov/Documents/working_files/ttH/ttH-ML/Combination_ttV/Files/particle_level/"+name1+"d_87_v1.root";
+  //string path="/Users/grevtsov/Documents/working_files/ttH/ttH-ML/Combination_ttV/Files/particle_level/"+name1+"d_87_v1.root";
+  string path="/Users/grevtsov/Documents/working_files/ttH/ttH-ML/Combination_ttV/Files/particle_level/"+name1+"_90_v1.root";
   cout << "path = " << path<< endl;
 
 
@@ -59,7 +60,7 @@ void run(string name="Sherpa", string comp="a"){
   cout << ch->GetNtrees()<< ", entr: "<< ch->GetEntries()<< endl;
   string  option=to_string(sum_w)+"_"+name;
 
-  ch->Process("source/partlevel_ttW.C+",option.c_str();
+  ch->Process("source/partlevel_ttW.C+",option.c_str());
 
 
   //gROOT->LoadMacro("source/partlevel_ttW.C");

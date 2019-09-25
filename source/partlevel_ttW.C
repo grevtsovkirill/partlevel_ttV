@@ -65,6 +65,13 @@ void partlevel_ttW::Begin(TTree * /*tree*/)
   TString option = GetOption();
 }
 
+void partlevel_ttW::ReadOpt(double sumweights, int var_type)
+{
+  double inval1 = sumweights;
+  int inval2 = var_type;
+  std::cout<< "i'm in the ReadOpt function -  "<<inval1<< " " <<inval2 << std::endl;      
+}
+
 void partlevel_ttW::SlaveBegin(TTree * /*tree*/)
 {
   stoploop=false;

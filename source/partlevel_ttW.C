@@ -305,7 +305,7 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
   if(  lep_4v[0].Pt()>lep_4v[1].Pt()){
     lead_lep=0;sublead_lep=1;}
   else {    lead_lep=1;sublead_lep=0;}
-  
+
   //  if(lead_lep!=0)     cout <<  " 0  "<< lep_4v[0].Pt()<< "   1 " << lep_4v[1].Pt()<< ",  leading is "<< lead_lep<< endl;
   //if ((abs(lep_4v[lead_lep].Pt()-l0_pt)>0.0001) || (abs(lep_4v[sublead_lep].Pt()-l1_pt)>0.0001)) cout <<  " 0  "<< lep_4v[0].Pt()<< "   1 " << lep_4v[1].Pt()<< ",  leading is "<< lead_lep <<  ",  l0pt="<<l0_pt <<  ",  l1pt="<<l1_pt << endl;
 
@@ -371,7 +371,7 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
 
-  HTall=HTjet+(l0_pt+l1_pt)*1000;
+  HTall=HTjet+(lep_4v[lead_lep].Pt()+lep_4v[sublead_lep].Pt());
 
   // DeltaRs
   // ll 
@@ -426,8 +426,8 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
       h_cutflow_2l[0]->Fill(cf_counter+i,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter+i,1);
       
       hist_DRll01[i]->Fill(DRll01, weight_tot);
-      hist_lep_Pt_0[i]->Fill(l0_pt, weight_tot);
-      hist_lep_Pt_1[i]->Fill(l1_pt, weight_tot);
+      hist_lep_Pt_0[i]->Fill(lep_4v[lead_lep].Pt()/1e3, weight_tot);
+      hist_lep_Pt_1[i]->Fill(lep_4v[sublead_lep].Pt()/1e3, weight_tot);
       if(Njets >= 4){
 	hist_jet_Pt_4[i]->Fill(jets_vec[3].Pt()/1e3, weight_tot);
 	if(Njets >= 5) hist_jet_Pt_5[i]->Fill(jets_vec[4].Pt()/1e3, weight_tot);
@@ -442,12 +442,12 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
       hist_min_DRl1j[i]->Fill(min_DRl1j, weight_tot);
       hist_maxEta_ll[i]->Fill(max_eta, weight_tot);
       hist_HT_jets[i]->Fill(HTjet/1000, weight_tot);
-      hist_HT_leps[i]->Fill((l0_pt+l1_pt), weight_tot);
+      hist_HT_leps[i]->Fill(((lep_4v[lead_lep].Pt()+lep_4v[sublead_lep].Pt())/1e3, weight_tot);
       hist_HT[i]->Fill(HTall/1000, weight_tot);
       hist_nJets[i]->Fill(Njets, weight_tot);
       hist_nBtagJets[i]->Fill(Nbjets, weight_tot);
       hist_MET[i]->Fill(met, weight_tot);
-      
+
       hist_lep_Eta_0[i]->Fill(lep_4v[lead_lep].Eta(), weight_tot);
       hist_lep_Eta_1[i]->Fill(lep_4v[sublead_lep].Eta(), weight_tot);
       hist_lep_Phi_0[i]->Fill(lep_4v[lead_lep].Phi(), weight_tot);

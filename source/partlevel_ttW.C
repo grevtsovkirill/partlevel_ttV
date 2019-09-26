@@ -442,7 +442,7 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
       hist_min_DRl1j[i]->Fill(min_DRl1j, weight_tot);
       hist_maxEta_ll[i]->Fill(max_eta, weight_tot);
       hist_HT_jets[i]->Fill(HTjet/1000, weight_tot);
-      hist_HT_leps[i]->Fill(((lep_4v[lead_lep].Pt()+lep_4v[sublead_lep].Pt())/1e3, weight_tot);
+      hist_HT_leps[i]->Fill( (lep_4v[lead_lep].Pt()+lep_4v[sublead_lep].Pt())/1e3, weight_tot);
       hist_HT[i]->Fill(HTall/1000, weight_tot);
       hist_nJets[i]->Fill(Njets, weight_tot);
       hist_nBtagJets[i]->Fill(Nbjets, weight_tot);

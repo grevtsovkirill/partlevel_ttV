@@ -235,7 +235,7 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
   //* pdf_var_up
   //* pdf_var_down
 
-  if (entry==0) cout<< "PDF4LHC15_nnlo_30_pdfas [0] = " << PDF4LHC15_nnlo_30_pdfas[0]<<" [1] = " << PDF4LHC15_nnlo_30_pdfas[1]<<endl;
+  //if (entry==0) cout<< "PDF4LHC15_nnlo_30_pdfas [0] = " << PDF4LHC15_nnlo_30_pdfas[0]<<" [1] = " << PDF4LHC15_nnlo_30_pdfas[1]<<endl;
 
 
   int cf_counter=0;

@@ -19,12 +19,12 @@ void plotting()
   //file[2] = TFile::Open("Res_ttW.root");
   TLatex latex2; latex2.SetTextSize(0.06); latex2.SetNDC();
   char text[1000];  char text1[1000];  char text2[1000];
-  TString atl_lable = "Simulation";//Internal
+  TString atl_lable = "Simulation Internal";//
   string lep_flav="nominal"; 
   //sprintf(text1,"#sqrt{s} = 13 TeV, 2b %s 2lSS",lep_flav.c_str());
   sprintf(text2,"");
   
-  TH1D* h_var[5][35][5][5];
+  TH1D* h_var[5][35][5][10];
 
   //  vector<string> region_names={"0t 1b 3j","0t 2b 3j"}; vector<string>  nj_reg={"2","3"};
 
@@ -45,12 +45,23 @@ void plotting()
 //
   vector<string>  nj_reg={"0","1","2","3","4"};
   vector<string> variable={"DRll01","lep_Pt_0","lep_Pt_1","jet_Pt_4","jet_Pt_5","jet_Pt_6","Bjet_Pt_0","Bjet_Pt_1","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT_leps","HT","nJets","nBtagJets","MET","lep_Eta_0","lep_Eta_1","lep_Phi_0","lep_Phi_1","lep_dPhi"}; //
+
+  vector<string> variable_X={"#Delta R_{l_{0},l_{1}}","Leading lepton #font[52]{p}_{T} [GeV]","Subeading lepton #font[52]{p}_{T} [GeV]",
+			     "4th jet #font[52]{p}_{T} [GeV]","5th jet #font[52]{p}_{T} [GeV]","6th jet #font[52]{p}_{T} [GeV]",
+			     "Leading #font[52]{b}-jet #font[52]{p}_{T} [GeV]","Subleading #font[52]{b}-jet #font[52]{p}_{T} [GeV]",
+			     "#font[52]{min} #Delta R_{l_{0},jet}","#font[52]{min} #Delta R_{l_{1},jet}",
+			     "#font[52]{max} |#eta _{l}|",
+			     "#font[52]{HT}^{jets} [GeV]","#font[52]{HT}^{lep} [GeV]","#font[52]{HT} [GeV]",
+			     "Number of jets","Number of #font[52]{b}-jets","#font[52]{E}_{T}^{miss}","Leading lepton #eta","Subleading lepton #eta","Leading lepton #phi","Subleading lepton #phi","#Delta #phi ^{ll}"}; //
+
   //vector<string> variable={"lep_Eta_0","lep_Eta_1","lep_Phi_0","lep_Phi_1"};
   //*
+  //vector<string> type={"Sherpa","MG","SherpaScaleUp","SherpaScaleDown","SherpaPup","SherpaPdown"};
+  //vector<string> type={"Sherpa","MG","SherpaScaleUp","SherpaScaleDown","SherpaNNup","SherpaNNdown"};
   vector<string> type={"Sherpa","MG","SherpaScaleUp","SherpaScaleDown"};
   //vector<string> type={"Sherpa","MG"};
-  Int_t color_sample[6]={1,633,601,418,617,799};
-  Int_t linestyle[6]={1,1,7,9,4,10};
+  Int_t color_sample[8]={1,633,601,418,617,799,617,625};
+  Int_t linestyle[8]={1,1,7,9,4,10,3,2};
   //*/
 
   /* MG vars
@@ -135,7 +146,7 @@ void plotting()
 	  //else h_var[i][j][k][t]->SetYTitle("Events");
 	  h_var[i][j][0][t]->SetYTitle("Events"); 
 	  //h_var[i][j][0][t]->SetYTitle("Normalized"); 
-	  h_var[i][j][0][t]->SetXTitle((variable[j]).c_str());
+	  h_var[i][j][0][t]->SetXTitle((variable_X[j]).c_str());
 	  h_var[i][j][0][t]->GetYaxis()->SetTitleSize(0.06); 
 	  h_var[i][j][0][t]->GetYaxis()->SetTitleOffset(0.7); 
 	  //h_var[i][j][0][t]->GetXaxis()->SetRangeUser(20,500);
@@ -182,10 +193,12 @@ void plotting()
 	//}    
       }//t loop: nominal - variations      
       
-      sprintf(text1,"#sqrt{s} = 13 TeV, 2lSS%s ",region_names[i].c_str());
-      sprintf(text2,"Variable: %s",variable[j].c_str());//+nj_reg[i]+variable[j]
+      sprintf(text1,"#sqrt{s} = 13 TeV,");
+      //sprintf(text2,"Variable: %s",variable_X[j].c_str());//+nj_reg[i]+variable[j]
+      sprintf(text2,"2l SS %s ",region_names[i].c_str());
       
-      ATLASLabel(0.2,0.87,atl_lable,1,0.065); latex2.DrawLatex(0.20, 0.8, text1);  latex2.DrawLatex(0.20, 0.73, text2); //latex2.DrawLatex(0.20, 0.7, "Data");
+      ATLASLabel(0.18,0.87,atl_lable,1,0.065); latex2.DrawLatex(0.18, 0.8, text1);  
+      latex2.DrawLatex(0.18, 0.73, text2); //latex2.DrawLatex(0.20, 0.7, "Data");
       legend[i][j]->Draw("same");
       
       pad2[i][j]->cd();
@@ -202,10 +215,12 @@ void plotting()
 	
       }
       
-      sprintf(o_name,"Plots_90_v1/%s.pdf",canvas_name);
+      sprintf(o_name,"Plots_90_v2/%s.pdf",canvas_name);
       //sprintf(o_name,"Plots_87_acc1_norm/%s.pdf",canvas_name);
       //sprintf(o_name,"Plots_MGvar_1/%s.pdf",canvas_name);
+      
       canv[i][j]->Print(o_name);
+
       //*/
     }//j loop: variable
   }//i loop: region 0-7

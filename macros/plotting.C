@@ -19,7 +19,7 @@ void plotting()
   //file[2] = TFile::Open("Res_ttW.root");
   TLatex latex2; latex2.SetTextSize(0.06); latex2.SetNDC();
   char text[1000];  char text1[1000];  char text2[1000];
-  TString atl_lable = "Internal";
+  TString atl_lable = "Simulation";//Internal
   string lep_flav="nominal"; 
   //sprintf(text1,"#sqrt{s} = 13 TeV, 2b %s 2lSS",lep_flav.c_str());
   sprintf(text2,"");

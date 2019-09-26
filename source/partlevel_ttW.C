@@ -208,18 +208,29 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
   // The additional 2 variations (index xxx31 and xxx32) are an alphaS variation, which I'm not sure you have to use (it depends what you want to compute I guess).
   double pdf_var_up=1,pdf_var_down=1;
 
-  for (int i=1; i<31;i++){
-    shift2+=pow((PDF4LHC15_nnlo_30_pdfas[i]-PDF4LHC15_nnlo_30_pdfas[0]),2);
-  }
-  shift=sqrt(shift2);
-  pdf_var_up=(PDF4LHC15_nnlo_30_pdfas[0]+shift)/PDF4LHC15_nnlo_30_pdfas[0];
-  pdf_var_down=(PDF4LHC15_nnlo_30_pdfas[0]-shift)/PDF4LHC15_nnlo_30_pdfas[0];
+  // UGLY:
+//   for (int i=1; i<31;i++){
+//     shift2+=pow((PDF4LHC15_nnlo_30_pdfas[i]-PDF4LHC15_nnlo_30_pdfas[0]),2);
+//   }
+//   shift=sqrt(shift2);
+//   pdf_var_up=(PDF4LHC15_nnlo_30_pdfas[0]+shift)/PDF4LHC15_nnlo_30_pdfas[0];
+//   pdf_var_down=(PDF4LHC15_nnlo_30_pdfas[0]-shift)/PDF4LHC15_nnlo_30_pdfas[0];
+
+
+// WRONG - NNPDF uses 68% cl
+//   for (int i=11; i<111;i++){
+//     shift2+=pow((mc_generator_weights[i]-mc_generator_weights[0]),2);
+//   }
+//   shift=sqrt(shift2);
+//   pdf_var_up=(mc_generator_weights[0]+shift)*Acc;
+//   pdf_var_down=(mc_generator_weights[0]-shift)*Acc;
   
   // access names of the weights:
   // sumWeights->Scan("names_mc_generator_weights","","colsize=30")
   // check values:
   //
   weight_tot=weight_to_use * *weight_pileup ;
+
   // by hand PDF uncertainties
   //* pdf_var_up
   //* pdf_var_down

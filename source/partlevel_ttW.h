@@ -78,6 +78,7 @@ public :
    TTreeReaderArray<float> PDFinfo_XF1 = {fReader, "PDFinfo_XF1"};
    TTreeReaderArray<float> PDFinfo_XF2 = {fReader, "PDFinfo_XF2"};
    TTreeReaderArray<float> mc_generator_weights = {fReader, "mc_generator_weights"};
+   TTreeReaderArray<float> PDF4LHC15_nnlo_30_pdfas = {fReader, "PDF4LHC15_nnlo_30_pdfas"};
    TTreeReaderValue<Int_t> particle_level_ttW = {fReader, "particle_level_ttW"};
    //add taus 020919
    TTreeReaderArray<float> tau_pt = {fReader, "tau_pt"};

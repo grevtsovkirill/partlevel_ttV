@@ -371,10 +371,29 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
 
+
+
   HTall=HTjet+(lep_4v[lead_lep].Pt()+lep_4v[sublead_lep].Pt())*1000;
 
+  // check pt ordering in jets
+  double jptmax=0;
+  for (unsigned int i=0; i<jets_vec.size();i++){
+    if(jets_vec[i].Pt()/1e3>jptmax){    jptmax=jets_vec[i].Pt()/1e3;
+
+      if(i!=0)     cout << "pT (jet #"<<i<<")=" <<jets_vec[i].Pt()/1e3<< ", while jet0="<< jets_vec[0].Pt()/1e3<<endl;
+    }
+  }
+
+  double bjptmax=0;
+  for (unsigned int i=0; i<bjets_vec.size();i++){
+    if(bjets_vec[i].Pt()/1e3>bjptmax){    bjptmax=bjets_vec[i].Pt()/1e3;
+
+      if(i!=0)     cout << "pT (bjet #"<<i<<")=" <<bjets_vec[i].Pt()/1e3<< ", while bjet0="<< bjets_vec[0].Pt()/1e3<<endl;
+    }
+  }
+
+
   // DeltaRs
-  // ll 
   float DRll01=-9999;
   //DRll01= sqrt( pow( (lep_4v[lead_lep].Eta()-lep_4v[sublead_lep].Eta()) ,2) + pow ( ( acos( cos( lep_4v[lead_lep].Phi()-lep_4v[sublead_lep].Phi() )  ) ) ,2) );
   DRll01=lep_4v[lead_lep].DeltaR( lep_4v[sublead_lep] ); // provide SAME results as "by hand"!!!

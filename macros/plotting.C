@@ -60,6 +60,7 @@ void plotting()
   //vector<string> type={"Sherpa","MG","SherpaScaleUp","SherpaScaleDown","SherpaNNup","SherpaNNdown"};
   vector<string> type={"Sherpa","MG","SherpaScaleUp","SherpaScaleDown"};
   //vector<string> type={"Sherpa","MG"};
+  //vector<string> type={"Sherpa","MG"};
   Int_t color_sample[8]={1,633,601,418,617,799,617,625};
   Int_t linestyle[8]={1,1,7,9,4,10,3,2};
   //*/
@@ -81,7 +82,6 @@ void plotting()
 
   Double_t xbins[] = {0,10,20,25,30,33,35,37,40,43,50,60};
   Int_t  binnum = sizeof(xbins)/sizeof(Double_t) - 1; 
-  //string base_name="input/mc_histos_ttW"; //reco  
   string base_name="input/Res";  
   string file_name;
 
@@ -215,7 +215,7 @@ void plotting()
 	
       }
       
-      sprintf(o_name,"Plots_90_v3/%s.pdf",canvas_name);
+      sprintf(o_name,"Plots_90_v5/%s.pdf",canvas_name);
       //sprintf(o_name,"Plots_87_acc1_norm/%s.pdf",canvas_name);
       //sprintf(o_name,"Plots_MGvar_1/%s.pdf",canvas_name);
       

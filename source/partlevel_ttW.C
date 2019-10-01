@@ -89,7 +89,6 @@ void partlevel_ttW::SlaveBegin(TTree * /*tree*/)
   // sherpa 413008: 652 fb;  7446700.5
   // MG 410155: 548 fb ;  4111925.0
   Acc=1/smw;
-  
 
 
   input_name=input_option.substr(input_option.find("_")+1);
@@ -229,7 +228,8 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
   // sumWeights->Scan("names_mc_generator_weights","","colsize=30")
   // check values:
   //
-  weight_tot=weight_to_use * *weight_pileup ;
+  weight_tot=weight_to_use ;
+  //* *weight_pileup ;
 
   // by hand PDF uncertainties
   //* pdf_var_up
@@ -355,6 +355,8 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
     jets_vec.push_back(jj);
 
     if(jet_nGhosts_bHadron[j]>0){
+    //0110 bjet
+    //if(jet_nGhosts_bHadron[j]==1){
       Nbjets+=1;
       bjets_vec.push_back(jj);
     }

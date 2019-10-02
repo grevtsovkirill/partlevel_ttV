@@ -11,7 +11,7 @@ void run(string name="Sherpa", string comp="a"){
   //string path="/Users/grevtsov/Documents/working_files/ttH/ttH-ML/Combination_ttV/Files/particle_level/"+name1+"d_v3.root";
   //string path="/Users/grevtsov/Documents/working_files/ttH/ttH-ML/Combination_ttV/Files/particle_level/"+name1+"d_87_v1.root";
   //string path="/Users/grevtsov/Documents/working_files/ttH/ttH-ML/Combination_ttV/Files/particle_level/"+name1+"_90_v1.root";
-  string path="/Users/grevtsov/Documents/working_files/ttH/ttH-ML/Combination_ttV/Files/particle_level/"+name1+"e.root";;
+  string path="/Users/grevtsov/Documents/working_files/ttH/ttH-ML/Combination_ttV/Files/particle_level/"+name1+comp+".root";;
   cout << "path = " << path<< endl;
 
 
@@ -66,7 +66,7 @@ void run(string name="Sherpa", string comp="a"){
   //ch->Add((path+"e.root").c_str());
   ch->Add(path.c_str());
   cout << ch->GetNtrees()<< ", entr: "<< ch->GetEntries()<< endl;
-  string  option=to_string(sum_w)+"_"+name;
+  string  option=to_string(sum_w)+"_"+name+"-"+comp;
 
   ch->Process("source/partlevel_ttW.C+",option.c_str());
 

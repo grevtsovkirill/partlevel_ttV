@@ -10,6 +10,7 @@
 TH1F *h_cutflow_2l[2];
 string input_name="";
 string input_option="";
+string comp_name="";
 /////////////////////////////
 // Histograms booking 2lSS ttW:
 ////////////////////////////
@@ -91,7 +92,10 @@ void partlevel_ttW::SlaveBegin(TTree * /*tree*/)
   Acc=1/smw;
 
 
-  input_name=input_option.substr(input_option.find("_")+1);
+  input_name=input_option.substr(input_option.find("_")+1,(input_option.find("-")-input_option.find("_")-1));
+  comp_name=input_option.substr(input_option.find("-")+1);
+				 
+  std::cout << "var ="<< input_name<< ", comp_name - "<< comp_name << std::endl;
 
   std::cout << "variation =";
   if(input_name.compare("Sherpa")==0){
@@ -490,7 +494,7 @@ void partlevel_ttW::Terminate()
   printf("\nTotal Number of Events: %d\n", fNumberOfEvents);
 
   if(!stoploop){
-    string outname="Res_"+input_name+".root";
+    string outname="Res_"+input_name+"_"+comp_name+".root";
     TFile hfile(outname.c_str(),"RECREATE"); //,"tHq"
     //*
     h_cutflow_2l[0]->Write(); 

@@ -19,7 +19,7 @@ void plotting()
   //file[2] = TFile::Open("Res_ttW.root");
   TLatex latex2; latex2.SetTextSize(0.06); latex2.SetNDC();
   char text[1000];  char text1[1000];  char text2[1000];
-  TString atl_lable = "Simulation Internal";//
+  TString atl_lable = "Simulation unapproved";//Simulation Internal
   string lep_flav="nominal"; 
   //sprintf(text1,"#sqrt{s} = 13 TeV, 2b %s 2lSS",lep_flav.c_str());
   sprintf(text2,"");
@@ -197,7 +197,8 @@ void plotting()
       //sprintf(text2,"Variable: %s",variable_X[j].c_str());//+nj_reg[i]+variable[j]
       sprintf(text2,"2l SS %s ",region_names[i].c_str());
       
-      ATLASLabel(0.18,0.87,atl_lable,1,0.065); latex2.DrawLatex(0.18, 0.8, text1);  
+      ATLASLabel(0.18,0.87,atl_lable,1,0.065); 
+      latex2.DrawLatex(0.18, 0.8, text1);  
       latex2.DrawLatex(0.18, 0.73, text2); //latex2.DrawLatex(0.20, 0.7, "Data");
       legend[i][j]->Draw("same");
       
@@ -215,7 +216,7 @@ void plotting()
 	
       }
       
-      sprintf(o_name,"Plots_90_v5/%s.pdf",canvas_name);
+      sprintf(o_name,"Plots_90_v5nolab/%s.pdf",canvas_name);
       //sprintf(o_name,"Plots_87_acc1_norm/%s.pdf",canvas_name);
       //sprintf(o_name,"Plots_MGvar_1/%s.pdf",canvas_name);
       

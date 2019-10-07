@@ -57,7 +57,7 @@ vector<string> weight_names = {"MUR05_MUF05","MUR05_MUF1","MUR1_MUF05","MUR1_MUF
 
 
  
-vector<string> region_names={"0t 1b 4j", "0t 2b 4j","0t 1b 3j", "0t 2b 3j","1t 1b 3j"};
+vector<string> region_names={"0t 1b 4j", "0t 2b 4j","0t 1b 3j", "0t 2b 3j","1t 1b 3j","0t g1b g4j"};
 //,
 			     //"1t 1b 4j", "1t 2b 4j","1t 1b 3j", "1t 2b 3j"};
 
@@ -146,9 +146,9 @@ void partlevel_ttW::SlaveBegin(TTree * /*tree*/)
     Float_t bjet_bins[]={0,20,25,33,45,60,80,110,150,200,300,500}; Int_t  bjet_binnum = sizeof(bjet_bins)/sizeof(Float_t) - 1;
     Float_t dr_max=4.8; Int_t dr_bins=12; 
     for(int i=0; i<(int)region_names.size();i++){
-      hist_DRll01[i] = new TH1D(("DRll01_"+to_string(i)).c_str(), ("#DeltaR_{l_{0},l_{1}} 2lSS"+region_names[i]+";#DeltaR_{l_{0},l_{1}};Events").c_str(), dr_bins, 0., dr_max);
-      hist_lep_Pt_0[i] = new TH1D(("lep_Pt_0_"+to_string(i)).c_str(), ("Leading lepton Pt 2lSS"+region_names[i]+";p_{T}(l_{0})[GeV];Events").c_str(), lep_binnum, lep_bins);//100, 0, 500
-      hist_lep_Pt_1[i] = new TH1D(("lep_Pt_1_"+to_string(i)).c_str(), ("Subleading lepton Pt 2lSS"+region_names[i]+";p_{T}(l_{1})[GeV];Events").c_str(),lep_binnum, lep_bins);
+      hist_DRll01[i] = new TH1D(("DRll01_"+to_string(i)).c_str(), ("#DeltaR_{l_{0},l_{1}} 2lSS"+region_names[i]+";#DeltaR_{l_{0},l_{1}};Events").c_str(), 100, 0., 7.);
+      hist_lep_Pt_0[i] = new TH1D(("lep_Pt_0_"+to_string(i)).c_str(), ("Leading lepton Pt 2lSS"+region_names[i]+";p_{T}(l_{0})[GeV];Events").c_str(), 100, 0., 1000.);//100, 0, 500
+      hist_lep_Pt_1[i] = new TH1D(("lep_Pt_1_"+to_string(i)).c_str(), ("Subleading lepton Pt 2lSS"+region_names[i]+";p_{T}(l_{1})[GeV];Events").c_str(),100, 0., 1000.);
       //jets:
       hist_jet_Pt_4[i] = new TH1D(("jet_Pt_4_"+to_string(i)).c_str(), ("4th jet Pt 2lSS"+region_names[i]+";p_{T}(j_{4})[GeV];Events").c_str(),jet_binnum, jet_bins);
       hist_jet_Pt_5[i] = new TH1D(("jet_Pt_5_"+to_string(i)).c_str(), ("5th jet Pt 2lSS"+region_names[i]+";p_{T}(j_{5})[GeV];Events").c_str(),jet_binnum, jet_bins);
@@ -304,6 +304,7 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
     }
   }
 
+  //(dilep_type&&lep_ID_0*
 
   int lead_lep=9999, sublead_lep=9999;
   if(  lep_4v[0].Pt()>lep_4v[1].Pt()){
@@ -318,9 +319,13 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
   if(lep_4v[sublead_lep].Pt()<20) return 0;  
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
-  if(lep_4v[lead_lep].Pt()<25) return 0;  
+  //same cut for leading match reco
+  if(lep_4v[lead_lep].Pt()<20) return 0;  
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
+  //0&&lep_Pt_0>20e3&&lep_Pt_1>20e3
+
+  
 
 
   //lep eta cuts
@@ -334,6 +339,8 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
  
+
+
   float max_eta=  max ( fabs( l0_eta ), fabs( l1_eta ) ); 
 
   int Njets=0, Nbjets=0;
@@ -376,6 +383,16 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
   if(Njets<3 || Nbjets<1) return 0;
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
+
+
+  TLorentzVector ll_4v;
+  ll_4v=lep_4v[lead_lep]+lep_4v[sublead_lep];
+  if(ll_4v.M()<12e3){
+    cout << "ll_4v.M =" <<ll_4v.M()/1e3<<endl;
+    return 0;
+  }
+  //XXX_LLSSNTAU_BASIC_SELECTION = (lep_ID_1>0 &&!nTaus_OR_Pt25&&nJets_OR_T>=4&&nJets_OR_T_MV2c10_7)&&
+  //Mll01>12e3&&(((abs(lep_ID_0) == 13 &&lep_isMedium_0) ||( abs( lep_ID_0 ) == 11&&abs( lep_Eta_0 ) <2.0)) && ((abs( lep_ID_1 ) == 11&&abs( lep_Eta_1 ) <2.0)||(abs(lep_ID_1) == 13 &&lep_isMedium_1)))&&(((dilep_type==3||dilep_type==2) && DRll01>0.5) ||(dilep_type==1)));
 
 
 
@@ -428,7 +445,6 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
     if(tau_isHadronic[t]!=0) Nhtaus+=1;
   }
 
-
   //fill weights
   for(int i=0; i<(int)weight_names.size();i++){
     hist_Weights[i]->Fill(mc_generator_weights[i+4]);
@@ -443,6 +459,7 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
   sel_array[2]=(Nhtaus == 0 && Nbjets == 1 && Njets == 3 );  // Region 3 
   sel_array[3]=(Nhtaus == 0 && Nbjets >= 2 && Njets == 3 );  // Region 4
   sel_array[4]=(Nhtaus == 1 && Nbjets >= 1 && Njets >= 3 );  // Region 5
+  sel_array[5]=(Nhtaus == 0 && Nbjets >= 1 && Njets >= 4 );  // Region match Reco
 
   float met = *met_met/1000.;
 
@@ -494,7 +511,7 @@ void partlevel_ttW::Terminate()
   printf("\nTotal Number of Events: %d\n", fNumberOfEvents);
 
   if(!stoploop){
-    string outname="Res_"+input_name+"_"+comp_name+".root";
+    string outname="matchrecoRes_"+input_name+"_"+comp_name+".root";
     TFile hfile(outname.c_str(),"RECREATE"); //,"tHq"
     //*
     h_cutflow_2l[0]->Write(); 

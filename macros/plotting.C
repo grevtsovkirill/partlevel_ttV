@@ -19,7 +19,7 @@ void plotting()
   //file[2] = TFile::Open("Res_ttW.root");
   TLatex latex2; latex2.SetTextSize(0.06); latex2.SetNDC();
   char text[1000];  char text1[1000];  char text2[1000];
-  TString atl_lable = "Simulation unapproved";//Simulation Internal
+  TString atl_lable = "Simulation Internal";//Simulation Internal unapproved
   string lep_flav="nominal"; 
   //sprintf(text1,"#sqrt{s} = 13 TeV, 2b %s 2lSS",lep_flav.c_str());
   sprintf(text2,"");
@@ -60,8 +60,8 @@ void plotting()
   //*
   //vector<string> type={"Sherpa","MG","SherpaScaleUp","SherpaScaleDown","SherpaPup","SherpaPdown"};
   //vector<string> type={"Sherpa","MG","SherpaScaleUp","SherpaScaleDown","SherpaNNup","SherpaNNdown"};
-  //vector<string> type={"Sherpa","MG","SherpaScaleUp","SherpaScaleDown"};
-  vector<string> type={"Sherpa","MG"};
+  vector<string> type={"Sherpa","MG","SherpaScaleUp","SherpaScaleDown"};
+  //vector<string> type={"Sherpa","MG"};
   //vector<string> type={"Sherpa","MG"};
   //vector<string> type={"Sherpa","MG"};
   Int_t color_sample[8]={1,633,601,418,617,799,617,625};
@@ -220,7 +220,7 @@ void plotting()
 	
       }
       
-      sprintf(o_name,"Plots_90_v6_n/%s.pdf",canvas_name);
+      sprintf(o_name,"Plots_90_v7_n/%s.pdf",canvas_name);
       //sprintf(o_name,"Plots_87_acc1_norm/%s.pdf",canvas_name);
       //sprintf(o_name,"Plots_MGvar_1/%s.pdf",canvas_name);
       

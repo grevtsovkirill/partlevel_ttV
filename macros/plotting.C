@@ -102,7 +102,7 @@ void plotting()
 	sprintf(sf_name,"%s_%s",variable[j].c_str(),nj_reg[i].c_str());   
 	cout << "sf_name " << sf_name<< " reg = "<< region_names[i]<< ", variable in histo - "<< variable[j]<< endl;
 	h_var[i][j][0][t] = (TH1D *)file[0][t]->Get(sf_name);		 
-	norm_hist = h_var[i][j][0][t]->GetSumOfWeights();
+	//norm_hist = h_var[i][j][0][t]->GetSumOfWeights();
 	//1309: remove normalization
 	h_var[i][j][0][t]->Scale(1/norm_hist);
 	norm_hist=1;
@@ -147,9 +147,9 @@ void plotting()
 
 	  //if (variable[j]!="nBtagJets") h_var[i][j][k][t]->SetYTitle("Normalized");
 	  //else h_var[i][j][k][t]->SetYTitle("Events");
-	  //h_var[i][j][0][t]->SetYTitle("Events"); 
+	  h_var[i][j][0][t]->SetYTitle("Events"); 
 	  //h_var[i][j][0][t]->SetYTitle("Normalized"); 
-	  h_var[i][j][0][t]->SetYTitle("Arbitrary Units"); 
+	  //h_var[i][j][0][t]->SetYTitle("Arbitrary Units"); 
 	  h_var[i][j][0][t]->SetXTitle((variable_X[j]).c_str());
 	  h_var[i][j][0][t]->GetYaxis()->SetTitleSize(0.06); 
 	  h_var[i][j][0][t]->GetYaxis()->SetTitleOffset(0.7); 
@@ -220,7 +220,7 @@ void plotting()
 	
       }
       
-      sprintf(o_name,"Plots_90_v7_n/%s.pdf",canvas_name);
+      sprintf(o_name,"Plots_90_v7/%s.pdf",canvas_name);
       //sprintf(o_name,"Plots_87_acc1_norm/%s.pdf",canvas_name);
       //sprintf(o_name,"Plots_MGvar_1/%s.pdf",canvas_name);
       

@@ -177,7 +177,7 @@ void partlevel_ttW::SlaveBegin(TTree * /*tree*/)
       hist_lep_Eta_1[i] = new TH1D(("lep_Eta_1_"+to_string(i)).c_str(), ("#{#eta}_{l1}} 2lSS"+region_names[i]+";#{#eta}_{l1};Events").c_str(), 13, -2.6, 2.6);
       hist_lep_Phi_0[i] = new TH1D(("lep_Phi_0_"+to_string(i)).c_str(), ("#{#phi}_{l0}} 2lSS"+region_names[i]+";#{#phi}_{l0};Events").c_str(), 16, -3.2, 3.2);
       hist_lep_Phi_1[i] = new TH1D(("lep_Phi_1_"+to_string(i)).c_str(), ("#{#phi}_{l1}} 2lSS"+region_names[i]+";#{#phi}_{l1};Events").c_str(), 16, -3.2, 3.2);
-      hist_lep_dPhi[i] = new TH1D(("lep_dPhi_"+to_string(i)).c_str(), ("#Delta#{#phi}_{ll}} 2lSS"+region_names[i]+";#{#Delta#phi}_{ll};Events").c_str(), 8, 0, 3.2);
+      hist_lep_dPhi[i] = new TH1D(("lep_dPhi_"+to_string(i)).c_str(), ("#Delta#{#phi}_{ll}} 2lSS"+region_names[i]+";#{#Delta#phi}_{ll};Events").c_str(), 16, 0, 6.4);
 
     }
 
@@ -202,13 +202,13 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
 
   //weight definitions
   Double_t weight_to_use=1;
-
-  if (nomS_w) weight_to_use = *weight_mc *Acc ;
-  else if (nomM_w) weight_to_use = *weight_mc *Acc;
-  else if (scaleupS_w) weight_to_use = mc_generator_weights[10]  *Acc ;//10 *            MUR2_MUF2_PDF261000 *
-  else if (scaledownS_w) weight_to_use = mc_generator_weights[4] *Acc ;//4 *          MUR05_MUF05_PDF261000 *
-  else if (scaleupM_w) weight_to_use = mc_generator_weights[4] *Acc; //4 *   muR=020000E+01muF=020000E+01
-  else if (scaledownM_w) weight_to_use = mc_generator_weights[8] *Acc;//8 *   muR=050000E+00muF=050000E+00
+  Double_t sig_Sherpa= 652;  Double_t sig_MG= 548;
+  if (nomS_w) weight_to_use = *weight_mc *Acc *sig_Sherpa;
+  else if (nomM_w) weight_to_use = *weight_mc *Acc *sig_MG;
+  else if (scaleupS_w) weight_to_use = mc_generator_weights[10]  *Acc *sig_Sherpa;//10 *            MUR2_MUF2_PDF261000 *
+  else if (scaledownS_w) weight_to_use = mc_generator_weights[4] *Acc *sig_Sherpa;//4 *          MUR05_MUF05_PDF261000 *
+  else if (scaleupM_w) weight_to_use = mc_generator_weights[4] *Acc *sig_MG; //4 *   muR=020000E+01muF=020000E+01
+  else if (scaledownM_w) weight_to_use = mc_generator_weights[8] *Acc *sig_MG;//8 *   muR=050000E+00muF=050000E+00
   else return 0;
 
   double shift=0;

@@ -24,12 +24,12 @@ void plotting()
   //sprintf(text1,"#sqrt{s} = 13 TeV, 2b %s 2lSS",lep_flav.c_str());
   sprintf(text2,"");
   
-  TH1D* h_var[5][35][5][10];
+  TH1D* h_var[10][35][10][10];
 
   //  vector<string> region_names={"0t 1b 3j","0t 2b 3j"}; vector<string>  nj_reg={"2","3"};
 
   //vector<string> region_names={"0t 1b 4j", "0t 2b 4j","0t 1b 3j", "0t 2b 3j", "1t 1b 3j"};
-  vector<string> region_names={"0t 1b 4j", "0t 2b 4j","0t 1b 3j", "0t 2b 3j","1t 1b 3j"};
+  vector<string> region_names={"0t 1b 4j", "0t 2b 4j","0t 1b 3j", "0t 2b 3j","1t 1b 3j", "0t=3j","0tg4j","otg3g0b"};
   //			       "1t 1b 4j", "1t 2b 4j","1t 1b 3j", "1t 2b 3j"};
   
   //vector<string> region_names={"0t 1b 4j"}; vector<string>  nj_reg={"0"};
@@ -43,8 +43,8 @@ void plotting()
   //vector<string> region_names={"1t 1b 3j"}; vector<string>  nj_reg={"6"};
   //vector<string> region_names={"1t 2b 3j"}; vector<string>  nj_reg={"7"};
 //
-  vector<string>  nj_reg={"0","1","2","3","4"};
-  vector<string> variable={"DRll01","lep_Pt_0","lep_Pt_1","jet_Pt_4","jet_Pt_5","jet_Pt_6","Bjet_Pt_0","Bjet_Pt_1","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT_leps","HT","nJets","nBtagJets","MET","lep_Eta_0","lep_Eta_1","lep_Phi_0","lep_Phi_1","lep_dPhi"}; //
+  vector<string>  nj_reg={"0","1","2","3","4","5","6","7"};
+  vector<string> variable={"DRll01","lep_Pt_0","lep_Pt_1","jet_Pt_4","jet_Pt_5","jet_Pt_6","Bjet_Pt_0","Bjet_Pt_1","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT_leps","HT","nJets","nBtagJets","MET","lep_Eta_0","lep_Eta_1","lep_Phi_0","lep_Phi_1","lep_dPhi","jet_Pt_1","jet_Pt_2","jet_Pt_3"}; //
 
   vector<string> variable_X={"#Delta R_{l_{0},l_{1}}","Leading lepton #font[52]{p}_{T} [GeV]","Subeading lepton #font[52]{p}_{T} [GeV]",
 			     "4th jet #font[52]{p}_{T} [GeV]","5th jet #font[52]{p}_{T} [GeV]","6th jet #font[52]{p}_{T} [GeV]",
@@ -52,13 +52,16 @@ void plotting()
 			     "#font[52]{min} #Delta R_{l_{0},jet}","#font[52]{min} #Delta R_{l_{1},jet}",
 			     "#font[52]{max} |#eta _{l}|",
 			     "#font[52]{HT}^{jets} [GeV]","#font[52]{HT}^{lep} [GeV]","#font[52]{HT} [GeV]",
-			     "Number of jets","Number of #font[52]{b}-jets","#font[52]{E}_{T}^{miss}","Leading lepton #eta","Subleading lepton #eta","Leading lepton #phi","Subleading lepton #phi","#Delta #phi ^{ll}"}; //
+			     "Number of jets","Number of #font[52]{b}-jets","#font[52]{E}_{T}^{miss}","Leading lepton #eta","Subleading lepton #eta","Leading lepton #phi","Subleading lepton #phi","#Delta #phi ^{ll}",
+			     "1th jet #font[52]{p}_{T} [GeV]","2nd jet #font[52]{p}_{T} [GeV]","3rd jet #font[52]{p}_{T} [GeV]"
+}; //
 
   //vector<string> variable={"lep_Eta_0","lep_Eta_1","lep_Phi_0","lep_Phi_1"};
   //*
   //vector<string> type={"Sherpa","MG","SherpaScaleUp","SherpaScaleDown","SherpaPup","SherpaPdown"};
   //vector<string> type={"Sherpa","MG","SherpaScaleUp","SherpaScaleDown","SherpaNNup","SherpaNNdown"};
-  vector<string> type={"Sherpa","MG","SherpaScaleUp","SherpaScaleDown"};
+  //vector<string> type={"Sherpa","MG","SherpaScaleUp","SherpaScaleDown"};
+  vector<string> type={"Sherpa","MG"};
   //vector<string> type={"Sherpa","MG"};
   //vector<string> type={"Sherpa","MG"};
   Int_t color_sample[8]={1,633,601,418,617,799,617,625};
@@ -101,7 +104,7 @@ void plotting()
 	h_var[i][j][0][t] = (TH1D *)file[0][t]->Get(sf_name);		 
 	norm_hist = h_var[i][j][0][t]->GetSumOfWeights();
 	//1309: remove normalization
-	//h_var[i][j][0][t]->Scale(1/norm_hist);
+	h_var[i][j][0][t]->Scale(1/norm_hist);
 	norm_hist=1;
       }//variable - j
     }// region - i
@@ -144,8 +147,9 @@ void plotting()
 
 	  //if (variable[j]!="nBtagJets") h_var[i][j][k][t]->SetYTitle("Normalized");
 	  //else h_var[i][j][k][t]->SetYTitle("Events");
-	  h_var[i][j][0][t]->SetYTitle("Events"); 
+	  //h_var[i][j][0][t]->SetYTitle("Events"); 
 	  //h_var[i][j][0][t]->SetYTitle("Normalized"); 
+	  h_var[i][j][0][t]->SetYTitle("Arbitrary Units"); 
 	  h_var[i][j][0][t]->SetXTitle((variable_X[j]).c_str());
 	  h_var[i][j][0][t]->GetYaxis()->SetTitleSize(0.06); 
 	  h_var[i][j][0][t]->GetYaxis()->SetTitleOffset(0.7); 
@@ -216,7 +220,7 @@ void plotting()
 	
       }
       
-      sprintf(o_name,"Plots_90_v5nolab/%s.pdf",canvas_name);
+      sprintf(o_name,"Plots_90_v6_n/%s.pdf",canvas_name);
       //sprintf(o_name,"Plots_87_acc1_norm/%s.pdf",canvas_name);
       //sprintf(o_name,"Plots_MGvar_1/%s.pdf",canvas_name);
       

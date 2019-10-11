@@ -60,7 +60,7 @@ void plotting(bool norm_xs_plots=false)
   //*
   //vector<string> type={"Sherpa","MG","SherpaScaleUp","SherpaScaleDown","SherpaPup","SherpaPdown"};
   //vector<string> type={"Sherpa","MG","SherpaScaleUp","SherpaScaleDown","SherpaNNup","SherpaNNdown"};
-  vector<string> type={"Sherpa","MG","SherpaScaleUp","SherpaScaleDown"};
+  vector<string> type={"Sherpa","MG5_aMcAtNlo","SherpaScaleUp","SherpaScaleDown"};
   //vector<string> type={"Sherpa","MG"};
   //vector<string> type={"Sherpa","MG"};
   //vector<string> type={"Sherpa","MG"};
@@ -158,7 +158,7 @@ void plotting(bool norm_xs_plots=false)
 	  //h_var[i][j][0][t]->SetYTitle("Normalized"); 
 	  else if (!norm_xs_plots) h_var[i][j][0][t]->SetYTitle("Arbitrary Units"); 
 
-	  h_var[i][j][0][t]->GetXaxis()->SetLabelOffset(0.03);
+	  h_var[i][j][0][t]->GetXaxis()->SetLabelOffset(0.015);
 	  h_var[i][j][0][t]->SetXTitle((variable_X[j]).c_str());
 	  h_var[i][j][0][t]->GetYaxis()->SetTitleSize(0.06); 
 	  h_var[i][j][0][t]->GetYaxis()->SetTitleOffset(0.7); 

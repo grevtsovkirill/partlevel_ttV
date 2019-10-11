@@ -93,7 +93,7 @@ void partlevel_ttW::SlaveBegin(TTree * /*tree*/)
   // sherpa 413008: 652 fb;  7446700.5
   // MG 410155: 548 fb ;  4111925.0
   Acc=1/smw;
-
+  //Acc=1;
 
   input_name=input_option.substr(input_option.find("_")+1,(input_option.find("-")-input_option.find("_")-1));
   comp_name=input_option.substr(input_option.find("-")+1);
@@ -510,7 +510,7 @@ void partlevel_ttW::Terminate()
   printf("\nTotal Number of Events: %d\n", fNumberOfEvents);
 
   if(!stoploop){
-    string outname="Res_"+input_name+"_"+comp_name+".root";
+    string outname="accRes_"+input_name+"_"+comp_name+".root";
     TFile hfile(outname.c_str(),"RECREATE"); //,"tHq"
     //*
     h_cutflow_2l[0]->Write(); 

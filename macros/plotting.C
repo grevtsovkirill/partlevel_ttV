@@ -124,13 +124,18 @@ void plotting(bool norm_xs_plots=false)
       sprintf(p2_name,"p2_%s_%s",nj_reg[i].c_str(),variable[j].c_str() );
 
       pad1[i][j] = new TPad(p1_name, "pad1", 0, 0.32, 1, 1);
-      pad2[i][j] = new TPad(p2_name, "pad2", 0, 0, 1, 0.3);
-      pad1[i][j]->SetBottomMargin(0.01);
+      pad1[i][j]->SetBottomMargin(0.018);
       pad1[i][j]->SetBorderMode(0);
       pad1[i][j]->SetLeftMargin(0.1);
+      pad1[i][j]->SetFillStyle(0);
+
+      pad2[i][j] = new TPad(p2_name, "pad2", 0, 0, 1, 0.3);
       pad2[i][j]->SetTopMargin(0);
       pad2[i][j]->SetLeftMargin(0.1);
       pad2[i][j]->SetBottomMargin(0.3);
+      pad2[i][j]->SetFillStyle(4000);
+      pad2[i][j]->SetBorderMode(4000);
+      //pad2[i][j]->SetFillColorAlpha(kBlue, 0.99);
       //pad1[i][j]->SetLogx(); 
       //pad2[i][j]->SetLogx(); 
       pad1[i][j]->Draw();
@@ -153,6 +158,7 @@ void plotting(bool norm_xs_plots=false)
 	  //h_var[i][j][0][t]->SetYTitle("Normalized"); 
 	  else if (!norm_xs_plots) h_var[i][j][0][t]->SetYTitle("Arbitrary Units"); 
 
+	  h_var[i][j][0][t]->GetXaxis()->SetLabelOffset(0.03);
 	  h_var[i][j][0][t]->SetXTitle((variable_X[j]).c_str());
 	  h_var[i][j][0][t]->GetYaxis()->SetTitleSize(0.06); 
 	  h_var[i][j][0][t]->GetYaxis()->SetTitleOffset(0.7); 
@@ -223,6 +229,10 @@ void plotting(bool norm_xs_plots=false)
 	
       }
       
+      //      pad1[i][j]->RedrawAxis();
+      pad1[i][j]->Update();
+      pad1[i][j]->RedrawAxis();
+
       if (norm_xs_plots) sprintf(norm_name,"f");
       else if (!norm_xs_plots) sprintf(norm_name,"n");
       

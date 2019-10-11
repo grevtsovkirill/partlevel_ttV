@@ -52,7 +52,7 @@ void plotting()
 			     "#font[52]{min} #Delta R_{l_{0},jet}","#font[52]{min} #Delta R_{l_{1},jet}",
 			     "#font[52]{max} |#eta _{l}|",
 			     "#font[52]{HT}^{jets} [GeV]","#font[52]{HT}^{lep} [GeV]","#font[52]{HT} [GeV]",
-			     "Number of jets","Number of #font[52]{b}-jets","#font[52]{E}_{T}^{miss}","Leading lepton #eta","Subleading lepton #eta","Leading lepton #phi","Subleading lepton #phi","#Delta #phi ^{ll}",
+			     "Number of jets","Number of #font[52]{b}-jets","#font[52]{E}_{T}^{miss}","Leading lepton #eta","Subleading lepton #eta","Leading lepton #phi","Subleading lepton #phi","|#Delta #phi ^{ll}|",
 			     "1th jet #font[52]{p}_{T} [GeV]","2nd jet #font[52]{p}_{T} [GeV]","3rd jet #font[52]{p}_{T} [GeV]"
 }; //
 
@@ -104,7 +104,7 @@ void plotting()
 	h_var[i][j][0][t] = (TH1D *)file[0][t]->Get(sf_name);		 
 	//norm_hist = h_var[i][j][0][t]->GetSumOfWeights();
 	//1309: remove normalization
-	h_var[i][j][0][t]->Scale(1/norm_hist);
+	h_var[i][j][0][t]->Scale(1/(3*norm_hist));
 	norm_hist=1;
       }//variable - j
     }// region - i
@@ -147,7 +147,8 @@ void plotting()
 
 	  //if (variable[j]!="nBtagJets") h_var[i][j][k][t]->SetYTitle("Normalized");
 	  //else h_var[i][j][k][t]->SetYTitle("Events");
-	  h_var[i][j][0][t]->SetYTitle("Events"); 
+	  //h_var[i][j][0][t]->SetYTitle("Events"); 
+	  h_var[i][j][0][t]->SetYTitle("#sigma_{fid}"); 
 	  //h_var[i][j][0][t]->SetYTitle("Normalized"); 
 	  //h_var[i][j][0][t]->SetYTitle("Arbitrary Units"); 
 	  h_var[i][j][0][t]->SetXTitle((variable_X[j]).c_str());
@@ -220,7 +221,7 @@ void plotting()
 	
       }
       
-      sprintf(o_name,"Plots_90_v7/%s.pdf",canvas_name);
+      sprintf(o_name,"Plots_90_v7f/%s.pdf",canvas_name);
       //sprintf(o_name,"Plots_87_acc1_norm/%s.pdf",canvas_name);
       //sprintf(o_name,"Plots_MGvar_1/%s.pdf",canvas_name);
       

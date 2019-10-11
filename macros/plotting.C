@@ -9,7 +9,7 @@
 #include "/Users/grevtsov/Documents/working_files/AtlasStyle/AtlasUtils.C"
 
 void ATLASLabel(Double_t x,Double_t y,const char* text="",Color_t color=1, Double_t tsize=0.05);
-void plotting()
+void plotting(bool norm_xs_plots=false)
 {
 
   gROOT->Reset();
@@ -18,7 +18,7 @@ void plotting()
   TFile *file[10][10];
   //file[2] = TFile::Open("Res_ttW.root");
   TLatex latex2; latex2.SetTextSize(0.06); latex2.SetNDC();
-  char text[1000];  char text1[1000];  char text2[1000];
+  char text[1000];  char text1[1000];  char text2[1000]; char norm_name[1000];
   TString atl_lable = "Simulation Internal";//Simulation Internal unapproved
   string lep_flav="nominal"; 
   //sprintf(text1,"#sqrt{s} = 13 TeV, 2b %s 2lSS",lep_flav.c_str());
@@ -102,9 +102,10 @@ void plotting()
 	sprintf(sf_name,"%s_%s",variable[j].c_str(),nj_reg[i].c_str());   
 	cout << "sf_name " << sf_name<< " reg = "<< region_names[i]<< ", variable in histo - "<< variable[j]<< endl;
 	h_var[i][j][0][t] = (TH1D *)file[0][t]->Get(sf_name);		 
-	//norm_hist = h_var[i][j][0][t]->GetSumOfWeights();
-	//1309: remove normalization
-	h_var[i][j][0][t]->Scale(1/(3*norm_hist));
+	if (!norm_xs_plots) norm_hist = h_var[i][j][0][t]->GetSumOfWeights();
+	else if (norm_xs_plots) norm_hist = 3;
+	
+	h_var[i][j][0][t]->Scale(1/norm_hist);
 	norm_hist=1;
       }//variable - j
     }// region - i
@@ -148,9 +149,10 @@ void plotting()
 	  //if (variable[j]!="nBtagJets") h_var[i][j][k][t]->SetYTitle("Normalized");
 	  //else h_var[i][j][k][t]->SetYTitle("Events");
 	  //h_var[i][j][0][t]->SetYTitle("Events"); 
-	  h_var[i][j][0][t]->SetYTitle("#sigma_{fid}"); 
+	  if (norm_xs_plots) 	  h_var[i][j][0][t]->SetYTitle("#sigma_{fid}"); 
 	  //h_var[i][j][0][t]->SetYTitle("Normalized"); 
-	  //h_var[i][j][0][t]->SetYTitle("Arbitrary Units"); 
+	  else if (!norm_xs_plots) h_var[i][j][0][t]->SetYTitle("Arbitrary Units"); 
+
 	  h_var[i][j][0][t]->SetXTitle((variable_X[j]).c_str());
 	  h_var[i][j][0][t]->GetYaxis()->SetTitleSize(0.06); 
 	  h_var[i][j][0][t]->GetYaxis()->SetTitleOffset(0.7); 
@@ -221,7 +223,10 @@ void plotting()
 	
       }
       
-      sprintf(o_name,"Plots_90_v7f/%s.pdf",canvas_name);
+      if (norm_xs_plots) sprintf(norm_name,"f");
+      else if (!norm_xs_plots) sprintf(norm_name,"n");
+      
+      sprintf(o_name,"Plots_90_v8%s/%s.pdf",norm_name,canvas_name);
       //sprintf(o_name,"Plots_87_acc1_norm/%s.pdf",canvas_name);
       //sprintf(o_name,"Plots_MGvar_1/%s.pdf",canvas_name);
       

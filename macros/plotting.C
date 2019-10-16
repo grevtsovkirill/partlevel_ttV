@@ -29,7 +29,7 @@ void plotting(bool norm_xs_plots=false)
   //  vector<string> region_names={"0t 1b 3j","0t 2b 3j"}; vector<string>  nj_reg={"2","3"};
 
   //vector<string> region_names={"0t 1b 4j", "0t 2b 4j","0t 1b 3j", "0t 2b 3j", "1t 1b 3j"};
-  vector<string> region_names={"0t 1b 4j", "0t 2b 4j","0t 1b 3j", "0t 2b 3j","1t 1b 3j", "0t=3j","0tg4j","otg3g0b"};
+  vector<string> region_names={"0#tau_{had} 1#font[52]{b} #geq4#font[52]{j}", "0#tau_{had} #geq2#font[52]{b} #geq4#font[52]{j}","0#tau_{had} 1#font[52]{b} 3#font[52]{j}", "0#tau_{had} #geq2#font[52]{b} 3#font[52]{j}","1#tau_{had} #geq1#font[52]{b} #geq3#font[52]{j}"};//, "0t=3j","0tg4j","otg3g0b"};
   //			       "1t 1b 4j", "1t 2b 4j","1t 1b 3j", "1t 2b 3j"};
   
   //vector<string> region_names={"0t 1b 4j"}; vector<string>  nj_reg={"0"};
@@ -43,7 +43,7 @@ void plotting(bool norm_xs_plots=false)
   //vector<string> region_names={"1t 1b 3j"}; vector<string>  nj_reg={"6"};
   //vector<string> region_names={"1t 2b 3j"}; vector<string>  nj_reg={"7"};
 //
-  vector<string>  nj_reg={"0","1","2","3","4","5","6","7"};
+  vector<string>  nj_reg={"0","1","2","3","4"};//,"5","6","7"};
   vector<string> variable={"DRll01","lep_Pt_0","lep_Pt_1","jet_Pt_4","jet_Pt_5","jet_Pt_6","Bjet_Pt_0","Bjet_Pt_1","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT_leps","HT","nJets","nBtagJets","MET","lep_Eta_0","lep_Eta_1","lep_Phi_0","lep_Phi_1","lep_dPhi","jet_Pt_1","jet_Pt_2","jet_Pt_3"}; //
 
   vector<string> variable_X={"#Delta R_{l_{0},l_{1}}","Leading lepton #font[52]{p}_{T} [GeV]","Subeading lepton #font[52]{p}_{T} [GeV]",
@@ -154,11 +154,14 @@ void plotting(bool norm_xs_plots=false)
 	  //if (variable[j]!="nBtagJets") h_var[i][j][k][t]->SetYTitle("Normalized");
 	  //else h_var[i][j][k][t]->SetYTitle("Events");
 	  //h_var[i][j][0][t]->SetYTitle("Events"); 
-	  if (norm_xs_plots) 	  h_var[i][j][0][t]->SetYTitle("#sigma_{fid}"); 
+	  if (norm_xs_plots) 	  h_var[i][j][0][t]->SetYTitle("#sigma_{fid} [fb]"); 
 	  //h_var[i][j][0][t]->SetYTitle("Normalized"); 
 	  else if (!norm_xs_plots) h_var[i][j][0][t]->SetYTitle("Arbitrary Units"); 
 
 	  h_var[i][j][0][t]->GetXaxis()->SetLabelOffset(0.015);
+	  if(variable[i].find("nJets")!= std::string::npos) h_var[i][j][0][t]->GetXaxis()->SetNdivisions(500, kTRUE);
+
+	  //||variable[i].find("nBtagJets")
 	  h_var[i][j][0][t]->SetXTitle((variable_X[j]).c_str());
 	  h_var[i][j][0][t]->GetYaxis()->SetTitleSize(0.06); 
 	  h_var[i][j][0][t]->GetYaxis()->SetTitleOffset(0.7); 
@@ -208,7 +211,7 @@ void plotting(bool norm_xs_plots=false)
       
       sprintf(text1,"#sqrt{s} = 13 TeV,");
       //sprintf(text2,"Variable: %s",variable_X[j].c_str());//+nj_reg[i]+variable[j]
-      sprintf(text2,"2l SS %s ",region_names[i].c_str());
+      sprintf(text2,"2#font[52]{l}SS %s ",region_names[i].c_str());
       
       ATLASLabel(0.18,0.87,atl_lable,1,0.065); 
       latex2.DrawLatex(0.18, 0.8, text1);  
@@ -236,7 +239,7 @@ void plotting(bool norm_xs_plots=false)
       if (norm_xs_plots) sprintf(norm_name,"f");
       else if (!norm_xs_plots) sprintf(norm_name,"n");
       
-      sprintf(o_name,"Plots_90_v8%s/%s.pdf",norm_name,canvas_name);
+      sprintf(o_name,"Plots_90_v10%s/%s.pdf",norm_name,canvas_name);
       //sprintf(o_name,"Plots_87_acc1_norm/%s.pdf",canvas_name);
       //sprintf(o_name,"Plots_MGvar_1/%s.pdf",canvas_name);
       

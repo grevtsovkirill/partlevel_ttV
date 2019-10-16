@@ -60,8 +60,8 @@ void acc()
   //*
   //vector<string> type={"Sherpa","MG","SherpaScaleUp","SherpaScaleDown","SherpaPup","SherpaPdown"};
   //vector<string> type={"Sherpa","MG","SherpaScaleUp","SherpaScaleDown","SherpaNNup","SherpaNNdown"};
-  //vector<string> type={"Sherpa","MG","SherpaScaleUp","SherpaScaleDown"};
-  vector<string> type={"Sherpa","MG"};
+  vector<string> type={"Sherpa","MG5_aMcAtNlo","SherpaScaleUp","SherpaScaleDown"};
+  //vector<string> type={"Sherpa","MG5_aMcAtNlo"};
   //vector<string> type={"Sherpa","MG"};
   //vector<string> type={"Sherpa","MG"};
   Int_t color_sample[8]={1,633,601,418,617,799,617,625};
@@ -106,6 +106,30 @@ void acc()
   gStyle->SetPaintTextFormat("4.2f");
   cout << "canvas_name "<< canvas_name<< endl;
   canv[i][j] = new TCanvas(canvas_name, "", 800, 600);
+  sprintf(p1_name,"p1_%s_%s",nj_reg[i].c_str(),variable[j].c_str() );
+  sprintf(p2_name,"p2_%s_%s",nj_reg[i].c_str(),variable[j].c_str() );
+  
+  pad1[i][j] = new TPad(p1_name, "pad1", 0, 0.32, 1, 1);
+  pad1[i][j]->SetBottomMargin(0.018);
+  pad1[i][j]->SetBorderMode(0);
+  pad1[i][j]->SetLeftMargin(0.1);
+  pad1[i][j]->SetFillStyle(0);
+  
+  pad2[i][j] = new TPad(p2_name, "pad2", 0, 0, 1, 0.3);
+  pad2[i][j]->SetTopMargin(0);
+  pad2[i][j]->SetLeftMargin(0.1);
+  pad2[i][j]->SetBottomMargin(0.3);
+  pad2[i][j]->SetFillStyle(4000);
+  pad2[i][j]->SetBorderMode(4000);
+  //pad2[i][j]->SetFillColorAlpha(kBlue, 0.99);
+  //pad1[i][j]->SetLogx(); 
+  //pad2[i][j]->SetLogx(); 
+  pad1[i][j]->Draw();
+  pad2[i][j]->Draw();
+  
+  pad1[i][j]->cd();             
+
+
   legend[i][j] = new TLegend(0.6,0.7,0.9,0.9);
   legend[i][j]->SetTextFont(42);legend[i][j]->SetFillColor(0);  legend[i][j]->SetBorderSize(0); legend[i][j]->SetFillStyle(0);  legend[i][j]->SetTextSize(0.045);
 
@@ -115,7 +139,8 @@ void acc()
       
       //if (variable[j]!="nBtagJets") h_var[i][j][k][t]->SetYTitle("Normalized");
       //else h_var[i][j][k][t]->SetYTitle("Events");
-      h_var[i][j][0][t]->SetYTitle("#sigma_{fid}"); 
+      h_var[i][j][0][t]->GetXaxis()->SetLabelOffset(0.015);
+      h_var[i][j][0][t]->SetYTitle("#sigma_{fid} [fb]"); 
       //h_var[i][j][0][t]->SetYTitle("Normalized"); 
       //h_var[i][j][0][t]->SetYTitle("Arbitrary Units"); 
       h_var[i][j][0][t]->SetXTitle(" ");
@@ -135,19 +160,57 @@ void acc()
     if (t==1)   h_var[i][j][0][t]->SetBarOffset(0.25);
     //if(h_var[i][j][0][t]->Integral()>0){
     h_var[i][j][0][t]->Draw("E1histsame");
-    h_var[i][j][0][t]->Draw("text12same");
+    if (t<3) h_var[i][j][0][t]->Draw("text12same");
     legend[i][j]->AddEntry(h_var[i][j][0][t],(type[t]+ " ").c_str(),"LP");
+
+  	sprintf(sf_name,"ratio_%s_%s_%s",variable[j].c_str(),nj_reg[i].c_str(),type[t].c_str());   
+	cout<< "ratio name "<< sf_name<< endl;
+	
+	//sprintf(sf_name,"ratio_%s_%s",variable[j].c_str(),nj_reg[i].c_str());   
+	//*
+	
+	// i region, j - variable, t -nom/variation, 
+	h_var[i][j][3][t] = (TH1D*) h_var[i][j][0][t]->Clone(sf_name);
+	h_var[i][j][3][t]->Divide(h_var[i][j][0][0]);
+	
+	h_var[i][j][3][t]->GetXaxis()->SetTitleSize(0.14); 
+	h_var[i][j][3][t]->GetYaxis()->SetTitleSize(0.14); 
+	h_var[i][j][3][t]->GetXaxis()->SetTitleOffset(1.); 
+	h_var[i][j][3][t]->GetYaxis()->SetTitleOffset(0.33); 
+	h_var[i][j][3][t]->GetXaxis()->SetLabelSize(0.14);
+	h_var[i][j][3][t]->GetYaxis()->SetLabelSize(0.14);
+	h_var[i][j][3][t]->GetYaxis()->SetNdivisions(405, kTRUE);
+	
+	h_var[i][j][3][t]->GetXaxis()->SetTickLength(0.1); 
+	h_var[i][j][3][t]->SetLineWidth(2);
+	
+	
+	h_var[i][j][3][t]->SetMinimum(0.7);
+	h_var[i][j][3][t]->SetMaximum(1.3);
   }
   sprintf(text1,"#sqrt{s} = 13 TeV");
   //sprintf(text2,"Variable: %s",variable_X[j].c_str());//+nj_reg[i]+variable[j]
   //sprintf(text2,"2l SS %s ",region_names[i].c_str());
-      
   ATLASLabel(0.18,0.87,atl_lable,1,0.05); 
   latex2.DrawLatex(0.18, 0.8, text1);  
   //    latex2.DrawLatex(0.18, 0.73, text2); //latex2.DrawLatex(0.20, 0.7, "Data");
   legend[i][j]->Draw("same");
-      
-
+  pad2[i][j]->cd();
+  //*
+  
+  h_var[i][j][3][0]->SetYTitle("Ratio to Sherpa");
+  h_var[i][j][3][0]->Draw("hist");
+  for(int t=1;t<type.size();t++){
+    h_var[i][j][3][t]->SetLineWidth(3);
+    h_var[i][j][3][t]->SetLineColor(color_sample[t]);
+    h_var[i][j][3][t]->SetMarkerColor(color_sample[t]);
+    h_var[i][j][3][t]->SetLineStyle(linestyle[t]);
+    h_var[i][j][3][t]->Draw("histsame");
+    
+  }
+  
+  
+  
 }
 
 void ATLASLabel(Double_t x,Double_t y,const char* text,Color_t color, Double_t tsize)

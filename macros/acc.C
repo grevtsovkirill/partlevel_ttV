@@ -19,7 +19,7 @@ void acc()
   //file[2] = TFile::Open("Res_ttW.root");
   TLatex latex2; latex2.SetTextSize(0.05); latex2.SetNDC();
   char text[1000];  char text1[1000];  char text2[1000];
-  TString atl_lable = "Simulation Internal";//Simulation Internal unapproved
+  TString atl_lable = "Generator-level";//Simulation Preliminary Simulation Internal unapproved
   string lep_flav="nominal"; 
   //sprintf(text1,"#sqrt{s} = 13 TeV, 2b %s 2lSS",lep_flav.c_str());
   sprintf(text2,"");
@@ -55,6 +55,10 @@ void acc()
 			     "Number of jets","Number of #font[52]{b}-jets","#font[52]{E}_{T}^{miss}","Leading lepton #eta","Subleading lepton #eta","Leading lepton #phi","Subleading lepton #phi","|#Delta #phi ^{ll}|",
 			     "1th jet #font[52]{p}_{T} [GeV]","2nd jet #font[52]{p}_{T} [GeV]","3rd jet #font[52]{p}_{T} [GeV]"
 }; //
+
+    const std::vector<TString> s_cutDescs =
+    {  "Preselections","Nleps","lepPt1>20","lepPt0>25","lepCentr","SS","jPt/eta","3j1b",
+       "0#tau_{had} 1#font[52]{b} #geq4#font[52]{j}", "0#tau_{had} #geq2#font[52]{b} #geq4#font[52]{j}","0#tau_{had} 1#font[52]{b} 3#font[52]{j}", "0#tau_{had} #geq2#font[52]{b} 3#font[52]{j}","1#tau_{had} #geq1#font[52]{b} #geq3#font[52]{j}"};
 
   //vector<string> variable={"lep_Eta_0","lep_Eta_1","lep_Phi_0","lep_Phi_1"};
   //*
@@ -146,6 +150,12 @@ void acc()
       h_var[i][j][0][t]->SetXTitle(" ");
       h_var[i][j][0][t]->GetYaxis()->SetTitleSize(0.05); 
       h_var[i][j][0][t]->GetYaxis()->SetTitleOffset(0.7); 
+
+      int Ncuts = s_cutDescs.size();
+	
+      for (int bin=1;bin<=Ncuts;++bin){
+	h_var[i][j][0][t]->GetXaxis()->SetBinLabel(bin,s_cutDescs[bin-1]);
+      }
       //h_var[i][j][0][t]->GetXaxis()->SetRangeUser(20,500);
       h_var[i][j][0][t]->SetMaximum(h_var[i][j][0][t]->GetMaximum()*1.6);
       h_var[i][j][0][t]->Draw("E1");

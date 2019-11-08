@@ -50,10 +50,12 @@ void rivet_comparison(bool norm_xs_plots=false)
   //vector<string> type={"Sherpa","MG","SherpaScaleUp","SherpaScaleDown","SherpaNNup","SherpaNNdown"};
   //vector<string> type={"413008","410155"};
   //vector<string> type={"Rivet: Sherpa","Rivet: MG"};
-  vector<string> type={"gen-lev: Sherpa","Rivet: Sherpa"};
-  //vector<string> type={"Sherpa","MG"};
+  vector<string> type={"Rivet: Sherpa","Rivet: MG","Sherpa 228" };
+  //vector<string> type={"gen-lev: SherpaUp","Rivet: SherpaUp"};
+  //vector<string> type={"gen-lev: MG","Rivet: MG"};
   //vector<string> type={"Sherpa","MG"};
   Int_t color_sample[8]={1,633,601,418,617,799,617,625};
+  //Int_t color_sample[8]={601,418,617,799,617,625,1,633};
   Int_t linestyle[8]={1,1,7,9,4,10,3,2};
   //*/
 
@@ -80,12 +82,22 @@ void rivet_comparison(bool norm_xs_plots=false)
   Double_t norm_hist=1;
   cout <<"loop to load histos"<< endl;
 
-  file[0][0] = TFile::Open("input/Res_Sherpa.root");
-  file[0][1] = TFile::Open("input/rivet/413008_v1.root");
-  //file[0][1] = TFile::Open("input/rivet/410155.root");
+  file[0][0] = TFile::Open("input/rivet/413008_v3.root");
+  file[0][1] = TFile::Open("input/rivet/410155_v3.root");
+  file[0][2] = TFile::Open("input/rivet/700000_v3.root");
+  
+  //file[0][0] = TFile::Open("input/Res_Sherpa.root");
+  //file[0][1] = TFile::Open("input/rivet/413008_v1.root");
+  //up
+  //file[0][0] = TFile::Open("input/Res_SherpaScaleUp.root");
+  //file[0][1] = TFile::Open("input/rivet/413008_v1_up.root");
+  //MG
+  //file[0][0] = TFile::Open("input/Res_MG5_aMcAtNlo.root");
+  //file[0][1] = TFile::Open("input/rivet/410155_v1.root");
 
   for(int t=0;t<type.size();t++){ 
     file_name=base_name+"_"+type[t]+".root";
+
     //cout<< "file_name  - " << file_name<< endl;
     //  file[0][t] = TFile::Open(file_name.c_str());
     
@@ -93,9 +105,13 @@ void rivet_comparison(bool norm_xs_plots=false)
     for(int i=0;i<nj_reg.size();i++){
       //variable
       for(int j=0;j<variable.size();j++){
-	
-	if(t==0) sprintf(sf_name,"%s_%s",variable[j].c_str(),nj_reg[i].c_str());   
-	else if(t==1) sprintf(sf_name,"ttw_ttH/%s_%s",variable[j].c_str(),nj_reg[i].c_str());   
+
+	//For Comparison Gen-Rivet
+	//if(t==0) sprintf(sf_name,"%s_%s",variable[j].c_str(),nj_reg[i].c_str());   
+	//else if(t==1) sprintf(sf_name,"ttw_ttH/%s_%s",variable[j].c_str(),nj_reg[i].c_str());
+
+	// For rivet only
+	sprintf(sf_name,"ttw_ttH/%s_%s",variable[j].c_str(),nj_reg[i].c_str());
 	cout << "sf_name " << sf_name<< " reg = "<< region_names[i]<< ", variable in histo - "<< variable[j]<< endl;
 	h_var[i][j][0][t] = (TH1D *)file[0][t]->Get(sf_name);		 
 	if (!norm_xs_plots) norm_hist = h_var[i][j][0][t]->GetSumOfWeights();
@@ -197,10 +213,13 @@ void rivet_comparison(bool norm_xs_plots=false)
 	h_var[i][j][3][t]->GetXaxis()->SetTickLength(0.1); 
 	h_var[i][j][3][t]->SetLineWidth(2);
 	
-	
-	h_var[i][j][3][t]->SetMinimum(0.85);
-	h_var[i][j][3][t]->SetMaximum(1.15);
-	
+	//For comparison Gen-Rivet
+	//h_var[i][j][3][t]->SetMinimum(0.85);
+	//h_var[i][j][3][t]->SetMaximum(1.15);
+
+	h_var[i][j][3][t]->SetMinimum(0.6);
+	h_var[i][j][3][t]->SetMaximum(1.4);
+
 	//*/
 	//}    
       }//t loop: nominal - variations      
@@ -235,7 +254,7 @@ void rivet_comparison(bool norm_xs_plots=false)
       if (norm_xs_plots) sprintf(norm_name,"f");
       else if (!norm_xs_plots) sprintf(norm_name,"n");
       
-      sprintf(o_name,"Plots_gen_rivet_%s/%s.pdf",norm_name,canvas_name);
+      sprintf(o_name,"Plots_rivet_s228_%s/%s.pdf",norm_name,canvas_name);
       canv[i][j]->Print(o_name);
 
       //*/

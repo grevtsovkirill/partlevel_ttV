@@ -49,15 +49,22 @@ void rivet_comparison(bool norm_xs_plots=false)
   //vector<string> type={"Sherpa","MG","SherpaScaleUp","SherpaScaleDown","SherpaPup","SherpaPdown"};
   //vector<string> type={"Sherpa","MG","SherpaScaleUp","SherpaScaleDown","SherpaNNup","SherpaNNdown"};
   //vector<string> type={"413008","410155"};
-  vector<string> type={"ATLAS Sherpa","ATLAS aMC@NLO","CMS aMC@NLO FxFx"};
+  vector<string> type={"ATLAS Sherpa 221","ATLAS aMC@NLO","CMS aMC@NLO FxFx","ATLAS Sherpa muR2muF2" ,"ATLAS Sherpa muR0.5muF0.5","ATLAS Sherpa 228"};
+  //vector<string> type={"Rivet Chris","Rivet Kirill","AnalysisTop"};
   //vector<string> type={"Sherpa 221","aMC@NLO","Sherpa 228","S221 muR2muF2" ,"S221 muR0.5muF0.5" };
-  //vector<string> type={"AnalysisTop","Rivet wo #nu","Rivet with #nu"};
+  //vector<string> type={"AnalysisTop","Rivet"};
   //vector<string> type={"gen-lev: MG","Rivet: MG"};
   //vector<string> type={"Sherpa","MG"}; 
+  //ATLAS - CMS comparison
+  Int_t color_sample[8]={864,594,633,921,922,617,860,868};//625
+  //AT-rivet Sherpa
   //Int_t color_sample[8]={1,633,601,920,922,799,617,625};
-  Int_t color_sample[8]={864,594,633,860,868,921,922,625};
+  //AT-rivet MG
   //Int_t color_sample[8]={601,418,617,799,617,625,1,633};
-  Int_t linestyle[8]={1,1,7,9,4,10,3,2};
+
+  //Int_t linestyle[8]={1,1,7,9,4,10,3,2};
+  //                 AS AM cM, Su, Sd
+  Int_t linestyle[8]={1, 7, 1, 3,  4, 2,3,2};
   //*/
 
   /* MG vars
@@ -85,14 +92,17 @@ void rivet_comparison(bool norm_xs_plots=false)
 
   file[0][0] = TFile::Open("input/rivet/413008_v3.root");
   file[0][1] = TFile::Open("input/rivet/410155_v3.root");
+  //file[0][0] = TFile::Open("input/rivet/413008cg.root");
   //file[0][2] = TFile::Open("input/rivet/700000_v3.root");
   file[0][2] = TFile::Open("input/rivet/cms_v0/TTWJetsToLNuMerged.root");
+  //file[0][2] = TFile::Open("input/Res_Sherpa.root");
   
-  /* file[0][3] = TFile::Open("input/rivet/413008_v3_up.root"); */
-  /* file[0][4] = TFile::Open("input/rivet/413008_v3_down.root"); */
+  file[0][3] = TFile::Open("input/rivet/413008_v3_up.root");
+  file[0][4] = TFile::Open("input/rivet/413008_v3_down.root");
+  file[0][5] = TFile::Open("input/rivet/700000_v3.root");
   
-  /* file[0][0] = TFile::Open("input/Res_Sherpa.root"); */
-  /* file[0][1] = TFile::Open("input/rivet/413008_v3.root"); */
+  //file[0][0] = TFile::Open("input/Res_Sherpa.root");
+  //file[0][1] = TFile::Open("input/rivet/413008_v3.root");
   /* file[0][2] = TFile::Open("input/rivet/413008_withNu.root"); */
   
   //up
@@ -100,7 +110,7 @@ void rivet_comparison(bool norm_xs_plots=false)
   //file[0][1] = TFile::Open("input/rivet/413008_v1_up.root");
   //MG
   //file[0][0] = TFile::Open("input/Res_MG5_aMcAtNlo.root");
-  //file[0][1] = TFile::Open("input/rivet/410155_v1.root");
+  //file[0][1] = TFile::Open("input/rivet/410155_v3.root");
 
   for(int t=0;t<type.size();t++){ 
     file_name=base_name+"_"+type[t]+".root";
@@ -121,9 +131,11 @@ void rivet_comparison(bool norm_xs_plots=false)
 	//sprintf(sf_name,"ttw_ttH/%s_%s",variable[j].c_str(),nj_reg[i].c_str());
 
 	//For Comparison with CMS
-	if(t<2) sprintf(sf_name,"ttw_ttH/%s_%s",variable[j].c_str(),nj_reg[i].c_str());   
+	if(t<2 || t>2) sprintf(sf_name,"ttw_ttH/%s_%s",variable[j].c_str(),nj_reg[i].c_str());
 	else if(t==2) sprintf(sf_name,"CMS_2019_TTH_TTWBCKG/%s_%s",variable[j].c_str(),nj_reg[i].c_str());
-
+	/* //AT version */
+	/* else if(t==2) sprintf(sf_name,"%s_%s",variable[j].c_str(),nj_reg[i].c_str()); */
+	
 	cout << "sf_name " << sf_name<< " reg = "<< region_names[i]<< ", variable in histo - "<< variable[j]<< endl;
 	h_var[i][j][0][t] = (TH1D *)file[0][t]->Get(sf_name);		 
 	if (!norm_xs_plots) norm_hist = h_var[i][j][0][t]->GetSumOfWeights();
@@ -167,7 +179,8 @@ void rivet_comparison(bool norm_xs_plots=false)
       
       pad1[i][j]->cd();             
 
-      legend[i][j] = new TLegend(0.6,0.6,0.9,0.9);
+      //legend[i][j] = new TLegend(0.6,0.6,0.9,0.9);
+      legend[i][j] = new TLegend(0.5,0.6,0.9,0.9);
       legend[i][j]->SetTextFont(42);legend[i][j]->SetFillColor(0);  legend[i][j]->SetBorderSize(0); legend[i][j]->SetFillStyle(0);  legend[i][j]->SetTextSize(0.05);
       
 
@@ -199,9 +212,10 @@ void rivet_comparison(bool norm_xs_plots=false)
 	h_var[i][j][0][t]->SetMarkerStyle(20+t);
 	
 	h_var[i][j][0][t]->SetLineWidth(2);
+	if(t==5)	h_var[i][j][0][t]->SetLineWidth(4);
 	h_var[i][j][0][t]->SetLineStyle(linestyle[t]);
 	//if(h_var[i][j][0][t]->Integral()>0){
-	if(t<3) h_var[i][j][0][t]->Draw("E1histsame");
+	if(t<3 || t==5) h_var[i][j][0][t]->Draw("E1histsame");
 	legend[i][j]->AddEntry(h_var[i][j][0][t],(type[t]+ " ").c_str(),"LP");
 	//}//
 	sprintf(sf_name,"ratio_%s_%s_%s",variable[j].c_str(),nj_reg[i].c_str(),type[t].c_str());   
@@ -225,12 +239,12 @@ void rivet_comparison(bool norm_xs_plots=false)
 	h_var[i][j][3][t]->GetXaxis()->SetTickLength(0.1); 
 	h_var[i][j][3][t]->SetLineWidth(2);
 	
-	//For comparison Gen-Rivet
-	h_var[i][j][3][t]->SetMinimum(0.7);
-	h_var[i][j][3][t]->SetMaximum(1.3);
+	h_var[i][j][3][t]->SetMinimum(0.65);
+	h_var[i][j][3][t]->SetMaximum(1.35);
 
-	//h_var[i][j][3][t]->SetMinimum(0.9);
-	//h_var[i][j][3][t]->SetMaximum(1.1);
+	//For comparison Gen-Rivet
+	//h_var[i][j][3][t]->SetMinimum(0.91);
+	//h_var[i][j][3][t]->SetMaximum(1.09);
 
 	//*/
 	//}    
@@ -238,6 +252,7 @@ void rivet_comparison(bool norm_xs_plots=false)
       
       sprintf(text1,"#sqrt{s} = 13 TeV, rivet routine");
       //sprintf(text1,"#sqrt{s} = 13 TeV, Sherpa 221, 413008");
+      //sprintf(text1,"#sqrt{s} = 13 TeV, aMC@NLO, 410155");
       //sprintf(text2,"Variable: %s",variable_X[j].c_str());//+nj_reg[i]+variable[j]
       sprintf(text2,"2#font[52]{l}SS %s ",region_names[i].c_str());
       
@@ -249,11 +264,14 @@ void rivet_comparison(bool norm_xs_plots=false)
       pad2[i][j]->cd();
       //*
 
-      h_var[i][j][3][0]->SetYTitle("Ratio to Sherpa");
+      //h_var[i][j][3][0]->SetYTitle("Ratio to Sherpa");
+      h_var[i][j][3][0]->SetYTitle("Ratio to Sherpa 221");
+      //h_var[i][j][3][0]->SetYTitle("Ratio to AT");
       h_var[i][j][3][0]->Draw("hist");
       for(int t=1;t<type.size();t++){
 	if(t<3) h_var[i][j][3][t]->SetLineWidth(3);
-	else h_var[i][j][3][t]->SetLineWidth(1);
+	else if(t>2 &&t<5)	h_var[i][j][0][t]->SetLineWidth(1);
+	else h_var[i][j][3][t]->SetLineWidth(4);
 	h_var[i][j][3][t]->SetLineColor(color_sample[t]);
 	h_var[i][j][3][t]->SetMarkerColor(color_sample[t]);
 	h_var[i][j][3][t]->SetLineStyle(linestyle[t]);
@@ -268,7 +286,9 @@ void rivet_comparison(bool norm_xs_plots=false)
       if (norm_xs_plots) sprintf(norm_name,"f");
       else if (!norm_xs_plots) sprintf(norm_name,"n");
       
-      sprintf(o_name,"Plots_rivet_CMS_%s/%s.pdf",norm_name,canvas_name);
+      sprintf(o_name,"Plots_rivet_CMS_s228_12_%s/%s.pdf",norm_name,canvas_name);
+      //sprintf(o_name,"Plots_gen_rivet_12_%s/%s.pdf",norm_name,canvas_name);
+
       canv[i][j]->Print(o_name);
 
       //*/

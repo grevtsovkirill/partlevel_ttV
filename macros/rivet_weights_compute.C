@@ -190,8 +190,21 @@ void rivet_weights_compute(bool norm_xs_plots=false)
       legend[i][j] = new TLegend(0.5,0.6,0.9,0.9);
       legend[i][j]->SetTextFont(42);legend[i][j]->SetFillColor(0);  legend[i][j]->SetBorderSize(0); legend[i][j]->SetFillStyle(0);  legend[i][j]->SetTextSize(0.05);
       
-
-      
+      Double_t nom_bin_i=0,diff_bin_ib=0,var_bin_i=0,shift_bin_i=0;
+      //loop over hist bins
+      int nbinsx=0;
+      nbinsx = h_var[i][j][0][0]->GetXaxis()->GetNbins(); //get Nbins from nominal sample
+      for(int ib=0; ib<nbinsx;ib++){
+	
+	nom_bin_i=h_var[i][j][0][0]->GetBinContent(ib);
+	diff_bin_ib=0;
+	for(int t=1;t<type.size();t++){
+	  var_bin_i=h_var[i][j][0][t]->GetBinContent(ib);
+	  diff_bin_ib+=pow((nom_bin_i-var_bin_i),2);
+	}
+	shift_bin_i=sqrt(diff_bin_ib);
+	cout<< "nom_bin_i= "<<nom_bin_i<<", shift_bin_i="<< shift_bin_i<< "; up = "<< nom_bin_i+shift_bin_i<< "; down = "<< nom_bin_i-shift_bin_i<< "; orig up/down= "<< h_var[i][j][0][1]->GetBinContent(ib)<<"/"<<h_var[i][j][0][2]->GetBinContent(ib)<< endl;
+      }
       
       for(int t=0;t<type.size();t++){
 

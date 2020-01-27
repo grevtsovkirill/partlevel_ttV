@@ -228,7 +228,8 @@ void rivet_weights_compute(bool norm_xs_plots=false)
       legend[i][j] = new TLegend(0.65,0.5,0.9,0.9);
       legend[i][j]->SetTextFont(42);legend[i][j]->SetFillColor(0);  legend[i][j]->SetBorderSize(0); legend[i][j]->SetFillStyle(0);  legend[i][j]->SetTextSize(0.05);
       
-      Double_t nom_bin_i=0,diff_bin_ib=0,var_bin_i=0,shift_bin_i=0;
+      Double_t nom_bin_i=0,diff_bin_ib=0,var_bin_i=0,shift_bin_i=0,
+	diffA_bin_ib=0,varA_bin_i=0,shiftA_bin_i=0;
       //loop over hist bins
       int nbinsx=0;
       sprintf(sf_name,"unc_up_%s_%s",variable[j].c_str(),nj_reg[i].c_str());   
@@ -245,15 +246,21 @@ void rivet_weights_compute(bool norm_xs_plots=false)
       for(int ib=0; ib<nbinsx+1;ib++){
 	
 	nom_bin_i=h_var[i][j][0][0]->GetBinContent(ib);
-	diff_bin_ib=0;
+	diff_bin_ib=0;	diffA_bin_ib=0;
 	for(int t=1;t<type.size();t++){
 	  var_bin_i=h_var[i][j][0][t]->GetBinContent(ib);
 	  diff_bin_ib+=pow((nom_bin_i-var_bin_i),2);
+	  if(type[t]=="R05F05"|| type[t]=="R2F2"){
+	    varA_bin_i=h_var[i][j][0][t]->GetBinContent(ib);
+	    diffA_bin_ib+=pow((nom_bin_i-varA_bin_i),2);
+	    cout << "type[t] "<< type[t]<< endl;
+	  }
 	}
 	shift_bin_i=sqrt(diff_bin_ib);
+	shiftA_bin_i=sqrt(diffA_bin_ib);
 	//cout<< "nom_bin_i= "<<nom_bin_i<<", shift_bin_i="<< shift_bin_i<< "; up = "<< nom_bin_i+shift_bin_i<< "; down = "<< nom_bin_i-shift_bin_i<< "; orig up/down= "<< h_var[i][j][0][1]->GetBinContent(ib)<<"/"<<h_var[i][j][0][2]->GetBinContent(ib)<< endl;
-	h_var[i][j][4][0]->SetBinContent(ib,nom_bin_i+shift_bin_i);
-	h_var[i][j][5][0]->SetBinContent(ib,nom_bin_i-shift_bin_i);
+	h_var[i][j][4][0]->SetBinContent(ib,nom_bin_i+shift_bin_i);	h_var[i][j][5][0]->SetBinContent(ib,nom_bin_i-shift_bin_i);
+	h_var[i][j][6][0]->SetBinContent(ib,nom_bin_i+shiftA_bin_i);	h_var[i][j][7][0]->SetBinContent(ib,nom_bin_i-shiftA_bin_i);
       }
       
       for(int t=0;t<type.size();t++){
@@ -325,7 +332,7 @@ void rivet_weights_compute(bool norm_xs_plots=false)
 	//}    
 	if(t==0){
 	  
-	  for(int unc=4;unc<6;unc++){
+	  for(int unc=4;unc<8;unc++){
 	    h_var[i][j][unc][0]->SetMarkerColor(10+unc); h_var[i][j][unc][0]->SetMarkerSize(0.1);  h_var[i][j][unc][0]->SetLineColor(10+unc);
 	    h_var[i][j][unc][0]->Draw("E1histsame");
 	    legend[i][j]->AddEntry(h_var[i][j][unc][0],("Tot envelope "+to_string(unc)).c_str(),"LP");
@@ -375,6 +382,8 @@ void rivet_weights_compute(bool norm_xs_plots=false)
       h_var[i][j][15][0]->Draw("hist");
       h_var[i][j][8][0]->Draw("histsame");
       h_var[i][j][9][0]->Draw("histsame");
+      h_var[i][j][10][0]->Draw("histsame");
+      h_var[i][j][11][0]->Draw("histsame");
 
 
       //      pad1[i][j]->RedrawAxis();

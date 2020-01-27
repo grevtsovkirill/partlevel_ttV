@@ -51,7 +51,7 @@ void rivet_weights_compute(bool norm_xs_plots=false)
   //vector<string> type={"Sherpa","MG","SherpaScaleUp","SherpaScaleDown","SherpaNNup","SherpaNNdown"};
   //vector<string> type={"413008","410155"};
   //vector<string> type={"ATLAS Sherpa 221","ATLAS aMC@NLO","CMS aMC@NLO FxFx","ATLAS Sherpa muR2muF2" ,"ATLAS Sherpa muR0.5muF0.5","ATLAS Sherpa 228"};
-  vector<string> type={"ATLAS Sherpa 221","Up","Down"};
+  //vector<string> type={"ATLAS Sherpa 221","Up","Down"};
   //vector<string> type={"Rivet Chris","Rivet Kirill","AnalysisTop"};
   //vector<string> type={"Sherpa 221","aMC@NLO","Sherpa 228","S221 muR2muF2" ,"S221 muR0.5muF0.5" };
   //vector<string> type={"AnalysisTop","Rivet"};
@@ -90,11 +90,32 @@ void rivet_weights_compute(bool norm_xs_plots=false)
   string file_name;
 
   Double_t norm_hist=1;
-  cout <<"loop to load histos"<< endl;
+  vector<string> type={"Sherpa 228","R05F05","R05F1","R1F05","R2F1","R1F2","R2F2" };
+  vector<string> type_path={"nom"
+			    ,"MUR0.5_MUF0.5_PDF261000_PSMUR0.5_PSMUF0.5"
+			    ,"MUR0.5_MUF1_PDF261000_PSMUR0.5_PSMUF1"
+			    ,"MUR1_MUF0.5_PDF261000_PSMUR1_PSMUF0.5"
+			    ,"MUR2_MUF1_PDF261000_PSMUR2_PSMUF1"
+			    ,"MUR1_MUF2_PDF261000_PSMUR1_PSMUF2"
+			    ,"MUR2_MUF2_PDF261000_PSMUR2_PSMUF2"
+  };
 
-  file[0][0] = TFile::Open("input/rivet/413008_v3.root");
-  file[0][1] = TFile::Open("input/rivet/413008_v3_up.root");
-  file[0][2] = TFile::Open("input/rivet/413008_v3_down.root");
+  /*
+    s228_ttw_20.01/700000_mePS_scale.root :
+    MUR0.5_MUF0.5_PDF261000_PSMUR0.5_PSMUF0.5
+    MUR0.5_MUF1_PDF261000_PSMUR0.5_PSMUF1
+    MUR1_MUF0.5_PDF261000_PSMUR1_PSMUF0.5
+    MUR2_MUF1_PDF261000_PSMUR2_PSMUF1
+    MUR1_MUF2_PDF261000_PSMUR1_PSMUF2
+    MUR2_MUF2_PDF261000_PSMUR2_PSMUF2
+   */
+  
+  cout <<"loop to load histos"<< endl;
+  //413008_v3.root
+  file[0][0] = TFile::Open("input/rivet/s228_ttw_20.01/700000_nom.root");
+  file[0][1] = TFile::Open("input/rivet/s228_ttw_20.01/700000_mePS_scale.root");
+  //file[0][1] = TFile::Open("input/rivet/413008_v3_up.root");
+  //file[0][2] = TFile::Open("input/rivet/413008_v3_down.root");
  
   /* file[0][1] = TFile::Open("input/rivet/410155_v3.root"); */
   /* //file[0][0] = TFile::Open("input/rivet/413008cg.root"); */
@@ -131,8 +152,14 @@ void rivet_weights_compute(bool norm_xs_plots=false)
 	//else if(t>0) sprintf(sf_name,"ttw_ttH/%s_%s",variable[j].c_str(),nj_reg[i].c_str());
 
 	// For rivet only
-	sprintf(sf_name,"ttw_ttH/%s_%s",variable[j].c_str(),nj_reg[i].c_str());
-
+	if(t==0){
+	  sprintf(sf_name,"ttw_ttH/%s_%s",variable[j].c_str(),nj_reg[i].c_str());
+	  h_var[i][j][0][t] = (TH1D *)file[0][0]->Get(sf_name);		 
+	}
+	else{
+	  sprintf(sf_name,"%s/ttw_ttH/%s_%s",type_path[t].c_str(),variable[j].c_str(),nj_reg[i].c_str());
+	  h_var[i][j][0][t] = (TH1D *)file[0][1]->Get(sf_name);		 
+	}
 	//For Comparison with CMS
 	//if(t<2 || t>2) sprintf(sf_name,"ttw_ttH/%s_%s",variable[j].c_str(),nj_reg[i].c_str());
 	//else if(t==2) sprintf(sf_name,"CMS_2019_TTH_TTWBCKG/%s_%s",variable[j].c_str(),nj_reg[i].c_str());
@@ -140,9 +167,9 @@ void rivet_weights_compute(bool norm_xs_plots=false)
 	/* else if(t==2) sprintf(sf_name,"%s_%s",variable[j].c_str(),nj_reg[i].c_str()); */
 	
 	cout << "sf_name " << sf_name<< " reg = "<< region_names[i]<< ", variable in histo - "<< variable[j]<< endl;
-	h_var[i][j][0][t] = (TH1D *)file[0][t]->Get(sf_name);		 
+
 	if (!norm_xs_plots) norm_hist = h_var[i][j][0][t]->GetSumOfWeights();
-	else if (norm_xs_plots) norm_hist = 3;
+	else if (norm_xs_plots) norm_hist = 1;
 	
 	h_var[i][j][0][t]->Scale(1/norm_hist);
 	norm_hist=1;
@@ -229,7 +256,7 @@ void rivet_weights_compute(bool norm_xs_plots=false)
 	  else if (!norm_xs_plots) h_var[i][j][0][t]->SetYTitle("Arbitrary Units"); 
 
 	  h_var[i][j][0][t]->GetXaxis()->SetLabelOffset(0.015);
-	  if(variable[i].find("nJets")!= std::string::npos) h_var[i][j][0][t]->GetXaxis()->SetNdivisions(500, kTRUE);
+	  //if(variable[i].find("nJets")!= std::string::npos) h_var[i][j][0][t]->GetXaxis()->SetNdivisions(500, kTRUE);
 
 	  //||variable[i].find("nBtagJets")
 	  h_var[i][j][0][t]->SetXTitle((variable_X[j]).c_str());
@@ -309,7 +336,7 @@ void rivet_weights_compute(bool norm_xs_plots=false)
       pad2[i][j]->cd();
 
       //h_var[i][j][3][0]->SetYTitle("Ratio to Sherpa");
-      h_var[i][j][3][0]->SetYTitle("Ratio to Sherpa 221");
+      h_var[i][j][3][0]->SetYTitle("Ratio to nominal");
       //h_var[i][j][3][0]->SetYTitle("Ratio to AT");
       h_var[i][j][3][0]->Draw("hist");
       for(int t=1;t<type.size();t++){

@@ -91,6 +91,8 @@ void rivet_weights_compute(bool norm_xs_plots=false)
   string file_name;
 
   Double_t norm_hist=1;
+  vector<string> env_type={"tot Up","tot Down","rf:05+2 up" ,"rf:05+2 down" };
+  Double_t env_col[4]={618,612,418,409};
   vector<string> type={"Nominal","R05F05","R05F1","R1F05","R2F1","R1F2","R2F2" };
   vector<string> type_path={"nom"
 			    ,"MUR0.5_MUF0.5_PDF261000_PSMUR0.5_PSMUF0.5"
@@ -225,7 +227,7 @@ void rivet_weights_compute(bool norm_xs_plots=false)
       pad1[i][j]->cd();             
 
       //legend[i][j] = new TLegend(0.6,0.6,0.9,0.9);
-      legend[i][j] = new TLegend(0.65,0.5,0.9,0.9);
+      legend[i][j] = new TLegend(0.65,0.4,0.9,0.9);
       legend[i][j]->SetTextFont(42);legend[i][j]->SetFillColor(0);  legend[i][j]->SetBorderSize(0); legend[i][j]->SetFillStyle(0);  legend[i][j]->SetTextSize(0.05);
       
       Double_t nom_bin_i=0,diff_bin_ib=0,var_bin_i=0,shift_bin_i=0,
@@ -333,9 +335,9 @@ void rivet_weights_compute(bool norm_xs_plots=false)
 	if(t==0){
 	  
 	  for(int unc=4;unc<8;unc++){
-	    h_var[i][j][unc][0]->SetMarkerColor(10+unc); h_var[i][j][unc][0]->SetMarkerSize(0.1);  h_var[i][j][unc][0]->SetLineColor(10+unc);
+	    h_var[i][j][unc][0]->SetMarkerColor(env_col[unc-4]); h_var[i][j][unc][0]->SetMarkerSize(0.1);  h_var[i][j][unc][0]->SetLineColor(env_col[unc-4]);
 	    h_var[i][j][unc][0]->Draw("E1histsame");
-	    legend[i][j]->AddEntry(h_var[i][j][unc][0],("Tot envelope "+to_string(unc)).c_str(),"LP");
+	    legend[i][j]->AddEntry(h_var[i][j][unc][0],("env "+env_type[unc-4]).c_str(),"LP");
 	    
 	    sprintf(sf_name,"ratio_%s_%s_%d",variable[j].c_str(),nj_reg[i].c_str(),unc);   
 	    h_var[i][j][4+unc][0] = (TH1D*) h_var[i][j][unc][0]->Clone(sf_name);

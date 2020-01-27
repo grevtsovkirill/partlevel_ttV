@@ -24,7 +24,7 @@ void rivet_weights_compute(bool norm_xs_plots=false)
   //sprintf(text1,"#sqrt{s} = 13 TeV, 2b %s 2lSS",lep_flav.c_str());
   sprintf(text2,"");
   
-  TH1D* h_var[10][35][10][10];
+  TH1D* h_var[10][35][15][10];
 
   //  vector<string> region_names={"0t 1b 3j","0t 2b 3j"}; vector<string>  nj_reg={"2","3"};
 
@@ -81,7 +81,8 @@ void rivet_weights_compute(bool norm_xs_plots=false)
   TCanvas * canv[100][100];
   TPad * pad1[100][100];
   TPad * pad2[100][100];
-  char canvas_name[1000];char p1_name[1000];  char p2_name[1000]; char o_name[1000];
+  TPad * pad3[100][100];
+  char canvas_name[1000];char p1_name[1000];  char p2_name[1000]; char p3_name[1000]; char o_name[1000];
   int rebin_val=1;
 
   Double_t xbins[] = {0,10,20,25,30,33,35,37,40,43,50,60};
@@ -90,7 +91,7 @@ void rivet_weights_compute(bool norm_xs_plots=false)
   string file_name;
 
   Double_t norm_hist=1;
-  vector<string> type={"Sherpa 228","R05F05","R05F1","R1F05","R2F1","R1F2","R2F2" };
+  vector<string> type={"Nominal","R05F05","R05F1","R1F05","R2F1","R1F2","R2F2" };
   vector<string> type_path={"nom"
 			    ,"MUR0.5_MUF0.5_PDF261000_PSMUR0.5_PSMUF0.5"
 			    ,"MUR0.5_MUF1_PDF261000_PSMUR0.5_PSMUF1"
@@ -188,42 +189,57 @@ void rivet_weights_compute(bool norm_xs_plots=false)
       
       sprintf(canvas_name,"c_Region_%s_%s",nj_reg[i].c_str(), variable[j].c_str() );
       cout << "canvas_name "<< canvas_name<< endl;
-      canv[i][j] = new TCanvas(canvas_name, "", 800, 600);
+      canv[i][j] = new TCanvas(canvas_name, "", 800, 750);
       
       sprintf(p1_name,"p1_%s_%s",nj_reg[i].c_str(),variable[j].c_str() );
       sprintf(p2_name,"p2_%s_%s",nj_reg[i].c_str(),variable[j].c_str() );
+      sprintf(p3_name,"p3_%s_%s",nj_reg[i].c_str(),variable[j].c_str() );
 
-      pad1[i][j] = new TPad(p1_name, "pad1", 0, 0.32, 1, 1);
+      pad1[i][j] = new TPad(p1_name, "pad1", 0, 0.43, 1, 1);
       pad1[i][j]->SetBottomMargin(0.018);
       pad1[i][j]->SetBorderMode(0);
       pad1[i][j]->SetLeftMargin(0.1);
       pad1[i][j]->SetFillStyle(0);
 
-      pad2[i][j] = new TPad(p2_name, "pad2", 0, 0, 1, 0.3);
-      pad2[i][j]->SetTopMargin(0);
+      pad2[i][j] = new TPad(p2_name, "pad2", 0, 0.25, 1, 0.435);
+      //pad2[i][j]->SetTopMargin(0);
       pad2[i][j]->SetLeftMargin(0.1);
-      pad2[i][j]->SetBottomMargin(0.3);
+      //pad2[i][j]->SetBottomMargin(0.3);
+      pad2[i][j]->SetBottomMargin(0.04);
       pad2[i][j]->SetFillStyle(4000);
       pad2[i][j]->SetBorderMode(4000);
+
+      pad3[i][j] = new TPad(p3_name, "pad3", 0, 0, 1, 0.25);
+      pad3[i][j]->SetTopMargin(0);
+      pad3[i][j]->SetLeftMargin(0.1);
+      pad3[i][j]->SetBottomMargin(0.3);
+      pad3[i][j]->SetFillStyle(4000);
+      pad3[i][j]->SetBorderMode(4000);
       //pad2[i][j]->SetFillColorAlpha(kBlue, 0.99);
       //pad1[i][j]->SetLogx(); 
       //pad2[i][j]->SetLogx(); 
       pad1[i][j]->Draw();
       pad2[i][j]->Draw();
+      pad3[i][j]->Draw();
       
       pad1[i][j]->cd();             
 
       //legend[i][j] = new TLegend(0.6,0.6,0.9,0.9);
-      legend[i][j] = new TLegend(0.5,0.6,0.9,0.9);
+      legend[i][j] = new TLegend(0.65,0.5,0.9,0.9);
       legend[i][j]->SetTextFont(42);legend[i][j]->SetFillColor(0);  legend[i][j]->SetBorderSize(0); legend[i][j]->SetFillStyle(0);  legend[i][j]->SetTextSize(0.05);
       
       Double_t nom_bin_i=0,diff_bin_ib=0,var_bin_i=0,shift_bin_i=0;
       //loop over hist bins
       int nbinsx=0;
       sprintf(sf_name,"unc_up_%s_%s",variable[j].c_str(),nj_reg[i].c_str());   
-      h_var[i][j][1][0] = (TH1D*) h_var[i][j][0][0]->Clone(sf_name);
+      h_var[i][j][4][0] = (TH1D*) h_var[i][j][0][0]->Clone(sf_name);
       sprintf(sf_name,"unc_down_%s_%s",variable[j].c_str(),nj_reg[i].c_str());   
-      h_var[i][j][2][0] = (TH1D*) h_var[i][j][0][0]->Clone(sf_name);
+      h_var[i][j][5][0] = (TH1D*) h_var[i][j][0][0]->Clone(sf_name);
+
+      sprintf(sf_name,"a_up_%s_%s",variable[j].c_str(),nj_reg[i].c_str());   
+      h_var[i][j][6][0] = (TH1D*) h_var[i][j][0][0]->Clone(sf_name);
+      sprintf(sf_name,"a_down_%s_%s",variable[j].c_str(),nj_reg[i].c_str());   
+      h_var[i][j][7][0] = (TH1D*) h_var[i][j][0][0]->Clone(sf_name);
 
       nbinsx = h_var[i][j][0][0]->GetXaxis()->GetNbins(); //get Nbins from nominal sample
       for(int ib=0; ib<nbinsx+1;ib++){
@@ -235,9 +251,9 @@ void rivet_weights_compute(bool norm_xs_plots=false)
 	  diff_bin_ib+=pow((nom_bin_i-var_bin_i),2);
 	}
 	shift_bin_i=sqrt(diff_bin_ib);
-	cout<< "nom_bin_i= "<<nom_bin_i<<", shift_bin_i="<< shift_bin_i<< "; up = "<< nom_bin_i+shift_bin_i<< "; down = "<< nom_bin_i-shift_bin_i<< "; orig up/down= "<< h_var[i][j][0][1]->GetBinContent(ib)<<"/"<<h_var[i][j][0][2]->GetBinContent(ib)<< endl;
-	h_var[i][j][1][0]->SetBinContent(ib,nom_bin_i+shift_bin_i);
-	h_var[i][j][2][0]->SetBinContent(ib,nom_bin_i-shift_bin_i);
+	//cout<< "nom_bin_i= "<<nom_bin_i<<", shift_bin_i="<< shift_bin_i<< "; up = "<< nom_bin_i+shift_bin_i<< "; down = "<< nom_bin_i-shift_bin_i<< "; orig up/down= "<< h_var[i][j][0][1]->GetBinContent(ib)<<"/"<<h_var[i][j][0][2]->GetBinContent(ib)<< endl;
+	h_var[i][j][4][0]->SetBinContent(ib,nom_bin_i+shift_bin_i);
+	h_var[i][j][5][0]->SetBinContent(ib,nom_bin_i-shift_bin_i);
       }
       
       for(int t=0;t<type.size();t++){
@@ -308,25 +324,26 @@ void rivet_weights_compute(bool norm_xs_plots=false)
 
 	//}    
 	if(t==0){
-
-	  for(int unc=1;unc<3;unc++){
-	    h_var[i][j][unc][0]->SetMarkerColor(14+unc); h_var[i][j][unc][0]->SetMarkerSize(0.1);  h_var[i][j][unc][0]->SetLineColor(14+unc);
-	  h_var[i][j][unc][0]->Draw("E1histsame");
-	  legend[i][j]->AddEntry(h_var[i][j][unc][0],("unc "+to_string(unc)).c_str(),"LP");
-
-	  sprintf(sf_name,"ratio_%s_%s_%d",variable[j].c_str(),nj_reg[i].c_str(),unc);   
-	  h_var[i][j][3+unc][0] = (TH1D*) h_var[i][j][unc][0]->Clone(sf_name);
-	  h_var[i][j][3+unc][0]->Divide(h_var[i][j][0][0]);
 	  
+	  for(int unc=4;unc<6;unc++){
+	    h_var[i][j][unc][0]->SetMarkerColor(10+unc); h_var[i][j][unc][0]->SetMarkerSize(0.1);  h_var[i][j][unc][0]->SetLineColor(10+unc);
+	    h_var[i][j][unc][0]->Draw("E1histsame");
+	    legend[i][j]->AddEntry(h_var[i][j][unc][0],("Tot envelope "+to_string(unc)).c_str(),"LP");
+	    
+	    sprintf(sf_name,"ratio_%s_%s_%d",variable[j].c_str(),nj_reg[i].c_str(),unc);   
+	    h_var[i][j][4+unc][0] = (TH1D*) h_var[i][j][unc][0]->Clone(sf_name);
+	    h_var[i][j][4+unc][0]->Divide(h_var[i][j][0][0]);
+	    
 	  }
 	}
       }//t loop: nominal - variations      
       
-      sprintf(text1,"#sqrt{s} = 13 TeV, rivet routine");
+      //sprintf(text1,"#sqrt{s} = 13 TeV, rivet routine");
       //sprintf(text1,"#sqrt{s} = 13 TeV, Sherpa 221, 413008");
+      sprintf(text1,"#sqrt{s} = 13 TeV, Sherpa 228, 700000");
       //sprintf(text1,"#sqrt{s} = 13 TeV, aMC@NLO, 410155");
       //sprintf(text2,"Variable: %s",variable_X[j].c_str());//+nj_reg[i]+variable[j]
-      sprintf(text2,"2#font[52]{l}SS %s ",region_names[i].c_str());
+      sprintf(text2,"ttW 2#font[52]{l}SS %s ",region_names[i].c_str());
       
       ATLASLabel(0.18,0.87,atl_lable,1,0.065); 
       latex2.DrawLatex(0.18, 0.8, text1);  
@@ -350,9 +367,16 @@ void rivet_weights_compute(bool norm_xs_plots=false)
 	
       //*/
       }
-      h_var[i][j][4][0]->Draw("histsame");
-      h_var[i][j][5][0]->Draw("histsame");
       
+      pad3[i][j]->cd();
+      sprintf(sf_name,"ratio_%s_%s_%s",variable[j].c_str(),nj_reg[i].c_str(),type[0].c_str());   
+      h_var[i][j][15][0] = (TH1D*) h_var[i][j][3][0]->Clone(sf_name);
+      h_var[i][j][15][0]->SetYTitle("Envelope");
+      h_var[i][j][15][0]->Draw("hist");
+      h_var[i][j][8][0]->Draw("histsame");
+      h_var[i][j][9][0]->Draw("histsame");
+
+
       //      pad1[i][j]->RedrawAxis();
       pad1[i][j]->Update();
       pad1[i][j]->RedrawAxis();

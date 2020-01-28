@@ -24,16 +24,17 @@ void rivet_weights_compute(bool norm_xs_plots=false)
   //sprintf(text1,"#sqrt{s} = 13 TeV, 2b %s 2lSS",lep_flav.c_str());
   sprintf(text2,"");
   
-  TH1D* h_var[10][35][15][10];
+  TH1D* h_var[10][35][20][10];
 
   //  vector<string> region_names={"0t 1b 3j","0t 2b 3j"}; vector<string>  nj_reg={"2","3"};
 
   //vector<string> region_names={"0t 1b 4j", "0t 2b 4j","0t 1b 3j", "0t 2b 3j", "1t 1b 3j"};
   vector<string> region_names={"0#tau_{had} 1#font[52]{b} #geq4#font[52]{j}", "0#tau_{had} #geq2#font[52]{b} #geq4#font[52]{j}","0#tau_{had} 1#font[52]{b} 3#font[52]{j}", "0#tau_{had} #geq2#font[52]{b} 3#font[52]{j}","1#tau_{had} #geq1#font[52]{b} #geq3#font[52]{j}"};//, "0t=3j","0tg4j","otg3g0b"};
 
-  //vector<string>  nj_reg={"0","1","2","3","4"};//,"5","6","7"};
-  vector<string>  nj_reg={"0"};
-  vector<string> variable={"nJets"};//,"DRll01","lep_Pt_0","lep_Pt_1","jet_Pt_4","jet_Pt_5","jet_Pt_6","Bjet_Pt_0","Bjet_Pt_1","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT_leps","HT","nBtagJets","MET","lep_Eta_0","lep_Eta_1","lep_Phi_0","lep_Phi_1","lep_dPhi","jet_Pt_1","jet_Pt_2","jet_Pt_3"}; //
+  vector<string>  nj_reg={"0","1","2","3","4"};//,"5","6","7"};
+  //vector<string>  nj_reg={"0"};
+  //vector<string> variable={"nJets","DRll01"};//,"DRll01","lep_Pt_0","lep_Pt_1","jet_Pt_4","jet_Pt_5","jet_Pt_6","Bjet_Pt_0","Bjet_Pt_1","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT_leps","HT","nBtagJets","MET","lep_Eta_0","lep_Eta_1","lep_Phi_0","lep_Phi_1","lep_dPhi","jet_Pt_1","jet_Pt_2","jet_Pt_3"}; //
+  vector<string> variable={"nJets","DRll01","lep_Pt_0","lep_Pt_1","jet_Pt_4","jet_Pt_5","jet_Pt_6","Bjet_Pt_0","Bjet_Pt_1","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT_leps","HT","nBtagJets","MET","lep_Eta_0","lep_Eta_1","lep_Phi_0","lep_Phi_1","lep_dPhi","jet_Pt_1","jet_Pt_2","jet_Pt_3"}; //
 
   vector<string> variable_X={"Number of jets","#Delta R_{l_{0},l_{1}}","Leading lepton #font[52]{p}_{T} [GeV]","Subeading lepton #font[52]{p}_{T} [GeV]",
 			     "4th jet #font[52]{p}_{T} [GeV]","5th jet #font[52]{p}_{T} [GeV]","6th jet #font[52]{p}_{T} [GeV]",
@@ -58,7 +59,7 @@ void rivet_weights_compute(bool norm_xs_plots=false)
   //vector<string> type={"gen-lev: MG","Rivet: MG"};
   //vector<string> type={"Sherpa","MG"}; 
   //ATLAS - CMS comparison
-  Int_t color_sample[8]={864,594,633,921,922,617,860,868};//625
+  Int_t color_sample[8]={864,594,433,921,922,617,860,868};//625  red 633
   //AT-rivet Sherpa
   //Int_t color_sample[8]={1,633,601,920,922,799,617,625};
   //AT-rivet MG
@@ -66,7 +67,8 @@ void rivet_weights_compute(bool norm_xs_plots=false)
 
   //Int_t linestyle[8]={1,1,7,9,4,10,3,2};
   //                 AS AM cM, Su, Sd
-  Int_t linestyle[8]={1, 7, 1, 3,  4, 2,3,2};
+
+  Int_t linestyle[8]={1, 7, 5, 3,  4, 2,3,2};
   //*/
 
   /* MG vars
@@ -157,7 +159,7 @@ void rivet_weights_compute(bool norm_xs_plots=false)
 	// For rivet only
 	if(t==0){
 	  sprintf(sf_name,"ttw_ttH/%s_%s",variable[j].c_str(),nj_reg[i].c_str());
-	  h_var[i][j][0][t] = (TH1D *)file[0][0]->Get(sf_name);		 
+	  h_var[i][j][0][t] = (TH1D *)file[0][0]->Get(sf_name);
 	}
 	else{
 	  sprintf(sf_name,"%s/ttw_ttH/%s_%s",type_path[t].c_str(),variable[j].c_str(),nj_reg[i].c_str());
@@ -169,8 +171,10 @@ void rivet_weights_compute(bool norm_xs_plots=false)
 	/* //AT version */
 	/* else if(t==2) sprintf(sf_name,"%s_%s",variable[j].c_str(),nj_reg[i].c_str()); */
 	
-	cout << "sf_name " << sf_name<< " reg = "<< region_names[i]<< ", variable in histo - "<< variable[j]<< endl;
-
+	//cout << "sf_name " << sf_name<< " reg = "<< region_names[i]<< ", variable in histo - "<< variable[j] << << endl;
+	//cout <<"ij0t= "<<i<<j<<t << "sf_name " << sf_name<< " nbins  "<< h_var[i][j][0][t]->GetXaxis()->GetNbins() << ", variable in histo - "<< variable[j] << endl;
+	//cout <<"read; n bins for h_var["<<i<<"]["<<j<<"][0]["<<t<<"] = "<<h_var[i][j][0][t]->GetXaxis()->GetNbins() <<endl; 
+ 
 	if (!norm_xs_plots) norm_hist = h_var[i][j][0][t]->GetSumOfWeights();
 	else if (norm_xs_plots) norm_hist = 1;
 	
@@ -183,7 +187,7 @@ void rivet_weights_compute(bool norm_xs_plots=false)
 
 
 
-  cout <<"histos are load "<< endl;
+  cout <<"histos are load  " << endl;
 
   cout << "=============================="<<'\n'<<'\n'<<'\n'<<"loop to make plots using loaded histos"<< endl;
   for(int i=0;i<nj_reg.size();i++){
@@ -244,7 +248,9 @@ void rivet_weights_compute(bool norm_xs_plots=false)
       sprintf(sf_name,"a_down_%s_%s",variable[j].c_str(),nj_reg[i].c_str());   
       h_var[i][j][7][0] = (TH1D*) h_var[i][j][0][0]->Clone(sf_name);
 
+      nbinsx = -1;
       nbinsx = h_var[i][j][0][0]->GetXaxis()->GetNbins(); //get Nbins from nominal sample
+      //cout <<"h_var["<<i<<"]["<<j<<"][0][0]"<<"  nbinsx = "<< nbinsx <<endl;
       for(int ib=0; ib<nbinsx+1;ib++){
 	
 	nom_bin_i=h_var[i][j][0][0]->GetBinContent(ib);
@@ -255,7 +261,7 @@ void rivet_weights_compute(bool norm_xs_plots=false)
 	  if(type[t]=="R05F05"|| type[t]=="R2F2"){
 	    varA_bin_i=h_var[i][j][0][t]->GetBinContent(ib);
 	    diffA_bin_ib+=pow((nom_bin_i-varA_bin_i),2);
-	    cout << "type[t] "<< type[t]<< endl;
+	    //cout << "type[t] "<< type[t]<< endl;
 	  }
 	}
 	shift_bin_i=sqrt(diff_bin_ib);
@@ -270,7 +276,7 @@ void rivet_weights_compute(bool norm_xs_plots=false)
 
   //*
 
-	cout << " - load file: "<< t << " - "<<  type[t] << endl;
+	//cout << " - load file: "<< t << " - "<<  type[t] << endl;
 	if(t==0){	  
 
 	  //if (variable[j]!="nBtagJets") h_var[i][j][k][t]->SetYTitle("Normalized");
@@ -290,6 +296,7 @@ void rivet_weights_compute(bool norm_xs_plots=false)
 	  //h_var[i][j][0][t]->GetXaxis()->SetRangeUser(20,500);
 	  h_var[i][j][0][t]->SetMaximum(h_var[i][j][0][t]->GetMaximum()*1.6);
 	  h_var[i][j][0][t]->Draw("E1");
+	  h_var[i][j][0][t]->Draw("histsame");
 	}
 	
 	h_var[i][j][0][t]->SetLineColor(color_sample[t]);
@@ -301,17 +308,21 @@ void rivet_weights_compute(bool norm_xs_plots=false)
 	h_var[i][j][0][t]->SetLineStyle(linestyle[t]);
 	//if(h_var[i][j][0][t]->Integral()>0){
 	//if(t<3 || t==5)
-	h_var[i][j][0][t]->Draw("E1histsame");
+	//h_var[i][j][0][t]->Draw("E1histsame");
+	//h_var[i][j][0][0]->Draw("E1histsame");
 	legend[i][j]->AddEntry(h_var[i][j][0][t],(type[t]+ " ").c_str(),"LP");
 	//}//
 	sprintf(sf_name,"ratio_%s_%s_%s",variable[j].c_str(),nj_reg[i].c_str(),type[t].c_str());   
-	cout<< "ratio name "<< sf_name<< endl;
+	//cout<< "ratio name "<< sf_name<< endl;
 	
 	//sprintf(sf_name,"ratio_%s_%s",variable[j].c_str(),nj_reg[i].c_str());   
 	
 	// i region, j - variable, t -nom/variation, 
 	h_var[i][j][3][t] = (TH1D*) h_var[i][j][0][t]->Clone(sf_name);
+	//cout << "N var("<<t<<") bins ="<<h_var[i][j][3][t]->GetXaxis()->GetNbins()<< "; N nom bins = "<<h_var[i][j][0][0]->GetXaxis()->GetNbins()<< endl;;
 	h_var[i][j][3][t]->Divide(h_var[i][j][0][0]);
+
+	
 	
 	h_var[i][j][3][t]->GetXaxis()->SetTitleSize(0.14); 
 	h_var[i][j][3][t]->GetYaxis()->SetTitleSize(0.14); 
@@ -333,20 +344,21 @@ void rivet_weights_compute(bool norm_xs_plots=false)
 
 	//}    
 	if(t==0){
-	  
+
 	  for(int unc=4;unc<8;unc++){
 	    h_var[i][j][unc][0]->SetMarkerColor(env_col[unc-4]); h_var[i][j][unc][0]->SetMarkerSize(0.1);  h_var[i][j][unc][0]->SetLineColor(env_col[unc-4]);
 	    h_var[i][j][unc][0]->Draw("E1histsame");
 	    legend[i][j]->AddEntry(h_var[i][j][unc][0],("env "+env_type[unc-4]).c_str(),"LP");
 	    
-	    sprintf(sf_name,"ratio_%s_%s_%d",variable[j].c_str(),nj_reg[i].c_str(),unc);   
+	    sprintf(sf_name,"syst_ratio_%s_%s_%d",variable[j].c_str(),nj_reg[i].c_str(),unc);   
 	    h_var[i][j][4+unc][0] = (TH1D*) h_var[i][j][unc][0]->Clone(sf_name);
 	    h_var[i][j][4+unc][0]->Divide(h_var[i][j][0][0]);
 	    
-	  }
-	}
+	  }//loop over uncertainties
+	}//for nominal case only
+	
       }//t loop: nominal - variations      
-      
+
       //sprintf(text1,"#sqrt{s} = 13 TeV, rivet routine");
       //sprintf(text1,"#sqrt{s} = 13 TeV, Sherpa 221, 413008");
       sprintf(text1,"#sqrt{s} = 13 TeV, Sherpa 228, 700000");
@@ -360,24 +372,26 @@ void rivet_weights_compute(bool norm_xs_plots=false)
       legend[i][j]->Draw("same");
       
       pad2[i][j]->cd();
-
+      
       //h_var[i][j][3][0]->SetYTitle("Ratio to Sherpa");
       h_var[i][j][3][0]->SetYTitle("Ratio to nominal");
       //h_var[i][j][3][0]->SetYTitle("Ratio to AT");
       h_var[i][j][3][0]->Draw("hist");
       for(int t=1;t<type.size();t++){
-	if(t<3) h_var[i][j][3][t]->SetLineWidth(3);
-	else if(t>2 &&t<5)	h_var[i][j][0][t]->SetLineWidth(1);
-	else h_var[i][j][3][t]->SetLineWidth(4);
+	//if(t<3)
+	h_var[i][j][3][t]->SetLineWidth(3);
+	//else if(t>2 &&t<5)	h_var[i][j][0][t]->SetLineWidth(1);
+	//else h_var[i][j][3][t]->SetLineWidth(4);
 	h_var[i][j][3][t]->SetLineColor(color_sample[t]);
 	h_var[i][j][3][t]->SetMarkerColor(color_sample[t]);
 	h_var[i][j][3][t]->SetLineStyle(linestyle[t]);
 	h_var[i][j][3][t]->Draw("histsame");
 	
-      //*/
+	//*/
       }
       
       pad3[i][j]->cd();
+      //cout  << "p3["<<i<<j<<"] h_var[0][1][0][0]  nb ="<< h_var[0][1][0][0]->GetXaxis()->GetNbins()  <<endl;
       sprintf(sf_name,"ratio_%s_%s_%s",variable[j].c_str(),nj_reg[i].c_str(),type[0].c_str());   
       h_var[i][j][15][0] = (TH1D*) h_var[i][j][3][0]->Clone(sf_name);
       h_var[i][j][15][0]->SetYTitle("Envelope");
@@ -387,18 +401,16 @@ void rivet_weights_compute(bool norm_xs_plots=false)
       h_var[i][j][10][0]->Draw("histsame");
       h_var[i][j][11][0]->Draw("histsame");
 
-
       //      pad1[i][j]->RedrawAxis();
-      pad1[i][j]->Update();
-      pad1[i][j]->RedrawAxis();
+      //pad1[i][j]->Update();
+      //pad1[i][j]->RedrawAxis();
 
       if (norm_xs_plots) sprintf(norm_name,"f");
       else if (!norm_xs_plots) sprintf(norm_name,"n");
       
-      sprintf(o_name,"Plots_rivet_CMS_s228_12_%s/%s.pdf",norm_name,canvas_name);
+      sprintf(o_name,"Uncertainty/Plot_s228_scale_%s/%s.pdf",norm_name,canvas_name);
       //sprintf(o_name,"Plots_gen_rivet_12_%s/%s.pdf",norm_name,canvas_name);
-
-      //canv[i][j]->Print(o_name);
+      canv[i][j]->Print(o_name);
 
     }//j loop: variable
   }//i loop: region 0-7

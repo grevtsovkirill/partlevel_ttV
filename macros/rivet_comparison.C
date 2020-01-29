@@ -69,6 +69,7 @@ void rivet_comparison(bool norm_xs_plots=false)
   Int_t linestyle[8]={1, 7, 1, 3,  4, 2,3,2};
   //*/
 
+  string var_type="PDF ";//Scale
   vector<string> env_type={"tot Up","tot Down","rf:05+2 up" ,"rf:05+2 down" };
   Double_t env_col[4]={618,612,418,409};
 
@@ -98,6 +99,7 @@ void rivet_comparison(bool norm_xs_plots=false)
   Int_t n_nom_samples = 1;
   Bool_t w_cms=false; //true
   //,"Sherpa up" ,"Sherpa down"
+  /*
   vector<string> type_path={
 			    "MUR0.5_MUF0.5_PDF261000_PSMUR0.5_PSMUF0.5"
 			    ,"MUR0.5_MUF1_PDF261000_PSMUR0.5_PSMUF1"
@@ -106,11 +108,22 @@ void rivet_comparison(bool norm_xs_plots=false)
 			    ,"MUR1_MUF2_PDF261000_PSMUR1_PSMUF2"
 			    ,"MUR2_MUF2_PDF261000_PSMUR2_PSMUF2"
   };
-
+  //*/
+  vector<string> type_path;
+  //type_path.push_back("MUR1_MUF1_PDF91400");
+  //*
+  for(int ipdf=1;ipdf<33;ipdf++){
+    if (ipdf<10)
+      type_path.push_back("MUR1_MUF1_PDF9140"+to_string(ipdf));
+    else
+      type_path.push_back("MUR1_MUF1_PDF914"+to_string(ipdf));
+  }
+  //*/
   file[0][0] = TFile::Open("input/rivet/s228_ttw_20.01/700000_nom.root");
   file[0][1] = TFile::Open("input/rivet/410155_v3.root");
   file[0][2] = TFile::Open("input/rivet/cms_v0/TTWJetsToLNuMerged.root");
-  file[0][3] = TFile::Open("input/rivet/s228_ttw_20.01/700000_mePS_scale.root");
+  //file[0][3] = TFile::Open("input/rivet/s228_ttw_20.01/700000_mePS_scale.root");
+  file[0][3] = TFile::Open("input/rivet/s228_ttw_20.01/700000_pdf_mePS.root");
 
   //file[0][0] = TFile::Open("input/rivet/413008_v3.root");
   //  file[0][1] = TFile::Open("input/rivet/410155_v3.root");
@@ -179,7 +192,7 @@ void rivet_comparison(bool norm_xs_plots=false)
 
 
     
-  cout <<"histos are load "<<h_var[0][0][0][5]->GetXaxis()->GetNbins() << endl;
+  //cout <<"histos are load "<<h_var[0][0][0][5]->GetXaxis()->GetNbins() << endl;
   cout << "=============================="<<'\n'<<'\n'<<'\n'<<"loop to make plots using loaded histos"<< endl;
   for(int i=0;i<nj_reg.size();i++){
     for(int j=0;j<variable.size();j++){
@@ -304,7 +317,7 @@ void rivet_comparison(bool norm_xs_plots=false)
 	  for(int unc=4;unc<6;unc++){
 	    h_var[i][j][unc][0]->SetMarkerColor(env_col[unc-4]); h_var[i][j][unc][0]->SetMarkerSize(0.1);  h_var[i][j][unc][0]->SetLineColor(env_col[unc-4]);
 	    h_var[i][j][unc][0]->Draw("E1histsame");
-	    legend[i][j]->AddEntry(h_var[i][j][unc][0],("env "+env_type[unc-4]).c_str(),"LP");
+	    legend[i][j]->AddEntry(h_var[i][j][unc][0],(var_type+env_type[unc-4]).c_str(),"LP");
 	    
 	    sprintf(sf_name,"syst_ratio_%s_%s_%d",variable[j].c_str(),nj_reg[i].c_str(),unc);   
 	    h_var[i][j][4+unc][0] = (TH1D*) h_var[i][j][unc][0]->Clone(sf_name);
@@ -331,7 +344,7 @@ void rivet_comparison(bool norm_xs_plots=false)
       //*
 
       //h_var[i][j][3][0]->SetYTitle("Ratio to Sherpa");
-      h_var[i][j][3][0]->SetYTitle("Ratio to Sherpa 221");
+      h_var[i][j][3][0]->SetYTitle("Ratio to nom");// Sherpa 228
       //h_var[i][j][3][0]->SetYTitle("Ratio to AT");
       h_var[i][j][3][0]->Draw("hist");
       for(int t=1;t<type.size();t++){

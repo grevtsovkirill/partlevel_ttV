@@ -134,7 +134,7 @@ void rivet_comparison(bool norm_xs_plots=false)
   //file[0][0] = TFile::Open("input/Res_MG5_aMcAtNlo.root");
   //file[0][1] = TFile::Open("input/rivet/410155_v3.root");
 
-  for(int t=0;t<type.size()+6;t++){ 
+  for(int t=0;t<type.size()+type_path.size();t++){ 
     //file_name=base_name+"_"+type[t]+".root";
 
     //cout<< "file_name  - " << file_name<< endl;
@@ -229,7 +229,7 @@ void rivet_comparison(bool norm_xs_plots=false)
       for(int ib=0; ib<nbinsx+1;ib++){
 	nom_bin_i=h_var[i][j][0][0]->GetBinContent(ib);
 	diff_bin_ib=0;
-	for(int t=3;t<type.size()+6;t++){
+	for(int t=n_nom_samples;t<type.size()+type_path.size();t++){
 	  var_bin_i=h_var[i][j][0][t]->GetBinContent(ib);
 	  diff_bin_ib+=pow((nom_bin_i-var_bin_i),2);
 	}

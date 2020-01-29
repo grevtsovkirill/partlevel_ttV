@@ -24,23 +24,25 @@ void rivet_comparison(bool norm_xs_plots=false)
   //sprintf(text1,"#sqrt{s} = 13 TeV, 2b %s 2lSS",lep_flav.c_str());
   sprintf(text2,"");
   
-  TH1D* h_var[10][35][10][10];
+  TH1D* h_var[10][35][20][20];
 
   //  vector<string> region_names={"0t 1b 3j","0t 2b 3j"}; vector<string>  nj_reg={"2","3"};
 
   //vector<string> region_names={"0t 1b 4j", "0t 2b 4j","0t 1b 3j", "0t 2b 3j", "1t 1b 3j"};
   vector<string> region_names={"0#tau_{had} 1#font[52]{b} #geq4#font[52]{j}", "0#tau_{had} #geq2#font[52]{b} #geq4#font[52]{j}","0#tau_{had} 1#font[52]{b} 3#font[52]{j}", "0#tau_{had} #geq2#font[52]{b} 3#font[52]{j}","1#tau_{had} #geq1#font[52]{b} #geq3#font[52]{j}"};//, "0t=3j","0tg4j","otg3g0b"};
 
+  //vector<string>  nj_reg={"0"};//
   vector<string>  nj_reg={"0","1","2","3","4"};//,"5","6","7"};
-  vector<string> variable={"DRll01","lep_Pt_0","lep_Pt_1","jet_Pt_4","jet_Pt_5","jet_Pt_6","Bjet_Pt_0","Bjet_Pt_1","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT_leps","HT","nJets","nBtagJets","MET","lep_Eta_0","lep_Eta_1","lep_Phi_0","lep_Phi_1","lep_dPhi","jet_Pt_1","jet_Pt_2","jet_Pt_3"}; //
+  // vector<string> variable={"nJets","DRll01","lep_Pt_0"};
+  vector<string> variable={"nJets","DRll01","lep_Pt_0","lep_Pt_1","jet_Pt_4","jet_Pt_5","jet_Pt_6","Bjet_Pt_0","Bjet_Pt_1","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT_leps","HT","nBtagJets","MET","lep_Eta_0","lep_Eta_1","lep_Phi_0","lep_Phi_1","lep_dPhi","jet_Pt_1","jet_Pt_2","jet_Pt_3"}; //
 
-  vector<string> variable_X={"#Delta R_{l_{0},l_{1}}","Leading lepton #font[52]{p}_{T} [GeV]","Subeading lepton #font[52]{p}_{T} [GeV]",
+  vector<string> variable_X={"Number of jets","#Delta R_{l_{0},l_{1}}","Leading lepton #font[52]{p}_{T} [GeV]","Subeading lepton #font[52]{p}_{T} [GeV]",
 			     "4th jet #font[52]{p}_{T} [GeV]","5th jet #font[52]{p}_{T} [GeV]","6th jet #font[52]{p}_{T} [GeV]",
 			     "Leading #font[52]{b}-jet #font[52]{p}_{T} [GeV]","Subleading #font[52]{b}-jet #font[52]{p}_{T} [GeV]",
 			     "#font[52]{min} #Delta R_{l_{0},jet}","#font[52]{min} #Delta R_{l_{1},jet}",
 			     "#font[52]{max} |#eta _{l}|",
 			     "#font[52]{HT}^{jets} [GeV]","#font[52]{HT}^{lep} [GeV]","#font[52]{HT} [GeV]",
-			     "Number of jets","Number of #font[52]{b}-jets","#font[52]{E}_{T}^{miss}","Leading lepton #eta","Subleading lepton #eta","Leading lepton #phi","Subleading lepton #phi","#Delta #phi ^{ll}",
+			     "Number of #font[52]{b}-jets","#font[52]{E}_{T}^{miss}","Leading lepton #eta","Subleading lepton #eta","Leading lepton #phi","Subleading lepton #phi","#Delta #phi ^{ll}",
 			     "1th jet #font[52]{p}_{T} [GeV]","2nd jet #font[52]{p}_{T} [GeV]","3rd jet #font[52]{p}_{T} [GeV]"
 }; //
 
@@ -49,7 +51,7 @@ void rivet_comparison(bool norm_xs_plots=false)
   //vector<string> type={"Sherpa","MG","SherpaScaleUp","SherpaScaleDown","SherpaPup","SherpaPdown"};
   //vector<string> type={"Sherpa","MG","SherpaScaleUp","SherpaScaleDown","SherpaNNup","SherpaNNdown"};
   //vector<string> type={"413008","410155"};
-  vector<string> type={"ATLAS Sherpa 221","ATLAS aMC@NLO","CMS aMC@NLO FxFx","ATLAS Sherpa muR2muF2" ,"ATLAS Sherpa muR0.5muF0.5","ATLAS Sherpa 228"};
+  //vector<string> type={"ATLAS Sherpa 221","ATLAS aMC@NLO","CMS aMC@NLO FxFx","ATLAS Sherpa muR2muF2" ,"ATLAS Sherpa muR0.5muF0.5","ATLAS Sherpa 228"};
   //vector<string> type={"Rivet Chris","Rivet Kirill","AnalysisTop"};
   //vector<string> type={"Sherpa 221","aMC@NLO","Sherpa 228","S221 muR2muF2" ,"S221 muR0.5muF0.5" };
   //vector<string> type={"AnalysisTop","Rivet"};
@@ -66,6 +68,9 @@ void rivet_comparison(bool norm_xs_plots=false)
   //                 AS AM cM, Su, Sd
   Int_t linestyle[8]={1, 7, 1, 3,  4, 2,3,2};
   //*/
+
+  vector<string> env_type={"tot Up","tot Down","rf:05+2 up" ,"rf:05+2 down" };
+  Double_t env_col[4]={618,612,418,409};
 
   /* MG vars
   vector<string> type={"MG","MGScaleUp","MGScaleDown"};
@@ -89,17 +94,32 @@ void rivet_comparison(bool norm_xs_plots=false)
 
   Double_t norm_hist=1;
   cout <<"loop to load histos"<< endl;
+  vector<string> type={"Sherpa 228","aMC@NLO","CMS aMC@NLO FxFx"};
+  //,"Sherpa up" ,"Sherpa down"
+  vector<string> type_path={
+			    "MUR0.5_MUF0.5_PDF261000_PSMUR0.5_PSMUF0.5"
+			    ,"MUR0.5_MUF1_PDF261000_PSMUR0.5_PSMUF1"
+			    ,"MUR1_MUF0.5_PDF261000_PSMUR1_PSMUF0.5"
+			    ,"MUR2_MUF1_PDF261000_PSMUR2_PSMUF1"
+			    ,"MUR1_MUF2_PDF261000_PSMUR1_PSMUF2"
+			    ,"MUR2_MUF2_PDF261000_PSMUR2_PSMUF2"
+  };
 
-  file[0][0] = TFile::Open("input/rivet/413008_v3.root");
+  file[0][0] = TFile::Open("input/rivet/s228_ttw_20.01/700000_nom.root");
   file[0][1] = TFile::Open("input/rivet/410155_v3.root");
+  file[0][2] = TFile::Open("input/rivet/cms_v0/TTWJetsToLNuMerged.root");
+  file[0][3] = TFile::Open("input/rivet/s228_ttw_20.01/700000_mePS_scale.root");
+
+  //file[0][0] = TFile::Open("input/rivet/413008_v3.root");
+  //  file[0][1] = TFile::Open("input/rivet/410155_v3.root");
   //file[0][0] = TFile::Open("input/rivet/413008cg.root");
   //file[0][2] = TFile::Open("input/rivet/700000_v3.root");
-  file[0][2] = TFile::Open("input/rivet/cms_v0/TTWJetsToLNuMerged.root");
+  
   //file[0][2] = TFile::Open("input/Res_Sherpa.root");
   
-  file[0][3] = TFile::Open("input/rivet/413008_v3_up.root");
-  file[0][4] = TFile::Open("input/rivet/413008_v3_down.root");
-  file[0][5] = TFile::Open("input/rivet/700000_v3.root");
+  /* file[0][3] = TFile::Open("input/rivet/413008_v3_up.root"); */
+  /* file[0][4] = TFile::Open("input/rivet/413008_v3_down.root"); */
+  /* file[0][5] = TFile::Open("input/rivet/700000_v3.root"); */
   
   //file[0][0] = TFile::Open("input/Res_Sherpa.root");
   //file[0][1] = TFile::Open("input/rivet/413008_v3.root");
@@ -112,8 +132,8 @@ void rivet_comparison(bool norm_xs_plots=false)
   //file[0][0] = TFile::Open("input/Res_MG5_aMcAtNlo.root");
   //file[0][1] = TFile::Open("input/rivet/410155_v3.root");
 
-  for(int t=0;t<type.size();t++){ 
-    file_name=base_name+"_"+type[t]+".root";
+  for(int t=0;t<type.size()+6;t++){ 
+    //file_name=base_name+"_"+type[t]+".root";
 
     //cout<< "file_name  - " << file_name<< endl;
     //  file[0][t] = TFile::Open(file_name.c_str());
@@ -126,18 +146,26 @@ void rivet_comparison(bool norm_xs_plots=false)
 	//For Comparison Gen-Rivet
 	//if(t==0) sprintf(sf_name,"%s_%s",variable[j].c_str(),nj_reg[i].c_str());   
 	//else if(t>0) sprintf(sf_name,"ttw_ttH/%s_%s",variable[j].c_str(),nj_reg[i].c_str());
-
 	// For rivet only
 	//sprintf(sf_name,"ttw_ttH/%s_%s",variable[j].c_str(),nj_reg[i].c_str());
-
 	//For Comparison with CMS
-	if(t<2 || t>2) sprintf(sf_name,"ttw_ttH/%s_%s",variable[j].c_str(),nj_reg[i].c_str());
-	else if(t==2) sprintf(sf_name,"CMS_2019_TTH_TTWBCKG/%s_%s",variable[j].c_str(),nj_reg[i].c_str());
+	if(t<3){
+	  if(t<2) sprintf(sf_name,"ttw_ttH/%s_%s",variable[j].c_str(),nj_reg[i].c_str());
+	  else if(t==2) sprintf(sf_name,"CMS_2019_TTH_TTWBCKG/%s_%s",variable[j].c_str(),nj_reg[i].c_str());
+	  
+	  h_var[i][j][0][t] = (TH1D *)file[0][t]->Get(sf_name);		
+	}
+	else if(t>2){
+	  //for(int ivar=0;ivar<type_path.size();ivar++){
+	  sprintf(sf_name,"%s/ttw_ttH/%s_%s",type_path[t-3].c_str(),variable[j].c_str(),nj_reg[i].c_str());
+	  h_var[i][j][0][t] = (TH1D *)file[0][3]->Get(sf_name);
+	    //}
+	}
 	/* //AT version */
 	/* else if(t==2) sprintf(sf_name,"%s_%s",variable[j].c_str(),nj_reg[i].c_str()); */
 	
-	cout << "sf_name " << sf_name<< " reg = "<< region_names[i]<< ", variable in histo - "<< variable[j]<< endl;
-	h_var[i][j][0][t] = (TH1D *)file[0][t]->Get(sf_name);		 
+	//cout <<"h_var["<<i<<"]["<<j<<"][0]["<<t<<"] sf_name " << sf_name<< " , variable in histo - "<< variable[j]<< endl;
+	
 	if (!norm_xs_plots) norm_hist = h_var[i][j][0][t]->GetSumOfWeights();
 	else if (norm_xs_plots) norm_hist = 3;
 	
@@ -146,8 +174,10 @@ void rivet_comparison(bool norm_xs_plots=false)
       }//variable - j
     }// region - i
   }// file
-  
-  cout <<"histos are load "<< endl;
+
+
+    
+  cout <<"histos are load "<<h_var[0][1][0][5]->GetXaxis()->GetNbins() << endl;
   cout << "=============================="<<'\n'<<'\n'<<'\n'<<"loop to make plots using loaded histos"<< endl;
   for(int i=0;i<nj_reg.size();i++){
     for(int j=0;j<variable.size();j++){
@@ -184,6 +214,28 @@ void rivet_comparison(bool norm_xs_plots=false)
       legend[i][j]->SetTextFont(42);legend[i][j]->SetFillColor(0);  legend[i][j]->SetBorderSize(0); legend[i][j]->SetFillStyle(0);  legend[i][j]->SetTextSize(0.05);
       
 
+      Double_t nom_bin_i=0,diff_bin_ib=0,var_bin_i=0,shift_bin_i=0;
+      //loop over hist bins
+      int nbinsx=0;
+      sprintf(sf_name,"unc_up_%s_%s",variable[j].c_str(),nj_reg[i].c_str());   
+      h_var[i][j][4][0] = (TH1D*) h_var[i][j][0][0]->Clone(sf_name);
+      sprintf(sf_name,"unc_down_%s_%s",variable[j].c_str(),nj_reg[i].c_str());   
+      h_var[i][j][5][0] = (TH1D*) h_var[i][j][0][0]->Clone(sf_name);
+      nbinsx = -1;
+      nbinsx = h_var[i][j][0][0]->GetXaxis()->GetNbins(); //get Nbins from nominal sample
+      //cout <<"h_var["<<i<<"]["<<j<<"][0][0]"<<"  nbinsx = "<< nbinsx <<endl;
+      for(int ib=0; ib<nbinsx+1;ib++){
+	nom_bin_i=h_var[i][j][0][0]->GetBinContent(ib);
+	diff_bin_ib=0;
+	for(int t=3;t<type.size()+6;t++){
+	  var_bin_i=h_var[i][j][0][t]->GetBinContent(ib);
+	  diff_bin_ib+=pow((nom_bin_i-var_bin_i),2);
+	}
+	shift_bin_i=sqrt(diff_bin_ib);
+	h_var[i][j][4][0]->SetBinContent(ib,nom_bin_i+shift_bin_i);	h_var[i][j][5][0]->SetBinContent(ib,nom_bin_i-shift_bin_i);
+      }
+
+      
       for(int t=0;t<type.size();t++){
 	cout << " - load file: "<< t << " - "<<  type[t] << endl;
 	if(t==0){	  
@@ -196,7 +248,7 @@ void rivet_comparison(bool norm_xs_plots=false)
 	  else if (!norm_xs_plots) h_var[i][j][0][t]->SetYTitle("Arbitrary Units"); 
 
 	  h_var[i][j][0][t]->GetXaxis()->SetLabelOffset(0.015);
-	  if(variable[i].find("nJets")!= std::string::npos) h_var[i][j][0][t]->GetXaxis()->SetNdivisions(500, kTRUE);
+	  //if(variable[i].find("nJets")!= std::string::npos) h_var[i][j][0][t]->GetXaxis()->SetNdivisions(500, kTRUE);
 
 	  //||variable[i].find("nBtagJets")
 	  h_var[i][j][0][t]->SetXTitle((variable_X[j]).c_str());
@@ -219,7 +271,7 @@ void rivet_comparison(bool norm_xs_plots=false)
 	legend[i][j]->AddEntry(h_var[i][j][0][t],(type[t]+ " ").c_str(),"LP");
 	//}//
 	sprintf(sf_name,"ratio_%s_%s_%s",variable[j].c_str(),nj_reg[i].c_str(),type[t].c_str());   
-	cout<< "ratio name "<< sf_name<< endl;
+	cout<< "ratio name "<< sf_name<< ", t's bins = "<< h_var[i][j][0][t]->GetXaxis()->GetNbins()<< ", 0's bins = "<< h_var[i][j][0][0]->GetXaxis()->GetNbins()<< endl;
 	
 	//sprintf(sf_name,"ratio_%s_%s",variable[j].c_str(),nj_reg[i].c_str());   
 	//*
@@ -239,18 +291,30 @@ void rivet_comparison(bool norm_xs_plots=false)
 	h_var[i][j][3][t]->GetXaxis()->SetTickLength(0.1); 
 	h_var[i][j][3][t]->SetLineWidth(2);
 	
-	h_var[i][j][3][t]->SetMinimum(0.65);
-	h_var[i][j][3][t]->SetMaximum(1.35);
+	h_var[i][j][3][t]->SetMinimum(0.59);
+	h_var[i][j][3][t]->SetMaximum(1.41);
 
 	//For comparison Gen-Rivet
 	//h_var[i][j][3][t]->SetMinimum(0.91);
 	//h_var[i][j][3][t]->SetMaximum(1.09);
+	if(t==0){
 
+	  for(int unc=4;unc<6;unc++){
+	    h_var[i][j][unc][0]->SetMarkerColor(env_col[unc-4]); h_var[i][j][unc][0]->SetMarkerSize(0.1);  h_var[i][j][unc][0]->SetLineColor(env_col[unc-4]);
+	    h_var[i][j][unc][0]->Draw("E1histsame");
+	    legend[i][j]->AddEntry(h_var[i][j][unc][0],("env "+env_type[unc-4]).c_str(),"LP");
+	    
+	    sprintf(sf_name,"syst_ratio_%s_%s_%d",variable[j].c_str(),nj_reg[i].c_str(),unc);   
+	    h_var[i][j][4+unc][0] = (TH1D*) h_var[i][j][unc][0]->Clone(sf_name);
+	    h_var[i][j][4+unc][0]->Divide(h_var[i][j][0][0]);
+	    
+	  }//loop over uncertainties
+	}
 	//*/
 	//}    
       }//t loop: nominal - variations      
       
-      sprintf(text1,"#sqrt{s} = 13 TeV, rivet routine");
+      sprintf(text1,"#sqrt{s} = 13 TeV, ttW, rivet");
       //sprintf(text1,"#sqrt{s} = 13 TeV, Sherpa 221, 413008");
       //sprintf(text1,"#sqrt{s} = 13 TeV, aMC@NLO, 410155");
       //sprintf(text2,"Variable: %s",variable_X[j].c_str());//+nj_reg[i]+variable[j]
@@ -270,7 +334,7 @@ void rivet_comparison(bool norm_xs_plots=false)
       h_var[i][j][3][0]->Draw("hist");
       for(int t=1;t<type.size();t++){
 	if(t<3) h_var[i][j][3][t]->SetLineWidth(3);
-	else if(t>2 &&t<5)	h_var[i][j][0][t]->SetLineWidth(1);
+	//else if(t>2 &&t<5)	h_var[i][j][0][t]->SetLineWidth(1);
 	else h_var[i][j][3][t]->SetLineWidth(4);
 	h_var[i][j][3][t]->SetLineColor(color_sample[t]);
 	h_var[i][j][3][t]->SetMarkerColor(color_sample[t]);
@@ -278,15 +342,19 @@ void rivet_comparison(bool norm_xs_plots=false)
 	h_var[i][j][3][t]->Draw("histsame");
 	
       }
+      h_var[i][j][8][0]->Draw("histsame");
+      h_var[i][j][9][0]->Draw("histsame");
       
       //      pad1[i][j]->RedrawAxis();
-      pad1[i][j]->Update();
-      pad1[i][j]->RedrawAxis();
+      //pad1[i][j]->Update();
+      //pad1[i][j]->RedrawAxis();
 
       if (norm_xs_plots) sprintf(norm_name,"f");
       else if (!norm_xs_plots) sprintf(norm_name,"n");
       
-      sprintf(o_name,"Plots_rivet_CMS_s228_12_%s/%s.pdf",norm_name,canvas_name);
+      //sprintf(o_name,"Plots_rivet_CMS_s228_12_%s/%s.pdf",norm_name,canvas_name);
+      //sprintf(o_name,"Plots_rivet_CMS_s228_20_%s/%s.pdf",norm_name,canvas_name);
+      sprintf(o_name,"Uncertainty/Plot_s228_gen_s_%s/%s.pdf",norm_name,canvas_name);
       //sprintf(o_name,"Plots_gen_rivet_12_%s/%s.pdf",norm_name,canvas_name);
 
       canv[i][j]->Print(o_name);

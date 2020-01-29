@@ -31,10 +31,10 @@ void rivet_comparison(bool norm_xs_plots=false)
   //vector<string> region_names={"0t 1b 4j", "0t 2b 4j","0t 1b 3j", "0t 2b 3j", "1t 1b 3j"};
   vector<string> region_names={"0#tau_{had} 1#font[52]{b} #geq4#font[52]{j}", "0#tau_{had} #geq2#font[52]{b} #geq4#font[52]{j}","0#tau_{had} 1#font[52]{b} 3#font[52]{j}", "0#tau_{had} #geq2#font[52]{b} 3#font[52]{j}","1#tau_{had} #geq1#font[52]{b} #geq3#font[52]{j}"};//, "0t=3j","0tg4j","otg3g0b"};
 
-  //vector<string>  nj_reg={"0"};//
-  vector<string>  nj_reg={"0","1","2","3","4"};//,"5","6","7"};
-  // vector<string> variable={"nJets","DRll01","lep_Pt_0"};
-  vector<string> variable={"nJets","DRll01","lep_Pt_0","lep_Pt_1","jet_Pt_4","jet_Pt_5","jet_Pt_6","Bjet_Pt_0","Bjet_Pt_1","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT_leps","HT","nBtagJets","MET","lep_Eta_0","lep_Eta_1","lep_Phi_0","lep_Phi_1","lep_dPhi","jet_Pt_1","jet_Pt_2","jet_Pt_3"}; //
+  vector<string>  nj_reg={"0"};//
+  //vector<string>  nj_reg={"0","1","2","3","4"};//,"5","6","7"};
+  vector<string> variable={"nJets"}; //,"DRll01","lep_Pt_0"};
+  //vector<string> variable={"nJets","DRll01","lep_Pt_0","lep_Pt_1","jet_Pt_4","jet_Pt_5","jet_Pt_6","Bjet_Pt_0","Bjet_Pt_1","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT_leps","HT","nBtagJets","MET","lep_Eta_0","lep_Eta_1","lep_Phi_0","lep_Phi_1","lep_dPhi","jet_Pt_1","jet_Pt_2","jet_Pt_3"}; //
 
   vector<string> variable_X={"Number of jets","#Delta R_{l_{0},l_{1}}","Leading lepton #font[52]{p}_{T} [GeV]","Subeading lepton #font[52]{p}_{T} [GeV]",
 			     "4th jet #font[52]{p}_{T} [GeV]","5th jet #font[52]{p}_{T} [GeV]","6th jet #font[52]{p}_{T} [GeV]",
@@ -94,7 +94,9 @@ void rivet_comparison(bool norm_xs_plots=false)
 
   Double_t norm_hist=1;
   cout <<"loop to load histos"<< endl;
-  vector<string> type={"Sherpa 228","aMC@NLO","CMS aMC@NLO FxFx"};
+  vector<string> type={"Sherpa 228"};//,"aMC@NLO","CMS aMC@NLO FxFx"};
+  Int_t n_nom_samples = 1;
+  Bool_t w_cms=false; //true
   //,"Sherpa up" ,"Sherpa down"
   vector<string> type_path={
 			    "MUR0.5_MUF0.5_PDF261000_PSMUR0.5_PSMUF0.5"
@@ -149,22 +151,22 @@ void rivet_comparison(bool norm_xs_plots=false)
 	// For rivet only
 	//sprintf(sf_name,"ttw_ttH/%s_%s",variable[j].c_str(),nj_reg[i].c_str());
 	//For Comparison with CMS
-	if(t<3){
-	  if(t<2) sprintf(sf_name,"ttw_ttH/%s_%s",variable[j].c_str(),nj_reg[i].c_str());
-	  else if(t==2) sprintf(sf_name,"CMS_2019_TTH_TTWBCKG/%s_%s",variable[j].c_str(),nj_reg[i].c_str());
+	if(t<n_nom_samples){
+	  if(t<n_nom_samples-1 || t==0) sprintf(sf_name,"ttw_ttH/%s_%s",variable[j].c_str(),nj_reg[i].c_str());
+	  else if(t==n_nom_samples-1 && w_cms) sprintf(sf_name,"CMS_2019_TTH_TTWBCKG/%s_%s",variable[j].c_str(),nj_reg[i].c_str());
 	  
 	  h_var[i][j][0][t] = (TH1D *)file[0][t]->Get(sf_name);		
 	}
-	else if(t>2){
+	else if(t>n_nom_samples-1){
 	  //for(int ivar=0;ivar<type_path.size();ivar++){
-	  sprintf(sf_name,"%s/ttw_ttH/%s_%s",type_path[t-3].c_str(),variable[j].c_str(),nj_reg[i].c_str());
+	  sprintf(sf_name,"%s/ttw_ttH/%s_%s",type_path[t-n_nom_samples].c_str(),variable[j].c_str(),nj_reg[i].c_str());
 	  h_var[i][j][0][t] = (TH1D *)file[0][3]->Get(sf_name);
 	    //}
 	}
 	/* //AT version */
 	/* else if(t==2) sprintf(sf_name,"%s_%s",variable[j].c_str(),nj_reg[i].c_str()); */
 	
-	//cout <<"h_var["<<i<<"]["<<j<<"][0]["<<t<<"] sf_name " << sf_name<< " , variable in histo - "<< variable[j]<< endl;
+	cout <<"h_var["<<i<<"]["<<j<<"][0]["<<t<<"] sf_name " << sf_name<< " , variable in histo - "<< variable[j]<< endl;
 	
 	if (!norm_xs_plots) norm_hist = h_var[i][j][0][t]->GetSumOfWeights();
 	else if (norm_xs_plots) norm_hist = 3;
@@ -177,7 +179,7 @@ void rivet_comparison(bool norm_xs_plots=false)
 
 
     
-  cout <<"histos are load "<<h_var[0][1][0][5]->GetXaxis()->GetNbins() << endl;
+  cout <<"histos are load "<<h_var[0][0][0][5]->GetXaxis()->GetNbins() << endl;
   cout << "=============================="<<'\n'<<'\n'<<'\n'<<"loop to make plots using loaded histos"<< endl;
   for(int i=0;i<nj_reg.size();i++){
     for(int j=0;j<variable.size();j++){
@@ -357,7 +359,7 @@ void rivet_comparison(bool norm_xs_plots=false)
       sprintf(o_name,"Uncertainty/Plot_s228_gen_s_%s/%s.pdf",norm_name,canvas_name);
       //sprintf(o_name,"Plots_gen_rivet_12_%s/%s.pdf",norm_name,canvas_name);
 
-      canv[i][j]->Print(o_name);
+      //canv[i][j]->Print(o_name);
 
       //*/
     }//j loop: variable

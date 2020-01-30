@@ -31,10 +31,10 @@ void rivet_comparison(bool norm_xs_plots=false)
   //vector<string> region_names={"0t 1b 4j", "0t 2b 4j","0t 1b 3j", "0t 2b 3j", "1t 1b 3j"};
   vector<string> region_names={"0#tau_{had} 1#font[52]{b} #geq4#font[52]{j}", "0#tau_{had} #geq2#font[52]{b} #geq4#font[52]{j}","0#tau_{had} 1#font[52]{b} 3#font[52]{j}", "0#tau_{had} #geq2#font[52]{b} 3#font[52]{j}","1#tau_{had} #geq1#font[52]{b} #geq3#font[52]{j}"};//, "0t=3j","0tg4j","otg3g0b"};
 
-  //vector<string>  nj_reg={"0"};//
-  vector<string>  nj_reg={"0","1","2","3","4"};//,"5","6","7"};
-  //vector<string> variable={"nJets","DRll01","lep_Pt_0"};
-  vector<string> variable={"nJets","DRll01","lep_Pt_0","lep_Pt_1","jet_Pt_4","jet_Pt_5","jet_Pt_6","Bjet_Pt_0","Bjet_Pt_1","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT_leps","HT","nBtagJets","MET","lep_Eta_0","lep_Eta_1","lep_Phi_0","lep_Phi_1","lep_dPhi","jet_Pt_1","jet_Pt_2","jet_Pt_3"}; //
+  vector<string>  nj_reg={"0"};//
+  //vector<string>  nj_reg={"0","1","2","3","4"};//,"5","6","7"};
+  vector<string> variable={"nJets","DRll01","lep_Pt_0"};
+  //vector<string> variable={"nJets","DRll01","lep_Pt_0","lep_Pt_1","jet_Pt_4","jet_Pt_5","jet_Pt_6","Bjet_Pt_0","Bjet_Pt_1","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT_leps","HT","nBtagJets","MET","lep_Eta_0","lep_Eta_1","lep_Phi_0","lep_Phi_1","lep_dPhi","jet_Pt_1","jet_Pt_2","jet_Pt_3"}; //
 
   vector<string> variable_X={"Number of jets","#Delta R_{l_{0},l_{1}}","Leading lepton #font[52]{p}_{T} [GeV]","Subeading lepton #font[52]{p}_{T} [GeV]",
 			     "4th jet #font[52]{p}_{T} [GeV]","5th jet #font[52]{p}_{T} [GeV]","6th jet #font[52]{p}_{T} [GeV]",
@@ -98,7 +98,7 @@ void rivet_comparison(bool norm_xs_plots=false)
   cout <<"loop to load histos"<< endl;
   vector<string> type={"Sherpa 228"};//,"aMC@NLO","CMS aMC@NLO FxFx"};
   Int_t n_nom_samples = 1;
-  Bool_t pdf_nom=true;
+  Bool_t pdf_nom=false;
   Bool_t w_cms=false; //false
   //,"Sherpa up" ,"Sherpa down"
   /*
@@ -112,8 +112,8 @@ void rivet_comparison(bool norm_xs_plots=false)
   };
   //*/
   vector<string> type_path;
-  //type_path.push_back("MUR1_MUF1_PDF91400");
-  //*
+  type_path.push_back("MUR1_MUF1_PDF91400");
+  /*
   for(int ipdf=1;ipdf<33;ipdf++){
     if (ipdf<10)
       type_path.push_back("MUR1_MUF1_PDF9140"+to_string(ipdf));
@@ -403,7 +403,7 @@ void rivet_comparison(bool norm_xs_plots=false)
       sprintf(o_name,"Uncertainty/Plot_s228_pdfalpha_%s/%s.pdf",norm_name,canvas_name);
       //sprintf(o_name,"Plots_gen_rivet_12_%s/%s.pdf",norm_name,canvas_name);
 
-      canv[i][j]->Print(o_name);
+      //canv[i][j]->Print(o_name);
 
       //*/
     }//j loop: variable

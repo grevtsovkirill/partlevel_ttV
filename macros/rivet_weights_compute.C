@@ -59,7 +59,7 @@ void rivet_weights_compute(bool norm_xs_plots=false)
   //vector<string> type={"gen-lev: MG","Rivet: MG"};
   //vector<string> type={"Sherpa","MG"}; 
   //ATLAS - CMS comparison
-  Int_t color_sample[8]={864,594,433,921,922,617,860,868};//625  red 633
+  Int_t color_sample[8]={864,921,433,922,868,594,625,617};// 860, 625  red 633
   //AT-rivet Sherpa
   //Int_t color_sample[8]={1,633,601,920,922,799,617,625};
   //AT-rivet MG
@@ -94,7 +94,7 @@ void rivet_weights_compute(bool norm_xs_plots=false)
 
   Double_t norm_hist=1;
   vector<string> env_type={"tot Up","tot Down","rf:05+2 up" ,"rf:05+2 down" };
-  Double_t env_col[4]={618,612,418,409};
+  Double_t env_col[4]={418,409,618,612};
   vector<string> type={"Nominal","R05F05","R05F1","R1F05","R2F1","R1F2","R2F2" };
   vector<string> type_path={"nom"
 			    ,"MUR0.5_MUF0.5_PDF261000_PSMUR0.5_PSMUF0.5"
@@ -243,14 +243,19 @@ void rivet_weights_compute(bool norm_xs_plots=false)
       sprintf(sf_name,"unc_down_%s_%s",variable[j].c_str(),nj_reg[i].c_str());   
       h_var[i][j][5][0] = (TH1D*) h_var[i][j][0][0]->Clone(sf_name);
 
+      /*
       sprintf(sf_name,"a_up_%s_%s",variable[j].c_str(),nj_reg[i].c_str());   
       h_var[i][j][6][0] = (TH1D*) h_var[i][j][0][0]->Clone(sf_name);
       sprintf(sf_name,"a_down_%s_%s",variable[j].c_str(),nj_reg[i].c_str());   
       h_var[i][j][7][0] = (TH1D*) h_var[i][j][0][0]->Clone(sf_name);
-
+      //*/
+      
       nbinsx = -1;
       nbinsx = h_var[i][j][0][0]->GetXaxis()->GetNbins(); //get Nbins from nominal sample
       //cout <<"h_var["<<i<<"]["<<j<<"][0][0]"<<"  nbinsx = "<< nbinsx <<endl;
+
+      //HESSIAN Set - sum in quadrature:
+      /*
       for(int ib=0; ib<nbinsx+1;ib++){
 	
 	nom_bin_i=h_var[i][j][0][0]->GetBinContent(ib);
@@ -270,10 +275,36 @@ void rivet_weights_compute(bool norm_xs_plots=false)
 	h_var[i][j][4][0]->SetBinContent(ib,nom_bin_i+shift_bin_i);	h_var[i][j][5][0]->SetBinContent(ib,nom_bin_i-shift_bin_i);
 	h_var[i][j][6][0]->SetBinContent(ib,nom_bin_i+shiftA_bin_i);	h_var[i][j][7][0]->SetBinContent(ib,nom_bin_i-shiftA_bin_i);
       }
-      
+      //*/
+
+      Double_t edge_up,edge_down;
+      // Envelope = larges contribution
+      for(int ib=0; ib<nbinsx+1;ib++){
+	
+	nom_bin_i=h_var[i][j][0][0]->GetBinContent(ib);
+	//diff_bin_ib=0;	diffA_bin_ib=0;
+	edge_up=nom_bin_i;
+	edge_down=nom_bin_i;
+	for(int t=1;t<type.size();t++){
+	  var_bin_i=h_var[i][j][0][t]->GetBinContent(ib);
+	  //diff_bin_ib+=pow((nom_bin_i-var_bin_i),2);
+	  if(edge_up<var_bin_i) edge_up=var_bin_i;
+	  
+	  if(edge_down>var_bin_i) edge_down=var_bin_i;
+	  
+	  if(type[t]=="R05F05"|| type[t]=="R2F2"){
+	    varA_bin_i=h_var[i][j][0][t]->GetBinContent(ib);
+	    diffA_bin_ib+=pow((nom_bin_i-varA_bin_i),2);
+	    //cout << "type[t] "<< type[t]<< endl;
+	  }	  	 	
+	}
+	
+	//cout<< "nom_bin_i= "<<nom_bin_i<<", shift_bin_i="<< shift_bin_i<< "; up = "<< nom_bin_i+shift_bin_i<< "; down = "<< nom_bin_i-shift_bin_i<< "; orig up/down= "<< h_var[i][j][0][1]->GetBinContent(ib)<<"/"<<h_var[i][j][0][2]->GetBinContent(ib)<< endl;
+	h_var[i][j][4][0]->SetBinContent(ib,edge_up);	h_var[i][j][5][0]->SetBinContent(ib,edge_down);
+	//h_var[i][j][6][0]->SetBinContent(ib,nom_bin_i+shiftA_bin_i);	h_var[i][j][7][0]->SetBinContent(ib,nom_bin_i-shiftA_bin_i);
+      }
+	    
       for(int t=0;t<type.size();t++){
-
-
   //*
 
 	//cout << " - load file: "<< t << " - "<<  type[t] << endl;
@@ -343,23 +374,40 @@ void rivet_weights_compute(bool norm_xs_plots=false)
 	//h_var[i][j][3][t]->SetMaximum(1.09);
 
 	//}    
-	if(t==0){
-
-	  for(int unc=4;unc<8;unc++){
-	    h_var[i][j][unc][0]->SetMarkerColor(env_col[unc-4]); h_var[i][j][unc][0]->SetMarkerSize(0.1);  h_var[i][j][unc][0]->SetLineColor(env_col[unc-4]);
-	    h_var[i][j][unc][0]->Draw("E1histsame");
-	    legend[i][j]->AddEntry(h_var[i][j][unc][0],("env "+env_type[unc-4]).c_str(),"LP");
-	    
-	    sprintf(sf_name,"syst_ratio_%s_%s_%d",variable[j].c_str(),nj_reg[i].c_str(),unc);   
-	    h_var[i][j][4+unc][0] = (TH1D*) h_var[i][j][unc][0]->Clone(sf_name);
-	    h_var[i][j][4+unc][0]->Divide(h_var[i][j][0][0]);
-	    
-	  }//loop over uncertainties
-	}//for nominal case only
 	
       }//t loop: nominal - variations      
 
-      //sprintf(text1,"#sqrt{s} = 13 TeV, rivet routine");
+
+            
+      for(int t=1;t<type.size();t++){
+      	  if(type[t]=="R2F2"){
+	    sprintf(sf_name,"a_up_%s_%s",variable[j].c_str(),nj_reg[i].c_str());   
+	    h_var[i][j][6][0] = (TH1D*) h_var[i][j][0][t]->Clone(sf_name);
+	  }
+	  else if(type[t]=="R05F05"){
+	    sprintf(sf_name,"a_down_%s_%s",variable[j].c_str(),nj_reg[i].c_str());   
+	    h_var[i][j][7][0] = (TH1D*) h_var[i][j][0][t]->Clone(sf_name);
+	    
+	  }
+      }
+
+      //if(t==0){
+      
+      for(int unc=4;unc<8;unc++){
+	if(unc<6){
+	  h_var[i][j][unc][0]->SetMarkerColor(env_col[unc-4]); h_var[i][j][unc][0]->SetMarkerSize(0.1);  h_var[i][j][unc][0]->SetLineColor(env_col[unc-4]); h_var[i][j][unc][0]->SetLineWidth(3);
+	  legend[i][j]->AddEntry(h_var[i][j][unc][0],("env "+env_type[unc-4]).c_str(),"LP");
+	h_var[i][j][unc][0]->Draw("E1histsame");
+	}
+	
+	sprintf(sf_name,"syst_ratio_%s_%s_%d",variable[j].c_str(),nj_reg[i].c_str(),unc);   
+	h_var[i][j][4+unc][0] = (TH1D*) h_var[i][j][unc][0]->Clone(sf_name);
+	h_var[i][j][4+unc][0]->Divide(h_var[i][j][0][0]);
+	
+      }//loop over uncertainties
+	  //}//for nominal case only
+
+	//sprintf(text1,"#sqrt{s} = 13 TeV, rivet routine");
       //sprintf(text1,"#sqrt{s} = 13 TeV, Sherpa 221, 413008");
       sprintf(text1,"#sqrt{s} = 13 TeV, Sherpa 228, 700000");
       //sprintf(text1,"#sqrt{s} = 13 TeV, aMC@NLO, 410155");
@@ -408,7 +456,7 @@ void rivet_weights_compute(bool norm_xs_plots=false)
       if (norm_xs_plots) sprintf(norm_name,"f");
       else if (!norm_xs_plots) sprintf(norm_name,"n");
       
-      sprintf(o_name,"Uncertainty/Plot_s228_scale_%s/%s.pdf",norm_name,canvas_name);
+      sprintf(o_name,"Uncertainty/Plot_s228_scaleEnv_%s/%s.pdf",norm_name,canvas_name);
       //sprintf(o_name,"Plots_gen_rivet_12_%s/%s.pdf",norm_name,canvas_name);
       canv[i][j]->Print(o_name);
 

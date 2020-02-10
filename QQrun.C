@@ -1,14 +1,23 @@
 
 
-void QQrun(string name="Sherpa", string comp="d"){
-  
+void QQrun(string name="413008_ttw", string comp="d"){
+  /*
+    410156_ttZnunu.root
+    410157_ttZqq.root
+    410218_ttee.root
+    410219_ttmumu.root
+    410220_tttautau.root
+    413008_ttw.root
+  */
+
+
   TChain *ch=new TChain("particleLevel");
   string choose_tag="";
   string name1="";
-  if(name.find("Sherpa")!= std::string::npos) name1="413008_ttw"; 
-  else if(name.find("MG")!= std::string::npos) name1="410155";
+  //if(name.find("Sherpa")!= std::string::npos) name1="413008_ttw"; 
+  //else if(name.find("MG")!= std::string::npos) name1="410155";
 
-  string path="/Users/grevtsov/Documents/working_files/ttH/Wtt_run2/Files/ttWqq/v0_0206/"+name1+".root";;
+  string path="/Users/grevtsov/Documents/working_files/ttH/Wtt_run2/Files/ttWqq/v0_0206/"+name+".root";;
   cout << "path = " << path<< endl;
 
 
@@ -28,7 +37,9 @@ void QQrun(string name="Sherpa", string comp="d"){
   // MG nominal =0;    scaleup = 4, scaledown = 8
   // Sherpa nom = 0/7, scaleup = 10, scaledown= 4
   int mc_weight_index=9999;
-  
+  mc_weight_index=0;
+  //Only nominal
+  /*
   if(name.compare("Sherpa")==0){ 
     mc_weight_index=0;
   }
@@ -48,6 +59,7 @@ void QQrun(string name="Sherpa", string comp="d"){
   }
   else {std::cout << " error - incorrect variation. "<<  std::endl;
   }
+  //*/
 
   for(int i=0; i<weight_chain->GetEntries();i++){
     weight_chain->GetEntry(i);
@@ -58,7 +70,7 @@ void QQrun(string name="Sherpa", string comp="d"){
 
   ch->Add(path.c_str());
   cout << ch->GetNtrees()<< ", entr: "<< ch->GetEntries()<< endl;
-  string  option=to_string(sum_w)+"_"+name+"-"+comp;
+  string  option=to_string(sum_w)+"/"+name+"-"+comp;
 
   ch->Process("source/partlevel_wqq.C+",option.c_str(),10);
 

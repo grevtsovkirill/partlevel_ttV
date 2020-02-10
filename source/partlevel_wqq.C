@@ -130,7 +130,7 @@ void partlevel_wqq::SlaveBegin(TTree * /*tree*/)
 
   
   const std::vector<TString> s_cutDescs =
-    {  "Preselections","Nleps","lepPt1>20","lepPt0>25","lepCentr","SS","jPt/eta","3j1b",
+    {  "Preselections","Nleps","lepPt1>20","lepPt0>25","lepCentr","OS","jPt/eta","2b","4j",
        "0t 1b 4j", "0t 2b 4j","0t 1b 3j", "0t 2b 3j","1t >1b >3j"};
   int Ncuts = s_cutDescs.size();
   h_cutflow_2l[0] = new TH1F("cf2l","cf2l",Ncuts,0,Ncuts);
@@ -338,9 +338,9 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
 
   float charges=l0_charge*l1_charge;
   //SS
-  if(charges!=1)       cout <<"      +====+++ big trouble     " << endl;
-
-  if(charges<0) return 0;
+  //f(charges!=0)       cout <<"      +====+++ big trouble     " << endl;
+  //OS
+  if(charges!=0) return 0;
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
  
@@ -382,9 +382,13 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
   //central jets above 25 gev
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
-  
+
+  if(Nbjets<2) return 0;
+  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
+  cf_counter++;
+
   // if(Njets<3 || Nbjets<1) return 0;
-  if(Njets<3) return 0;
+  if(Njets<4) return 0;
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
 

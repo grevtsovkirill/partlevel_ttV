@@ -72,6 +72,6 @@ void QQrun(string name="413008_ttw", string comp="d"){
   cout << ch->GetNtrees()<< ", entr: "<< ch->GetEntries()<< endl;
   string  option=to_string(sum_w)+"/"+name+"-"+comp;
 
-  ch->Process("source/partlevel_wqq.C+",option.c_str(),10);
+  ch->Process("source/partlevel_wqq.C+",option.c_str());
 
 }

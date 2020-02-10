@@ -88,7 +88,7 @@ void partlevel_wqq::SlaveBegin(TTree * /*tree*/)
   TString option = GetOption();
   std::cout << "option ="<< option << std::endl;
   input_option = option;
-  string tmp = input_option.substr(0,input_option.find("_"));
+  string tmp = input_option.substr(0,input_option.find("/"));
   double smw=-9999;
   smw=  std::stod (tmp);
   //cout.precision(17);
@@ -100,7 +100,7 @@ void partlevel_wqq::SlaveBegin(TTree * /*tree*/)
   Acc=1/smw;
   //Acc=1;
 
-  input_name=input_option.substr(input_option.find("_")+1,(input_option.find("-")-input_option.find("_")-1));
+  input_name=input_option.substr(input_option.find("/")+1,(input_option.find("_")-input_option.find("/")-1));
   comp_name=input_option.substr(input_option.find("-")+1);
 				 
   std::cout << "var ="<< input_name<< ", comp_name - "<< comp_name << std::endl;

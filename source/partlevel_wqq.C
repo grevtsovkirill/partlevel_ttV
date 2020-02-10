@@ -43,6 +43,7 @@ TH1D *hist_lep_Phi_1[10];
 TH1D *hist_lep_dPhi[10];
 
 TH1D *hist_Weights[10];
+TH1D *hist_Whmass[10];
 
 /*
  *        0 *        4 *          MUR05_MUF05_PDF261000 *
@@ -57,10 +58,13 @@ TH1D *hist_Weights[10];
 
 vector<string> weight_names = {"MUR05_MUF05","MUR05_MUF1","MUR1_MUF05","MUR1_MUF1","MUR1_MUF2","MUR2_MUF1","MUR2_MUF2"};
 
-
+  /* sel_array[0]=(Nhtaus == 0 && Njets >= 4 );  // Region inclusive                                                                                                                                                                    */
+  /* sel_array[1]=(Nhtaus == 0 && Njets >= 4 && abs(mWPDG - pWhadron.M())/1e3<20 );  // Region 20GeV Wmass region                                                                                                                       */
+  /* sel_array[2]=(Nhtaus == 0 && Njets >= 4 && abs(mWPDG - pWhadron.M())/1e3<10 );  // Region 10GeV Wmass region                                                                                                                       */
+  /* sel_array[3]=(Nhtaus == 0 && Njets >= 4 && abs(mWPDG - pWhadron.M())/1e3<5 );  // Region 5GeV Wmass region    */
 
  
-vector<string> region_names={"0t 1b 4j", "0t 2b 4j","0t 1b 3j", "0t 2b 3j","1t 1b 3j", "0t=3j","0tg4j","otg3g0b"};
+vector<string> region_names={"2b4j", "mW20","mW10", "mW5"};
 //vector<string> region_names={"0#tau_{had} 1#font[52]{b} #geq4#font[52]{j}", "0#tau_{had} #geq2#font[52]{b} #geq4#font[52]{j}","0#tau_{had} 1#font[52]{b} 3#font[52]{j}", "0#tau_{had} #geq2#font[52]{b} 3#font[52]{j}","1#tau_{had} #geq1#font[52]{b} #geq3#font[52]{j}", "0t=3j","0tg4j","otg3g0b"};
 //,
 			     //"1t 1b 4j", "1t 2b 4j","1t 1b 3j", "1t 2b 3j"};
@@ -131,7 +135,7 @@ void partlevel_wqq::SlaveBegin(TTree * /*tree*/)
   
   const std::vector<TString> s_cutDescs =
     {  "Preselections","Nleps","lepPt1>20","lepPt0>25","lepCentr","OS","jPt/eta","2b","4j",
-       "0t 1b 4j", "0t 2b 4j","0t 1b 3j", "0t 2b 3j","1t >1b >3j"};
+       "Whad", "4j2b","w>20","w>10","w>5"};
   int Ncuts = s_cutDescs.size();
   h_cutflow_2l[0] = new TH1F("cf2l","cf2l",Ncuts,0,Ncuts);
   h_cutflow_2l[1] = new TH1F("cf2l_raw","cf2l_raw",Ncuts,0,Ncuts);
@@ -180,6 +184,8 @@ void partlevel_wqq::SlaveBegin(TTree * /*tree*/)
       hist_lep_Phi_1[i] = new TH1D(("lep_Phi_1_"+to_string(i)).c_str(), ("#{#phi}_{l1}} 2lSS"+region_names[i]+";#{#phi}_{l1};Events").c_str(), 16, -3.2, 3.2);
       hist_lep_dPhi[i] = new TH1D(("lep_dPhi_"+to_string(i)).c_str(), ("|#Delta#{#phi}_{ll}}| 2lSS"+region_names[i]+";|#{#Delta#phi}_{ll}|;Events").c_str(), 16, 0, 6.4);
 
+      hist_Whmass[i] = new TH1D(("Whmass_"+to_string(i)).c_str(), ("m_{Wqq} "+region_names[i]+";|#{m_{Wqq}}|;Events").c_str(), 420, 50, 410);
+
     }
 
 
@@ -197,6 +203,9 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
   // print some information about the current entry
   if ((entry)%10000 == 0)
     printf("Processing Entry  %llu \n", entry);
+
+  //if ((entry)%1000 == 0)
+  // printf("    --  milestone  %llu \n", entry);
 
   // increase the total number of entries
   ++fNumberOfEvents;
@@ -456,52 +465,61 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
 
 
   //fill weights
-  for(int i=0; i<(int)weight_names.size();i++){
-    hist_Weights[i]->Fill(mc_generator_weights[i+4]);
-  }  
+  //for(int i=0; i<(int)weight_names.size();i++){
+  //  hist_Weights[i]->Fill(mc_generator_weights[i+4]);
+  //}  
 
 
 
+  //cout << " -------  fearch for  Wqq:   jets_vec.size() = "<< jets_vec.size()  << endl;
   double bestWmass = 1000.0*1e6;
   double mWPDG = 80.399*1e3;
   int Wj1index = -1, Wj2index = -1;
   bool found_w=false;
-  for (unsigned int i = 0; i < (ljets_vec.size() - 1); ++i) {
-    for (unsigned int j = i + 1; j < ljets_vec.size(); ++j) {
-      double wmass = (ljets_vec[i] + ljets_vec[j]).M();
+  double wmass=999;
+  for (unsigned int i = 0; i < (jets_vec.size() - 1); ++i) {
+    for (unsigned int j = i + 1; j < jets_vec.size(); ++j) {
+      wmass = (jets_vec[i] + jets_vec[j]).M();
+      
       if (fabs(wmass - mWPDG) < fabs(bestWmass - mWPDG)) {
 	bestWmass = wmass;
 	Wj1index = i;
 	Wj2index = j;
-	found_w=true;
+	found_w=true;	
+	
+	//cout << " -------====  bestWmass [i="<<i<<", j="<<j<<"] =  "<< bestWmass  << endl;
+
       }
     }
   }
 
   // found W->qq
-  if (found_w==false) return 0;
+  if (!found_w) return 0;
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
   
-  TLorentzVector pjet1 = ljets_vec[Wj1index];
-  TLorentzVector pjet2 = ljets_vec[Wj2index];
+  TLorentzVector pjet1 = jets_vec[Wj1index];
+  TLorentzVector pjet2 = jets_vec[Wj2index];
   // compute hadronic W boson
   TLorentzVector pWhadron = pjet1 + pjet2;
   
-  cout << " ========================= Found Wqq:   " << pWhadron.M()/1e3<<endl;
+  //cout << " ========================= Found Wqq:   " << pWhadron.M()/1e3<<endl;
   
   //cout <<"Ntaus ="<<Ntaus<<", Nhtaus="<< Nhtaus   << endl;
   //2 same sign charged leptons (e,mu) with pT>25(20)GeV 
-  sel_array[0]=(Nhtaus == 0 && Nbjets == 1 && Njets >= 4 );  // Region 1 
-  sel_array[1]=(Nhtaus == 0 && Nbjets >= 2 && Njets >= 4 );  // Region 2
-  sel_array[2]=(Nhtaus == 0 && Nbjets == 1 && Njets == 3 );  // Region 3 
-  sel_array[3]=(Nhtaus == 0 && Nbjets >= 2 && Njets == 3 );  // Region 4
-  sel_array[4]=(Nhtaus == 1 && Nbjets >= 1 && Njets >= 3 );  // Region 5
+  //sel_array[0]=(Nhtaus == 0 && Nbjets == 1 && Njets >= 4 );  // Region 1 
+  /* sel_array[1]=(Nhtaus == 0 && Nbjets >= 2 && Njets >= 4 );  // Region 2 */
+  /* sel_array[2]=(Nhtaus == 0 && Nbjets == 1 && Njets == 3 );  // Region 3  */
+  /* sel_array[3]=(Nhtaus == 0 && Nbjets >= 2 && Njets == 3 );  // Region 4 */
+  /* sel_array[4]=(Nhtaus == 1 && Nbjets >= 1 && Njets >= 3 );  // Region 5 */
 
-  sel_array[5]=(Nhtaus == 0 &&  Njets == 3 );  // 
-  sel_array[6]=(Nhtaus == 0 &&  Njets >= 4 );  // 
-  sel_array[7]=(Nhtaus == 0 && Nbjets >= 0 &&  Njets >= 3 );  // 
-  float met = *met_met/1000.;
+
+  sel_array[0]=(Nhtaus == 0 && Njets >= 4 );  // Region inclusive
+  sel_array[1]=(Nhtaus == 0 && Njets >= 4 && abs(mWPDG - pWhadron.M())/1e3<20 );  // Region 20GeV Wmass region
+  sel_array[2]=(Nhtaus == 0 && Njets >= 4 && abs(mWPDG - pWhadron.M())/1e3<10 );  // Region 10GeV Wmass region
+  sel_array[3]=(Nhtaus == 0 && Njets >= 4 && abs(mWPDG - pWhadron.M())/1e3<5 );  // Region 5GeV Wmass region
+  
+      float met = *met_met/1000.;
 
   for(int i=0; i<(int)region_names.size();i++){
     if(sel_array[i]){
@@ -538,6 +556,7 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
       hist_lep_Phi_0[i]->Fill(lep_4v[lead_lep].Phi(), weight_tot);
       hist_lep_Phi_1[i]->Fill(lep_4v[sublead_lep].Phi(), weight_tot);
       hist_lep_dPhi[i]->Fill(abs(lep_4v[lead_lep].Phi()-lep_4v[sublead_lep].Phi()), weight_tot);
+      hist_Whmass[i]->Fill(pWhadron.M()/1e3, weight_tot);
     }
   }
   
@@ -587,6 +606,7 @@ void partlevel_wqq::Terminate()
       hist_lep_Phi_0[i]->Write();
       hist_lep_Phi_1[i]->Write();
       hist_lep_dPhi[i]->Write();
+      hist_Whmass[i]->Write();
     }
     //*/
 

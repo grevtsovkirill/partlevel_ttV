@@ -336,7 +336,7 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
   cf_counter++;
 
 
-  float charges=l0_charge*l1_charge;
+  float charges=l0_charge+l1_charge;
   //SS
   //f(charges!=0)       cout <<"      +====+++ big trouble     " << endl;
   //OS
@@ -349,6 +349,7 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
   int Njets=0, Nbjets=0;
   float HTall=0, HTjet=0; 
   vector<TLorentzVector> jets_vec;
+  vector<TLorentzVector> ljets_vec;
   vector<TLorentzVector> bjets_vec;
 
   //loop over jet vectors
@@ -374,6 +375,8 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
       Nbjets+=1;
       bjets_vec.push_back(jj);
     }
+    else
+      ljets_vec.push_back(jj);
 
     HTjet+=jet_pt[j];
     
@@ -410,6 +413,14 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
     if(bjets_vec[i].Pt()/1e3>bjptmax){    bjptmax=bjets_vec[i].Pt()/1e3;
 
       if(i!=0)     cout << "pT (bjet #"<<i<<")=" <<bjets_vec[i].Pt()/1e3<< ", while bjet0="<< bjets_vec[0].Pt()/1e3<<endl;
+    }
+  }
+
+  double ljptmax=0;
+  for (unsigned int i=0; i<ljets_vec.size();i++){
+    if(ljets_vec[i].Pt()/1e3>ljptmax){    ljptmax=ljets_vec[i].Pt()/1e3;
+
+      if(i!=0)     cout << "pT (bjet #"<<i<<")=" <<ljets_vec[i].Pt()/1e3<< ", while ljet0="<< ljets_vec[0].Pt()/1e3<<endl;
     }
   }
 
@@ -451,6 +462,34 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
 
 
 
+  double bestWmass = 1000.0*1e6;
+  double mWPDG = 80.399*1e3;
+  int Wj1index = -1, Wj2index = -1;
+  bool found_w=false;
+  for (unsigned int i = 0; i < (ljets_vec.size() - 1); ++i) {
+    for (unsigned int j = i + 1; j < ljets_vec.size(); ++j) {
+      double wmass = (ljets_vec[i] + ljets_vec[j]).M();
+      if (fabs(wmass - mWPDG) < fabs(bestWmass - mWPDG)) {
+	bestWmass = wmass;
+	Wj1index = i;
+	Wj2index = j;
+	found_w=true;
+      }
+    }
+  }
+
+  // found W->qq
+  if (found_w==false) return 0;
+  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
+  cf_counter++;
+  
+  TLorentzVector pjet1 = ljets_vec[Wj1index];
+  TLorentzVector pjet2 = ljets_vec[Wj2index];
+  // compute hadronic W boson
+  TLorentzVector pWhadron = pjet1 + pjet2;
+  
+  cout << " ========================= Found Wqq:   " << pWhadron.M()/1e3<<endl;
+  
   //cout <<"Ntaus ="<<Ntaus<<", Nhtaus="<< Nhtaus   << endl;
   //2 same sign charged leptons (e,mu) with pT>25(20)GeV 
   sel_array[0]=(Nhtaus == 0 && Nbjets == 1 && Njets >= 4 );  // Region 1 

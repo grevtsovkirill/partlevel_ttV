@@ -6,6 +6,7 @@
 #include <TStyle.h>
 #include <TLorentzVector.h>
 #include <math.h>
+#include <map>
 
 TH1F *h_cutflow_2l[2];
 string input_name="";
@@ -93,45 +94,27 @@ void partlevel_wqq::SlaveBegin(TTree * /*tree*/)
   smw=  std::stod (tmp);
   //cout.precision(17);
   std::cout << "SumW ="<< tmp<< ", double - "<< smw << std::endl;
-  //1 / (sum of weights per variation)
-  // xs from ami , 
-  // sherpa 413008: 652 fb;  7446700.5
-  // MG 410155: 548 fb ;  4111925.0
-  Acc=1/smw;
-  //Acc=1;
+  Double_t sig_Sherpa= 652;  Double_t sig_MG= 548;
 
   input_name=input_option.substr(input_option.find("/")+1,(input_option.find("_")-input_option.find("/")-1));
   comp_name=input_option.substr(input_option.find("-")+1);
-				 
-  std::cout << "var ="<< input_name<< ", comp_name - "<< comp_name << std::endl;
 
-  std::cout << "variation =";
-  if(input_name.compare("Sherpa")==0){
-    std::cout << " nominal Sherpa"<<  std::endl;
-    nomS_w=true;
-  }
-  else if(input_name.compare("MG")==0){
-    std::cout << " nominal MG"<<  std::endl;
-    nomM_w=true;
-  }
-  else if (input_name.find("SherpaScaleUp")!= std::string::npos){
-    std::cout << " ScaleUp"<<  std::endl;
-    scaleupS_w=true;
-  }
-  else if (input_name.find("SherpaScaleDown")!= std::string::npos){
-    std::cout << " ScaleDown"<<  std::endl;
-    scaledownS_w=true;
-  }  else if (input_name.find("MGScaleUp")!= std::string::npos){
-    std::cout << " ScaleUp"<<  std::endl;
-    scaleupM_w=true;
-  }
-  else if (input_name.find("MGScaleDown")!= std::string::npos){
-    std::cout << " ScaleDown"<<  std::endl;
-    scaledownM_w=true;
-  }
-  else {std::cout << " error - incorrect variation. Stop."<<  std::endl; stoploop=true;}
-
-
+  //1 / (sum of weights per variation)
+  // xs from ami , 
+  /*
+  #ttW       0.00065206 nb
+  # ttZ(qq)  0.00052821 nb
+  # ttbar    0.72977 nb
+  //*/ 
+  std::map<std::string, double> xs_map;
+  
+  xs_map["413008"]= 652;
+  xs_map["410157"]= 528;
+  xs_map["410472"]= 729770;
+  std::cout << "input_name ="<< input_name<< ", comp_name - "<< comp_name<< ", xs = "<<xs_map[input_name] << std::endl;  
+  Double_t gen_xs=1;
+  gen_xs=xs_map[input_name];
+  Acc=gen_xs/smw;
   
   const std::vector<TString> s_cutDescs =
     {  "Preselections","Nleps","lepPt1>20","lepPt0>25","lepCentr","OS","jPt/eta","2b","4j",
@@ -212,14 +195,14 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
 
   //weight definitions
   Double_t weight_to_use=1;
-  Double_t sig_Sherpa= 652;  Double_t sig_MG= 548;
-  if (nomS_w) weight_to_use = *weight_mc *Acc *sig_Sherpa;
-  else if (nomM_w) weight_to_use = *weight_mc *Acc *sig_MG;
-  else if (scaleupS_w) weight_to_use = mc_generator_weights[10]  *Acc *sig_Sherpa;//10 *            MUR2_MUF2_PDF261000 *
-  else if (scaledownS_w) weight_to_use = mc_generator_weights[4] *Acc *sig_Sherpa;//4 *          MUR05_MUF05_PDF261000 *
-  else if (scaleupM_w) weight_to_use = mc_generator_weights[4] *Acc *sig_MG; //4 *   muR=020000E+01muF=020000E+01
-  else if (scaledownM_w) weight_to_use = mc_generator_weights[8] *Acc *sig_MG;//8 *   muR=050000E+00muF=050000E+00
-  else return 0;
+  weight_to_use = *weight_mc *Acc;
+  //if (nomS_w) weight_to_use = *weight_mc *Acc *sig_Sherpa;
+  /* else if (nomM_w) weight_to_use = *weight_mc *Acc *sig_MG; */
+  /* else if (scaleupS_w) weight_to_use = mc_generator_weights[10]  *Acc *sig_Sherpa;//10 *            MUR2_MUF2_PDF261000 * */
+  /* else if (scaledownS_w) weight_to_use = mc_generator_weights[4] *Acc *sig_Sherpa;//4 *          MUR05_MUF05_PDF261000 * */
+  /* else if (scaleupM_w) weight_to_use = mc_generator_weights[4] *Acc *sig_MG; //4 *   muR=020000E+01muF=020000E+01 */
+  /* else if (scaledownM_w) weight_to_use = mc_generator_weights[8] *Acc *sig_MG;//8 *   muR=050000E+00muF=050000E+00 */
+  /* else return 0; */
 
   double shift=0;
   double shift2=0;

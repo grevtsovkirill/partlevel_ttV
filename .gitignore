@@ -4,3 +4,4 @@
 *.so
 *.root
 macros/Plots_*
+*pdf

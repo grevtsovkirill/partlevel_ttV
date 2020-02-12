@@ -110,6 +110,10 @@ void partlevel_wqq::SlaveBegin(TTree * /*tree*/)
   
   xs_map["413008"]= 652;
   xs_map["410157"]= 528;
+  xs_map["410156"]= 155;
+  xs_map["410218"]= 36.9;
+  xs_map["410219"]= 36.9;
+  xs_map["410220"]= 36.6;
   xs_map["410472"]= 729770;
   std::cout << "input_name ="<< input_name<< ", comp_name - "<< comp_name<< ", xs = "<<xs_map[input_name] << std::endl;  
   Double_t gen_xs=1;

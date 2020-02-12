@@ -200,18 +200,9 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
   //weight definitions
   Double_t weight_to_use=1;
   weight_to_use = *weight_mc *Acc;
-  //if (nomS_w) weight_to_use = *weight_mc *Acc *sig_Sherpa;
-  /* else if (nomM_w) weight_to_use = *weight_mc *Acc *sig_MG; */
-  /* else if (scaleupS_w) weight_to_use = mc_generator_weights[10]  *Acc *sig_Sherpa;//10 *            MUR2_MUF2_PDF261000 * */
-  /* else if (scaledownS_w) weight_to_use = mc_generator_weights[4] *Acc *sig_Sherpa;//4 *          MUR05_MUF05_PDF261000 * */
-  /* else if (scaleupM_w) weight_to_use = mc_generator_weights[4] *Acc *sig_MG; //4 *   muR=020000E+01muF=020000E+01 */
-  /* else if (scaledownM_w) weight_to_use = mc_generator_weights[8] *Acc *sig_MG;//8 *   muR=050000E+00muF=050000E+00 */
-  /* else return 0; */
 
   double shift=0;
   double shift2=0;
-  //  you have to compute the relative uncertainty using the 30 eigenvectors (index xxx01-xxx30) wrt. the PDF4LHC15 nominal (index xxx00). 
-  // The additional 2 variations (index xxx31 and xxx32) are an alphaS variation, which I'm not sure you have to use (it depends what you want to compute I guess).
   double pdf_var_up=1,pdf_var_down=1;
   weight_tot=weight_to_use ;
   int cf_counter=0;

@@ -411,9 +411,9 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
   int Wj1index = -1, Wj2index = -1;
   bool found_w=false;
   double wmass=999;
-  for (unsigned int i = 0; i < (jets_vec.size() - 1); ++i) {
-    for (unsigned int j = i + 1; j < jets_vec.size(); ++j) {
-      wmass = (jets_vec[i] + jets_vec[j]).M();
+  for (unsigned int i = 0; i < (ljets_vec.size() - 1); ++i) {
+    for (unsigned int j = i + 1; j < ljets_vec.size(); ++j) {
+      wmass = (ljets_vec[i] + ljets_vec[j]).M();
       
       if (fabs(wmass - mWPDG) < fabs(bestWmass - mWPDG)) {
 	bestWmass = wmass;
@@ -432,8 +432,8 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
   
-  TLorentzVector pjet1 = jets_vec[Wj1index];
-  TLorentzVector pjet2 = jets_vec[Wj2index];
+  TLorentzVector pjet1 = ljets_vec[Wj1index];
+  TLorentzVector pjet2 = ljets_vec[Wj2index];
   // compute hadronic W boson
   TLorentzVector pWhadron = pjet1 + pjet2;
   

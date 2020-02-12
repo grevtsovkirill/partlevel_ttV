@@ -213,40 +213,8 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
   //  you have to compute the relative uncertainty using the 30 eigenvectors (index xxx01-xxx30) wrt. the PDF4LHC15 nominal (index xxx00). 
   // The additional 2 variations (index xxx31 and xxx32) are an alphaS variation, which I'm not sure you have to use (it depends what you want to compute I guess).
   double pdf_var_up=1,pdf_var_down=1;
-
-  // UGLY:
-//   for (int i=1; i<31;i++){
-//     shift2+=pow((PDF4LHC15_nnlo_30_pdfas[i]-PDF4LHC15_nnlo_30_pdfas[0]),2);
-//   }
-//   shift=sqrt(shift2);
-//   pdf_var_up=(PDF4LHC15_nnlo_30_pdfas[0]+shift)/PDF4LHC15_nnlo_30_pdfas[0];
-//   pdf_var_down=(PDF4LHC15_nnlo_30_pdfas[0]-shift)/PDF4LHC15_nnlo_30_pdfas[0];
-
-
-// WRONG - NNPDF uses 68% cl
-//   for (int i=11; i<111;i++){
-//     shift2+=pow((mc_generator_weights[i]-mc_generator_weights[0]),2);
-//   }
-//   shift=sqrt(shift2);
-//   pdf_var_up=(mc_generator_weights[0]+shift)*Acc;
-//   pdf_var_down=(mc_generator_weights[0]-shift)*Acc;
-  
-  // access names of the weights:
-  // sumWeights->Scan("names_mc_generator_weights","","colsize=30")
-  // check values:
-  //
   weight_tot=weight_to_use ;
-  //* *weight_pileup ;
-
-  // by hand PDF uncertainties
-  //* pdf_var_up
-  //* pdf_var_down
-
-  //if (entry==0) cout<< "PDF4LHC15_nnlo_30_pdfas [0] = " << PDF4LHC15_nnlo_30_pdfas[0]<<" [1] = " << PDF4LHC15_nnlo_30_pdfas[1]<<endl;
-
-
   int cf_counter=0;
-
 
   //loop over electrons and muons
   nEl = el_pt.GetSize();
@@ -312,10 +280,7 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
   if(  lep_4v[0].Pt()>lep_4v[1].Pt()){
     lead_lep=0;sublead_lep=1;}
   else {    lead_lep=1;sublead_lep=0;}
-
-  //  if(lead_lep!=0)     cout <<  " 0  "<< lep_4v[0].Pt()<< "   1 " << lep_4v[1].Pt()<< ",  leading is "<< lead_lep<< endl;
-  //if ((abs(lep_4v[lead_lep].Pt()-l0_pt)>0.0001) || (abs(lep_4v[sublead_lep].Pt()-l1_pt)>0.0001)) cout <<  " 0  "<< lep_4v[0].Pt()<< "   1 " << lep_4v[1].Pt()<< ",  leading is "<< lead_lep <<  ",  l0pt="<<l0_pt <<  ",  l1pt="<<l1_pt << endl;
-
+  
 
   //lep Pt cuts
   if(lep_4v[sublead_lep].Pt()<20) return 0;  
@@ -366,8 +331,6 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
     jets_vec.push_back(jj);
 
     if(jet_nGhosts_bHadron[j]>0){
-    //0110 bjet
-    //if(jet_nGhosts_bHadron[j]==1){
       Nbjets+=1;
       bjets_vec.push_back(jj);
     }
@@ -451,13 +414,6 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
   }
 
 
-  //fill weights
-  //for(int i=0; i<(int)weight_names.size();i++){
-  //  hist_Weights[i]->Fill(mc_generator_weights[i+4]);
-  //}  
-
-
-
   //cout << " -------  fearch for  Wqq:   jets_vec.size() = "<< jets_vec.size()  << endl;
   double bestWmass = 1000.0*1e6;
   double mWPDG = 80.399*1e3;
@@ -490,16 +446,6 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
   // compute hadronic W boson
   TLorentzVector pWhadron = pjet1 + pjet2;
   
-  //cout << " ========================= Found Wqq:   " << pWhadron.M()/1e3<<endl;
-  
-  //cout <<"Ntaus ="<<Ntaus<<", Nhtaus="<< Nhtaus   << endl;
-  //2 same sign charged leptons (e,mu) with pT>25(20)GeV 
-  //sel_array[0]=(Nhtaus == 0 && Nbjets == 1 && Njets >= 4 );  // Region 1 
-  /* sel_array[1]=(Nhtaus == 0 && Nbjets >= 2 && Njets >= 4 );  // Region 2 */
-  /* sel_array[2]=(Nhtaus == 0 && Nbjets == 1 && Njets == 3 );  // Region 3  */
-  /* sel_array[3]=(Nhtaus == 0 && Nbjets >= 2 && Njets == 3 );  // Region 4 */
-  /* sel_array[4]=(Nhtaus == 1 && Nbjets >= 1 && Njets >= 3 );  // Region 5 */
-
 
   sel_array[0]=(Nhtaus == 0 && Njets >= 4 );  // Region inclusive
   sel_array[1]=(Nhtaus == 0 && Njets >= 4 && abs(mWPDG - pWhadron.M())/1e3<20 );  // Region 20GeV Wmass region

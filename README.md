@@ -4,8 +4,7 @@
 Analysis presents Monte Carlo generator comparisons of the ttW processes at particle level. 
 The aim is to compare the modelling of some important backgrounds to ttH measurements in the Higgs to multi-lepton decay channels and the treatment of the associated theory uncertainties for a full Run-2 ATLAS+CMS combination. As a first step, pre-fit modelling and theory uncertainties as used in the experiments are compared in the relevant analysis regions.
 
-<img src="https://github.com/grevtsovkirill/partlevel_ttV/blob/master/macros/RDM_Plots/ttW.png" width="300">
-<img src="https://github.com/grevtsovkirill/partlevel_ttV/blob/master/macros/RDM_Plots/ttZ.png" width="300">
+<img src="https://github.com/grevtsovkirill/partlevel_ttV/blob/master/macros/RDM_Plots/ttW.png" width="300"> <img src="https://github.com/grevtsovkirill/partlevel_ttV/blob/master/macros/RDM_Plots/ttZ.png" width="300">
 
 
 ## Results

@@ -46,7 +46,7 @@ TH1D *hist_min_DRlb[10][5];
 
 TH1D *hist_Weights[10];
 TH1D *hist_Whmass[10];
-
+TH1D *hist_Whpt[10];
 /*
  *        0 *        4 *          MUR05_MUF05_PDF261000 *
  *        0 *        5 *           MUR05_MUF1_PDF261000 *
@@ -141,6 +141,7 @@ void partlevel_wqq::SlaveBegin(TTree * /*tree*/)
     Float_t lep_bins[]={0,20,25,33,45,60,80,110,160,500}; Int_t  lep_binnum = sizeof(lep_bins)/sizeof(Float_t) - 1;
     Float_t jet_bins[]={0,20,25,33,45,60,80,110,200}; Int_t  jet_binnum = sizeof(jet_bins)/sizeof(Float_t) - 1;
     Float_t bjet_bins[]={0,20,25,33,45,60,80,110,150,200,300,500}; Int_t  bjet_binnum = sizeof(bjet_bins)/sizeof(Float_t) - 1;
+    //Float_t w_bins[]={0,10,20,25,33,45,60,80,110,140,180,240,400}; Int_t  w_binnum = sizeof(w_bins)/sizeof(Float_t) - 1;
     Float_t dr_max=4.8; Int_t dr_bins=12; 
     for(int i=0; i<(int)region_names.size();i++){
       hist_DRll01[i] = new TH1D(("DRll01_"+to_string(i)).c_str(), ("#DeltaR_{l_{0},l_{1}} 2lOS"+region_names[i]+";#DeltaR_{l_{0},l_{1}};Events").c_str(), dr_bins, 0., dr_max);
@@ -173,7 +174,8 @@ void partlevel_wqq::SlaveBegin(TTree * /*tree*/)
       hist_lep_Phi_1[i] = new TH1D(("lep_Phi_1_"+to_string(i)).c_str(), ("#{#phi}_{l1}} 2lOS"+region_names[i]+";#{#phi}_{l1};Events").c_str(), 16, -3.2, 3.2);
       hist_lep_dPhi[i] = new TH1D(("lep_dPhi_"+to_string(i)).c_str(), ("|#Delta#{#phi}_{ll}}| 2lOS"+region_names[i]+";|#{#Delta#phi}_{ll}|;Events").c_str(), 16, 0, 6.4);
 
-      hist_Whmass[i] = new TH1D(("Whmass_"+to_string(i)).c_str(), ("m_{Wqq} "+region_names[i]+";|#{m_{Wqq}}|;Events").c_str(), 420, 50, 410);
+      hist_Whmass[i] = new TH1D(("Whmass_"+to_string(i)).c_str(), ("m_{Wqq} "+region_names[i]+";m_{Wqq};Events").c_str(), 50, 50, 150); //420, 50, 410
+      hist_Whpt[i] = new TH1D(("Whpt_"+to_string(i)).c_str(), ("p_T^{Wqq} "+region_names[i]+";p_T^{Wqq};Events").c_str(),60,0,300 ); //w_binnum, w_bins
 
       //hist_min_DRlb
       for(int db=0; db<4;db++){
@@ -495,6 +497,7 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
       hist_lep_Phi_1[i]->Fill(lep_4v[sublead_lep].Phi(), weight_tot);
       hist_lep_dPhi[i]->Fill(abs(lep_4v[lead_lep].Phi()-lep_4v[sublead_lep].Phi()), weight_tot);
       hist_Whmass[i]->Fill(pWhadron.M()/1e3, weight_tot);
+      hist_Whpt[i]->Fill(pWhadron.Pt()/1e3, weight_tot);
 
       for(int db=0; db<4;db++){
 	hist_min_DRlb[i][db]->Fill(dRlb[db], weight_tot);
@@ -548,7 +551,7 @@ void partlevel_wqq::Terminate()
       hist_lep_Phi_1[i]->Write();
       hist_lep_dPhi[i]->Write();
       hist_Whmass[i]->Write();
-
+      hist_Whpt[i]->Write();
       //hist_min_DRlb
       for(int db=0; db<4;db++){
 	hist_min_DRlb[i][db]->Write();

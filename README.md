@@ -14,8 +14,9 @@ This analysis results a publication: [ATL-PHYS-PUB-2019-043](https://cds.cern.ch
 The nominal Sherpa ttW sample is compared to its radiation uncertainty variations and the alternative generator. The ratio plots show the ratios of the alternative MC sample and scale variation to the nominal sample.
 
 The fiducial cross sections, σgen = Agen × σgen, of the five regions for ttW analysis:
-<img src="https://github.com/grevtsovkirill/partlevel_ttV/blob/master/macros/RDM_Plots/acc_7f.png" width="300">
+           <img src="https://github.com/grevtsovkirill/partlevel_ttV/blob/master/macros/RDM_Plots/acc_7f.png" width="300">
 
 
 Distribution of the jet multiplicities and the scalar sum of jets transverse momentum, HTjets for the Region 1 with Nb−jets=1  selection requiring four and more jets:
-<img src="https://github.com/grevtsovkirill/partlevel_ttV/blob/master/macros/RDM_Plots/c_Region_0_nJets.png" width="300"> <img src="https://github.com/grevtsovkirill/partlevel_ttV/blob/master/macros/RDM_Plots/c_Region_0_HT_jets.png" width="300">
+
+<img src="https://github.com/grevtsovkirill/partlevel_ttV/blob/master/macros/RDM_Plots/c_Region_0_nJets.png" width="250"> <img src="https://github.com/grevtsovkirill/partlevel_ttV/blob/master/macros/RDM_Plots/c_Region_0_HT_jets.png" width="250">

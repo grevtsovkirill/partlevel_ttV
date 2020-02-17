@@ -66,7 +66,7 @@ vector<string> weight_names = {"MUR05_MUF05","MUR05_MUF1","MUR1_MUF05","MUR1_MUF
   /* sel_array[3]=(Nhtaus == 0 && Njets >= 4 && abs(mWPDG - pWhadron.M())/1e3<5 );  // Region 5GeV Wmass region    */
 
  
-vector<string> region_names={"2b4j", "mW20","mW10", "mW5"};
+vector<string> region_names={"2b4j", ">0cjet"};
 //vector<string> region_names={"0#tau_{had} 1#font[52]{b} #geq4#font[52]{j}", "0#tau_{had} #geq2#font[52]{b} #geq4#font[52]{j}","0#tau_{had} 1#font[52]{b} 3#font[52]{j}", "0#tau_{had} #geq2#font[52]{b} 3#font[52]{j}","1#tau_{had} #geq1#font[52]{b} #geq3#font[52]{j}", "0t=3j","0tg4j","otg3g0b"};
 //,
 			     //"1t 1b 4j", "1t 2b 4j","1t 1b 3j", "1t 2b 3j"};
@@ -124,7 +124,7 @@ void partlevel_wqq::SlaveBegin(TTree * /*tree*/)
   
   const std::vector<TString> s_cutDescs =
     {  "Preselections","Nleps","lepPt1>20","lepPt0>25","lepCentr","OS","jPt/eta","2b","4j",
-       "Whad", "4j2b","w>20","w>10","w>5"};
+       "Whad", "4j2b",">0cj"};//"w>20","w>10","w>5"
   int Ncuts = s_cutDescs.size();
   h_cutflow_2l[0] = new TH1F("cf2l","cf2l",Ncuts,0,Ncuts);
   h_cutflow_2l[1] = new TH1F("cf2l_raw","cf2l_raw",Ncuts,0,Ncuts);
@@ -178,7 +178,7 @@ void partlevel_wqq::SlaveBegin(TTree * /*tree*/)
       hist_Whpt[i] = new TH1D(("Whpt_"+to_string(i)).c_str(), ("p_T^{Wqq} "+region_names[i]+";p_T^{Wqq};Events").c_str(),60,0,300 ); //w_binnum, w_bins
 
       //hist_min_DRlb
-      for(int db=0; db<4;db++){
+      for(int db=0; db<2;db++){
 	hist_min_DRlb[i][db] = new TH1D(("DRlb"+to_string(db)+"_"+to_string(i)).c_str(), (" #DeltaR_{l,b} 2lOS"+region_names[i]+";min#DeltaR_{l,b};Events").c_str(), dr_bins, 0., dr_max);
       }
 
@@ -200,8 +200,7 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
   if ((entry)%10000 == 0)
     printf("Processing Entry  %llu \n", entry);
 
-  //if ((entry)%1000 == 0)
-  // printf("    --  milestone  %llu \n", entry);
+  //if ((entry)%1000 == 0)    printf("    --  milestone  %llu \n", entry);
 
   // increase the total number of entries
   ++fNumberOfEvents;
@@ -307,11 +306,12 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
  
   float max_eta=  max ( fabs( l0_eta ), fabs( l1_eta ) ); 
 
-  int Njets=0, Nbjets=0;
+  int Njets=0, Nbjets=0, Ncjets=0;
   float HTall=0, HTjet=0; 
   vector<TLorentzVector> jets_vec;
   vector<TLorentzVector> ljets_vec;
   vector<TLorentzVector> bjets_vec;
+  vector<TLorentzVector> cjets_vec;
 
   //loop over jet vectors
   int lowjets=0;
@@ -333,10 +333,21 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
     if(jet_nGhosts_bHadron[j]>0){
       Nbjets+=1;
       bjets_vec.push_back(jj);
-    }
-    else
-      ljets_vec.push_back(jj);
 
+      //if(jet_nGhosts_cHadron[j]>0) cout << " ======  ====== b and c simultaneously!?  ======  ====== "<< endl;
+      
+    }
+    else{
+      ljets_vec.push_back(jj);
+      
+      
+      if(jet_nGhosts_cHadron[j]>0){
+	Ncjets+=1;
+	cjets_vec.push_back(jj);
+	//cout << " ======  ======  c but not b  ======  ====== "<< endl;
+      }
+    }
+    
     HTjet+=jet_pt[j];
     
   }
@@ -414,7 +425,8 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
   }
 
 
-  //cout << " -------  fearch for  Wqq:   jets_vec.size() = "<< jets_vec.size()  << endl;
+  
+  //cout << " -------  search for  Wqq:   jets_vec.size() = "<< jets_vec.size()  << endl;
   double bestWmass = 1000.0*1e6;
   double mWPDG = 80.399*1e3;
   int Wj1index = -1, Wj2index = -1;
@@ -447,19 +459,25 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
   TLorentzVector pWhadron = pjet1 + pjet2;
 
 
-  Double_t dRlb[4];
-  dRlb[0] = lep_4v[lead_lep].DeltaR( bjets_vec[0] );
-  dRlb[1] = lep_4v[lead_lep].DeltaR( bjets_vec[1] );
-  dRlb[2] = lep_4v[sublead_lep].DeltaR( bjets_vec[0] );
-  dRlb[3] = lep_4v[sublead_lep].DeltaR( bjets_vec[1] );
+  vector<float> dRl0b;  vector<float> dRl1b;
+  for(int i=0; i<Nbjets;i++){
+    dRl0b.push_back( lep_4v[lead_lep].DeltaR( bjets_vec[i] ) );
+    dRl1b.push_back( lep_4v[sublead_lep].DeltaR( bjets_vec[i] ) );
+  }
+  
+  Double_t dRlb[2];
+  dRlb[0]= *min_element(dRl0b.begin(),dRl0b.end());
+  dRlb[1]= *min_element(dRl1b.begin(),dRl1b.end());
   
 
   sel_array[0]=(Nhtaus == 0 && Njets >= 4 );  // Region inclusive
-  sel_array[1]=(Nhtaus == 0 && Njets >= 4 && abs(mWPDG - pWhadron.M())/1e3<20 );  // Region 20GeV Wmass region
-  sel_array[2]=(Nhtaus == 0 && Njets >= 4 && abs(mWPDG - pWhadron.M())/1e3<10 );  // Region 10GeV Wmass region
-  sel_array[3]=(Nhtaus == 0 && Njets >= 4 && abs(mWPDG - pWhadron.M())/1e3<5 );  // Region 5GeV Wmass region
-  
-      float met = *met_met/1000.;
+  sel_array[1]=(Nhtaus == 0 && Njets >= 4 && Ncjets>0 );  // 
+  //sel_array[2]=(Nhtaus == 0 && Njets >= 4 && abs(mWPDG - pWhadron.M())/1e3<10 );  // Region 10GeV Wmass region
+  //sel_array[3]=(Nhtaus == 0 && Njets >= 4 && abs(mWPDG - pWhadron.M())/1e3<5 );  // Region 5GeV Wmass region
+
+  //cout << " -------====  Wmass =  "<< bestWmass << ", Njets = "<<Njets <<  ", Nbjets = "<<Nbjets <<  ", Ncjets = "<<Ncjets << ", dRlb[0] = " <<dRlb[0]<< ", dRlb[1] = " <<dRlb[1]  << endl;
+
+  float met = *met_met/1000.;
 
   for(int i=0; i<(int)region_names.size();i++){
     if(sel_array[i]){
@@ -499,7 +517,7 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
       hist_Whmass[i]->Fill(pWhadron.M()/1e3, weight_tot);
       hist_Whpt[i]->Fill(pWhadron.Pt()/1e3, weight_tot);
 
-      for(int db=0; db<4;db++){
+      for(int db=0; db<2;db++){
 	hist_min_DRlb[i][db]->Fill(dRlb[db], weight_tot);
       }
     }
@@ -553,7 +571,7 @@ void partlevel_wqq::Terminate()
       hist_Whmass[i]->Write();
       hist_Whpt[i]->Write();
       //hist_min_DRlb
-      for(int db=0; db<4;db++){
+      for(int db=0; db<2;db++){
 	hist_min_DRlb[i][db]->Write();
       }
 

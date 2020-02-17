@@ -9,7 +9,7 @@
 #include "/Users/grevtsov/Documents/working_files/AtlasStyle/AtlasUtils.C"
 
 void ATLASLabel(Double_t x,Double_t y,const char* text="",Color_t color=1, Double_t tsize=0.05);
-void qqw(string sampleversion = "xs")
+void qqw(string sampleversion = "xs",  bool do_stack=true)
 {
   gROOT->Reset();
   SetAtlasStyle();
@@ -56,12 +56,15 @@ void qqw(string sampleversion = "xs")
   sample_map["ttZqq"]= "410157";
   
   Int_t color_sample[8]={632,861,0,921,922,617,860,868};//625
-  Int_t linestyle[8]={1, 7, 1, 3,  4, 2,3,2};
+  Int_t linestyle[8]={1, 1, 1, 1,  1, 1,1,1};
   vector<string> type={"ttW","ttZqq","ttbar"};
   
-  string pathversion = "v1_e2b_lJqq";
+  string pathversion = "v2_ctag_minDRlb"; //v1_e2b_lJqq
 
+  string leg_type="f";
+  
   bool do_log;
+
   //=false;
   
   if (sampleversion != "norm")
@@ -70,7 +73,7 @@ void qqw(string sampleversion = "xs")
   Double_t norm_hist=0;
   for(int t=0;t<type.size();t++){
     //region
-    file[0][t] = TFile::Open(("input/Wqq/"+pathversion+"/wqq_"+sample_map[type[t]]+"_"+sampleversion+".root").c_str());
+    file[0][t] = TFile::Open(("input/Wqq/"+pathversion+"/wqq_"+sample_map[type[t]]+"_xs.root").c_str()); //+sampleversion+
     for(int i=0;i<nj_reg.size();i++){
       //variable
       for(int j=0;j<variable.size();j++){
@@ -115,12 +118,28 @@ void qqw(string sampleversion = "xs")
       
       THStack *hs = new THStack("hs","Stacked 1D histograms");
 
+      pad1[i][j]->cd();
 
       for(int t=0;t<type.size();t++){
 	cout << " - load file: "<< t << " - "<<  type[t] << endl;
 	if(t==0){	  
 	  sprintf(sf_name,"total_%s_%s_%s",variable[j].c_str(),nj_reg[i].c_str(),type[t].c_str());   
 	  h_allMC[i][j][0][0] = (TH1D*)h_var[i][j][0][t]->Clone();
+
+	  if(!do_stack){
+	    if (sampleversion == "norm")
+	      h_var[i][j][0][t]->SetYTitle("Normalized");
+	    else
+	      h_var[i][j][0][t]->SetYTitle("Events");  
+	    leg_type="LP";
+	    h_var[i][j][0][t]->GetXaxis()->SetLabelOffset(0.015);
+	    h_var[i][j][0][t]->SetXTitle((variable_X[j]).c_str());
+	    h_var[i][j][0][t]->GetYaxis()->SetTitleSize(0.06); 
+	    h_var[i][j][0][t]->GetYaxis()->SetTitleOffset(0.7); 
+	    h_var[i][j][0][t]->SetMaximum(h_var[i][j][0][t]->GetMaximum()*1.6);
+	    h_var[i][j][0][t]->Draw("E1");
+	  }
+
 	}
 	else{
 	  h_allMC[i][j][0][0]->Add(h_var[i][j][0][t]);	  
@@ -128,43 +147,69 @@ void qqw(string sampleversion = "xs")
 	
 	h_var[i][j][0][t]->SetLineColor(color_sample[t]);
 	h_var[i][j][0][t]->SetMarkerColor(color_sample[t]);
-	//h_var[i][j][0][t]->SetMarkerStyle(20+t);
-	h_var[i][j][0][t]->SetFillColor(color_sample[t]);
-	if(type[t]=="ttbar")	h_var[i][j][0][t]->SetLineColor(1);
-	
-	//h_var[i][j][0][t]->SetLineWidth(2);
-	//h_var[i][j][0][t]->SetLineStyle(linestyle[t]);
-	//h_var[i][j][0][t]->Draw("E1histsame");
+	h_var[i][j][0][t]->SetMarkerStyle(20+t);
+	if(do_stack)	h_var[i][j][0][t]->SetFillColor(color_sample[t]);
+	if(type[t]=="ttbar"){
+	  h_var[i][j][0][t]->SetLineColor(1);
+	  h_var[i][j][0][t]->SetMarkerColor(1);
+	}
 
+	if(!do_stack){
+	  h_var[i][j][0][t]->SetLineWidth(2);
+	  h_var[i][j][0][t]->SetLineStyle(linestyle[t]);
+	  h_var[i][j][0][t]->Draw("E1histsame");
+	}
 	hs->Add(h_var[i][j][0][t]);
-	legend[i][j]->AddEntry(h_var[i][j][0][t],(type[t]+ " ").c_str(),"f");		
+	legend[i][j]->AddEntry(h_var[i][j][0][t],(type[t]+ " ").c_str(),leg_type.c_str());		
+
+	//
+	if(!do_stack){
+	  sprintf(sf_name,"ratio_%s_%s_%s",variable[j].c_str(),nj_reg[i].c_str(),type[t].c_str());   
+	  h_var[i][j][3][t] = (TH1D*) h_var[i][j][0][t]->Clone(sf_name);
+	  h_var[i][j][3][t]->Divide(h_var[i][j][0][0]);
+	  
+	  h_var[i][j][3][t]->GetXaxis()->SetTitleSize(0.14); 
+	  h_var[i][j][3][t]->GetYaxis()->SetTitleSize(0.14); 
+	  h_var[i][j][3][t]->GetXaxis()->SetTitleOffset(1.); 
+	  h_var[i][j][3][t]->GetYaxis()->SetTitleOffset(0.33); 
+	  h_var[i][j][3][t]->GetXaxis()->SetLabelSize(0.14);
+	  h_var[i][j][3][t]->GetYaxis()->SetLabelSize(0.14);
+	  h_var[i][j][3][t]->GetYaxis()->SetNdivisions(405, kTRUE);
+	  
+	  h_var[i][j][3][t]->GetXaxis()->SetTickLength(0.1); 
+	  h_var[i][j][3][t]->SetLineWidth(2);
+	  h_var[i][j][3][t]->SetMinimum(0.59);
+	  h_var[i][j][3][t]->SetMaximum(1.41);
+
+	}
+	
       }
 
-      pad1[i][j]->cd();
-      hs->Draw("hist");
-
-      hs->GetXaxis()->SetLabelOffset(0.015);
-      hs->GetXaxis()->SetTitle((variable_X[j]).c_str());
-      hs->GetYaxis()->SetTitleSize(0.06); 
-      hs->GetYaxis()->SetTitleOffset(0.7); 
-      
-      if(do_log){
-	pad1[i][j]->SetLogy();
-	hs->SetMaximum(hs->GetMaximum()*1e2); 
-	hs->SetMinimum(1e-1); 
+      if(do_stack){
+	hs->Draw("hist");
+	
+	hs->GetXaxis()->SetLabelOffset(0.015);
+	hs->GetXaxis()->SetTitle((variable_X[j]).c_str());
+	hs->GetYaxis()->SetTitleSize(0.06); 
+	hs->GetYaxis()->SetTitleOffset(0.7); 
+	
+	if(do_log){
+	  pad1[i][j]->SetLogy();
+	  hs->SetMaximum(hs->GetMaximum()*1e2); 
+	  hs->SetMinimum(1e-1); 
+	}
+	else
+	  hs->SetMaximum(hs->GetMaximum()*1.6); 
+	
+	
+	legend[i][j]->AddEntry(h_allMC[i][j][0][0],"MC (tbr by data) ","P");
+	h_allMC[i][j][0][0]->Draw("E1same");
+	
+	if (sampleversion == "norm")
+	  hs->GetYaxis()->SetTitle("Normalized");
+	else
+	  hs->GetYaxis()->SetTitle("Events");  
       }
-      else
-	hs->SetMaximum(hs->GetMaximum()*1.6); 
-
-
-      legend[i][j]->AddEntry(h_allMC[i][j][0][0],"MC (tbr by data) ","P");
-      h_allMC[i][j][0][0]->Draw("E1same");
-      
-      if (sampleversion == "norm")
-      	hs->GetYaxis()->SetTitle("Normalized");
-      else
-	hs->GetYaxis()->SetTitle("Events");  
-      
       
       sprintf(sf_name,"ratio_%s_%s",variable[j].c_str(),nj_reg[i].c_str());   
       h_allMC[i][j][0][1] = (TH1D*)h_allMC[i][j][0][0]->Clone();
@@ -193,14 +238,32 @@ void qqw(string sampleversion = "xs")
 
       pad2[i][j]->cd();
       //*
+      if(do_stack){
+	h_allMC[i][j][0][1]->SetYTitle("No sense Ratio");
+	h_allMC[i][j][0][1]->Draw("E1");
+	h_allMC[i][j][0][1]->Draw("histsame");
+
+      }
+      else{
+	h_var[i][j][3][0]->SetYTitle("Ratio to ttW");
+	h_var[i][j][3][0]->Draw("hist");
+	for(int t=1;t<type.size();t++){
+	  h_var[i][j][3][t]->SetLineWidth(3);
+	  h_var[i][j][3][t]->SetLineColor(color_sample[t]);
+	  h_var[i][j][3][t]->SetMarkerColor(color_sample[t]);
+	  if(type[t]=="ttbar"){
+	    h_var[i][j][3][t]->SetLineColor(1);
+	    h_var[i][j][3][t]->SetMarkerColor(1);
+	  }
+	  h_var[i][j][3][t]->SetLineStyle(linestyle[t]);
+	  h_var[i][j][3][t]->Draw("histsame");
+	
+	}
+	
+      }
+	
+
       
-      //h_var[i][j][3][0]->SetYTitle("Ratio to Sherpa");
-      h_allMC[i][j][0][1]->SetYTitle("No sense Ratio");// nom
-      //h_var[i][j][3][0]->SetYTitle("Ratio to AT");
-      h_allMC[i][j][0][1]->Draw("E1");
-      h_allMC[i][j][0][1]->Draw("histsame");
-
-
       sprintf(o_name,"WqqPlots/v0_stack_xs/%s.pdf",canvas_name);   
       //canv[i][j]->Print(o_name);
   

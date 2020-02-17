@@ -30,7 +30,8 @@ void qqw(bool norm_xs_plots=false)
   Int_t linestyle[8]={1, 7, 1, 3,  4, 2,3,2};
 
   vector<string>  nj_reg={"0"};//
-  vector<string> variable={"nJets","Whmass","Whpt","DRlb0","DRlb1","DRlb2","DRlb3"};
+  vector<string> variable={"nJets"};//,"Whmass","Whpt","DRlb0","DRlb1","DRlb2","DRlb3"};
+  // vector<string> variable={"nJets","Whmass","Whpt","DRlb0","DRlb1","DRlb2","DRlb3"};
   
   //vector<string> variable={"nJets","DRll01","Whmass","lep_Pt_0","lep_Pt_1","jet_Pt_4","jet_Pt_5","jet_Pt_6","Bjet_Pt_0","Bjet_Pt_1","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT_leps","HT","nBtagJets","MET","lep_Eta_0","lep_Eta_1","lep_Phi_0","lep_Phi_1","lep_dPhi","jet_Pt_1","jet_Pt_2","jet_Pt_3"}; //
   vector<string> variable_X={"Number of jets","m_{Wqq}","p_T^{Wqq}",
@@ -102,10 +103,11 @@ void qqw(bool norm_xs_plots=false)
       pad1[i][j]->Draw();
       pad2[i][j]->Draw();
       
-      pad1[i][j]->cd();             
       legend[i][j] = new TLegend(0.5,0.6,0.9,0.9);
       legend[i][j]->SetTextFont(42);legend[i][j]->SetFillColor(0);  legend[i][j]->SetBorderSize(0); legend[i][j]->SetFillStyle(0);  legend[i][j]->SetTextSize(0.05);
       
+      THStack *hs = new THStack("hs","Stacked 1D histograms");
+   
       for(int t=0;t<type.size();t++){
 	cout << " - load file: "<< t << " - "<<  type[t] << endl;
 	if(t==0){	  
@@ -118,18 +120,21 @@ void qqw(bool norm_xs_plots=false)
 	  h_var[i][j][0][t]->SetXTitle((variable_X[j]).c_str());
 	  h_var[i][j][0][t]->GetYaxis()->SetTitleSize(0.06); 
 	  h_var[i][j][0][t]->GetYaxis()->SetTitleOffset(0.7); 
-	  h_var[i][j][0][t]->SetMaximum(h_var[i][j][0][t]->GetMaximum()*1.6);
-	  h_var[i][j][0][t]->Draw("E1");
+	  //h_var[i][j][0][t]->SetMaximum(h_var[i][j][0][t]->GetMaximum()*1.6);
+	  //h_var[i][j][0][t]->Draw("E1");
 	}
 	
 	h_var[i][j][0][t]->SetLineColor(color_sample[t]);
 	h_var[i][j][0][t]->SetMarkerColor(color_sample[t]);
-	h_var[i][j][0][t]->SetMarkerStyle(20+t);
+	//h_var[i][j][0][t]->SetMarkerStyle(20+t);
+	h_var[i][j][0][t]->SetFillColor(color_sample[t]);
 	
-	h_var[i][j][0][t]->SetLineWidth(2);
-	h_var[i][j][0][t]->SetLineStyle(linestyle[t]);
-	h_var[i][j][0][t]->Draw("E1histsame");
-	legend[i][j]->AddEntry(h_var[i][j][0][t],(type[t]+ " ").c_str(),"LP");
+	//h_var[i][j][0][t]->SetLineWidth(2);
+	//h_var[i][j][0][t]->SetLineStyle(linestyle[t]);
+	//h_var[i][j][0][t]->Draw("E1histsame");
+
+	hs->Add(h_var[i][j][0][t]);
+	legend[i][j]->AddEntry(h_var[i][j][0][t],(type[t]+ " ").c_str(),"f");
 	sprintf(sf_name,"ratio_%s_%s_%s",variable[j].c_str(),nj_reg[i].c_str(),type[t].c_str());   
 	
 	// i region, j - variable, t -nom/variation, 
@@ -152,7 +157,10 @@ void qqw(bool norm_xs_plots=false)
 	h_var[i][j][3][t]->SetMaximum(1.32);
 	
       }
-    
+
+      pad1[i][j]->cd();             
+      hs->SetMaximum(hs->GetMaximum()*1.6); 
+      hs->Draw("hist");
     
       sprintf(text1,"#sqrt{s} = 13 TeV,");
       sprintf(text2,"2#font[52]{l}OS Wqq 2b4j "); //,region_names[i].c_str()
@@ -168,7 +176,7 @@ void qqw(bool norm_xs_plots=false)
       //h_var[i][j][3][0]->SetYTitle("Ratio to Sherpa");
       h_var[i][j][3][0]->SetYTitle("No sense Ratio");// nom
       //h_var[i][j][3][0]->SetYTitle("Ratio to AT");
-      h_var[i][j][3][0]->Draw("hist");
+      //h_var[i][j][3][0]->Draw("hist");
       for(int t=1;t<type.size();t++){
 	if(t<3) h_var[i][j][3][t]->SetLineWidth(3);
       //else if(t>2 &&t<5)	h_var[i][j][0][t]->SetLineWidth(1);
@@ -176,7 +184,7 @@ void qqw(bool norm_xs_plots=false)
 	h_var[i][j][3][t]->SetLineColor(color_sample[t]);
 	h_var[i][j][3][t]->SetMarkerColor(color_sample[t]);
 	h_var[i][j][3][t]->SetLineStyle(linestyle[t]);
-	h_var[i][j][3][t]->Draw("histsame");
+	//h_var[i][j][3][t]->Draw("histsame");
 	
       }
 

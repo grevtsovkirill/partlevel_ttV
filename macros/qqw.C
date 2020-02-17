@@ -9,7 +9,7 @@
 #include "/Users/grevtsov/Documents/working_files/AtlasStyle/AtlasUtils.C"
 
 void ATLASLabel(Double_t x,Double_t y,const char* text="",Color_t color=1, Double_t tsize=0.05);
-void qqw(bool norm_xs_plots=false)
+void qqw(string sampleversion = "norm")
 {
   gROOT->Reset();
   SetAtlasStyle();
@@ -17,7 +17,7 @@ void qqw(bool norm_xs_plots=false)
   TFile *file[10][10];
   TLatex latex2; latex2.SetTextSize(0.06); latex2.SetNDC();
   char sf_name[1000] ;char band_name[1000] ;
-  char text[1000];  char text1[1000];  char text2[1000]; char norm_name[1000];
+  char text[1000];  char text1[1000];  char text2[1000]; 
   TString atl_lable = "Internal";
   TLegend* legend[100][100];
   TCanvas * canv[100][100];
@@ -25,13 +25,11 @@ void qqw(bool norm_xs_plots=false)
   TPad * pad2[100][100];
   char canvas_name[1000];char p1_name[1000];  char p2_name[1000]; char o_name[1000];
   TH1D* h_var[10][35][20][50];
- 
-  Int_t color_sample[8]={600,617,632,921,922,617,860,868};//625
-  Int_t linestyle[8]={1, 7, 1, 3,  4, 2,3,2};
-
+  TH1D* h_allMC[10][35][20][50];
+  
   vector<string>  nj_reg={"0"};//
-  vector<string> variable={"nJets"};//,"Whmass","Whpt","DRlb0","DRlb1","DRlb2","DRlb3"};
-  // vector<string> variable={"nJets","Whmass","Whpt","DRlb0","DRlb1","DRlb2","DRlb3"};
+  //vector<string> variable={"nJets"};//,"Whmass","Whpt","DRlb0","DRlb1","DRlb2","DRlb3"};
+  vector<string> variable={"nJets","Whmass","Whpt","DRlb0","DRlb1","DRlb2","DRlb3"};
   
   //vector<string> variable={"nJets","DRll01","Whmass","lep_Pt_0","lep_Pt_1","jet_Pt_4","jet_Pt_5","jet_Pt_6","Bjet_Pt_0","Bjet_Pt_1","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT_leps","HT","nBtagJets","MET","lep_Eta_0","lep_Eta_1","lep_Phi_0","lep_Phi_1","lep_dPhi","jet_Pt_1","jet_Pt_2","jet_Pt_3"}; //
   vector<string> variable_X={"Number of jets","m_{Wqq}","p_T^{Wqq}",
@@ -57,9 +55,18 @@ void qqw(bool norm_xs_plots=false)
   sample_map["ttbar"]= "410472";
   sample_map["ttZqq"]= "410157";
   
-  vector<string> type={"ttW","ttbar","ttZqq"};   
+  Int_t color_sample[8]={632,861,0,921,922,617,860,868};//625
+  Int_t linestyle[8]={1, 7, 1, 3,  4, 2,3,2};
+  vector<string> type={"ttW","ttZqq","ttbar"};
+  
   string pathversion = "v1_e2b_lJqq";
-  string sampleversion = "norm";
+
+  bool do_log;
+  //=false;
+  
+  if (sampleversion != "norm")
+    do_log=true;
+  
   Double_t norm_hist=0;
   for(int t=0;t<type.size();t++){
     //region
@@ -72,7 +79,7 @@ void qqw(bool norm_xs_plots=false)
 	h_var[i][j][0][t] = (TH1D *)file[0][t]->Get(sf_name);			  
 	norm_hist = h_var[i][j][0][t]->GetSumOfWeights();
  	//h_var[i][j][0][t]->Scale(xs[t]);
-	h_var[i][j][0][t]->Scale(1/norm_hist);
+	//h_var[i][j][0][t]->Scale(1/norm_hist);
      }
     }    
   }
@@ -107,60 +114,73 @@ void qqw(bool norm_xs_plots=false)
       legend[i][j]->SetTextFont(42);legend[i][j]->SetFillColor(0);  legend[i][j]->SetBorderSize(0); legend[i][j]->SetFillStyle(0);  legend[i][j]->SetTextSize(0.05);
       
       THStack *hs = new THStack("hs","Stacked 1D histograms");
-   
+
+
       for(int t=0;t<type.size();t++){
 	cout << " - load file: "<< t << " - "<<  type[t] << endl;
 	if(t==0){	  
-	  ///if (norm_xs_plots)
-	  //h_var[i][j][0][t]->SetYTitle("#sigma_{fid} [fb]"); 
-	  h_var[i][j][0][t]->SetYTitle("Normalized"); 
-	  //else if (!norm_xs_plots) h_var[i][j][0][t]->SetYTitle("Arbitrary Units"); 
-	  
-	  h_var[i][j][0][t]->GetXaxis()->SetLabelOffset(0.015);
-	  h_var[i][j][0][t]->SetXTitle((variable_X[j]).c_str());
-	  h_var[i][j][0][t]->GetYaxis()->SetTitleSize(0.06); 
-	  h_var[i][j][0][t]->GetYaxis()->SetTitleOffset(0.7); 
-	  //h_var[i][j][0][t]->SetMaximum(h_var[i][j][0][t]->GetMaximum()*1.6);
-	  //h_var[i][j][0][t]->Draw("E1");
+	  sprintf(sf_name,"total_%s_%s_%s",variable[j].c_str(),nj_reg[i].c_str(),type[t].c_str());   
+	  h_allMC[i][j][0][0] = (TH1D*)h_var[i][j][0][t]->Clone();
+	}
+	else{
+	  h_allMC[i][j][0][0]->Add(h_var[i][j][0][t]);	  
 	}
 	
 	h_var[i][j][0][t]->SetLineColor(color_sample[t]);
 	h_var[i][j][0][t]->SetMarkerColor(color_sample[t]);
 	//h_var[i][j][0][t]->SetMarkerStyle(20+t);
 	h_var[i][j][0][t]->SetFillColor(color_sample[t]);
+	if(type[t]=="ttbar")	h_var[i][j][0][t]->SetLineColor(1);
 	
 	//h_var[i][j][0][t]->SetLineWidth(2);
 	//h_var[i][j][0][t]->SetLineStyle(linestyle[t]);
 	//h_var[i][j][0][t]->Draw("E1histsame");
 
 	hs->Add(h_var[i][j][0][t]);
-	legend[i][j]->AddEntry(h_var[i][j][0][t],(type[t]+ " ").c_str(),"f");
-	sprintf(sf_name,"ratio_%s_%s_%s",variable[j].c_str(),nj_reg[i].c_str(),type[t].c_str());   
-	
-	// i region, j - variable, t -nom/variation, 
-	h_var[i][j][3][t] = (TH1D*) h_var[i][j][0][t]->Clone(sf_name);
-	h_var[i][j][3][t]->Divide(h_var[i][j][0][0]);
-	
-	h_var[i][j][3][t]->GetXaxis()->SetTitleSize(0.14); 
-	h_var[i][j][3][t]->GetYaxis()->SetTitleSize(0.14); 
-	h_var[i][j][3][t]->GetXaxis()->SetTitleOffset(1.); 
-	h_var[i][j][3][t]->GetYaxis()->SetTitleOffset(0.33); 
-	h_var[i][j][3][t]->GetXaxis()->SetLabelSize(0.14);
-	h_var[i][j][3][t]->GetYaxis()->SetLabelSize(0.14);
-	h_var[i][j][3][t]->GetYaxis()->SetNdivisions(405, kTRUE);
-	
-	h_var[i][j][3][t]->GetXaxis()->SetTickLength(0.1); 
-	h_var[i][j][3][t]->SetLineWidth(2);
-	
-	//Scale unc
-	h_var[i][j][3][t]->SetMinimum(0.68);
-	h_var[i][j][3][t]->SetMaximum(1.32);
-	
+	legend[i][j]->AddEntry(h_var[i][j][0][t],(type[t]+ " ").c_str(),"f");		
       }
 
-      pad1[i][j]->cd();             
-      hs->SetMaximum(hs->GetMaximum()*1.6); 
+      pad1[i][j]->cd();
       hs->Draw("hist");
+
+      hs->GetXaxis()->SetLabelOffset(0.015);
+      hs->GetXaxis()->SetTitle((variable_X[j]).c_str());
+      hs->GetYaxis()->SetTitleSize(0.06); 
+      hs->GetYaxis()->SetTitleOffset(0.7); 
+      
+      if(do_log){
+	pad1[i][j]->SetLogy();
+	hs->SetMaximum(hs->GetMaximum()*1e2); 
+	hs->SetMinimum(1e-1); 
+      }
+      else
+	hs->SetMaximum(hs->GetMaximum()*1.6); 
+
+
+      legend[i][j]->AddEntry(h_allMC[i][j][0][0],"MC (tbr by data) ","P");
+      h_allMC[i][j][0][0]->Draw("E1same");
+      
+      if (sampleversion == "norm")
+      	hs->GetYaxis()->SetTitle("Normalized");
+      else
+	hs->GetYaxis()->SetTitle("Events");  
+      
+      
+      sprintf(sf_name,"ratio_%s_%s",variable[j].c_str(),nj_reg[i].c_str());   
+      h_allMC[i][j][0][1] = (TH1D*)h_allMC[i][j][0][0]->Clone();
+      h_allMC[i][j][0][1]->Divide(h_allMC[i][j][0][0]);
+      h_allMC[i][j][0][1]->SetXTitle((variable_X[j]).c_str());
+      h_allMC[i][j][0][1]->GetXaxis()->SetTitleSize(0.14); 
+      h_allMC[i][j][0][1]->GetYaxis()->SetTitleSize(0.14); 
+      h_allMC[i][j][0][1]->GetXaxis()->SetTitleOffset(1.); 
+      h_allMC[i][j][0][1]->GetYaxis()->SetTitleOffset(0.33); 
+      h_allMC[i][j][0][1]->GetXaxis()->SetLabelSize(0.14);
+      h_allMC[i][j][0][1]->GetYaxis()->SetLabelSize(0.14);
+      h_allMC[i][j][0][1]->GetYaxis()->SetNdivisions(405, kTRUE);      
+      h_allMC[i][j][0][1]->GetXaxis()->SetTickLength(0.1); 
+      h_allMC[i][j][0][1]->SetLineWidth(2);
+      h_allMC[i][j][0][1]->SetMinimum(0.68);
+      h_allMC[i][j][0][1]->SetMaximum(1.32);
     
       sprintf(text1,"#sqrt{s} = 13 TeV,");
       sprintf(text2,"2#font[52]{l}OS Wqq 2b4j "); //,region_names[i].c_str()
@@ -169,29 +189,21 @@ void qqw(bool norm_xs_plots=false)
       latex2.DrawLatex(0.18, 0.8, text1);  
       latex2.DrawLatex(0.18, 0.73, text2); //latex2.DrawLatex(0.20, 0.7, "Data");
       legend[i][j]->Draw("same");
-    
+
+
       pad2[i][j]->cd();
       //*
       
       //h_var[i][j][3][0]->SetYTitle("Ratio to Sherpa");
-      h_var[i][j][3][0]->SetYTitle("No sense Ratio");// nom
+      h_allMC[i][j][0][1]->SetYTitle("No sense Ratio");// nom
       //h_var[i][j][3][0]->SetYTitle("Ratio to AT");
-      //h_var[i][j][3][0]->Draw("hist");
-      for(int t=1;t<type.size();t++){
-	if(t<3) h_var[i][j][3][t]->SetLineWidth(3);
-      //else if(t>2 &&t<5)	h_var[i][j][0][t]->SetLineWidth(1);
-	else h_var[i][j][3][t]->SetLineWidth(4);
-	h_var[i][j][3][t]->SetLineColor(color_sample[t]);
-	h_var[i][j][3][t]->SetMarkerColor(color_sample[t]);
-	h_var[i][j][3][t]->SetLineStyle(linestyle[t]);
-	//h_var[i][j][3][t]->Draw("histsame");
-	
-      }
+      h_allMC[i][j][0][1]->Draw("E1");
+      h_allMC[i][j][0][1]->Draw("histsame");
 
 
       sprintf(o_name,"WqqPlots/v0_stack/%s.pdf",canvas_name);   
       //canv[i][j]->Print(o_name);
-
+  
     }
   }
 

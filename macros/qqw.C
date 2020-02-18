@@ -27,7 +27,8 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
   TH1D* h_var[10][35][20][50];
   TH1D* h_allMC[10][35][20][50];
   
-  vector<string>  nj_reg={"0"};//
+  vector<string>  nj_reg={"0","1"};//
+  vector<string> region_names={"2b4j","2b4j>0c"};
   //vector<string> variable={"nJets"};//,"Whmass","Whpt","DRlb0","DRlb1","DRlb2","DRlb3"};
   vector<string> variable={"nJets","Whmass","Whpt","DRlb0","DRlb1"};
   //,"DRlb2","DRlb3"
@@ -228,7 +229,7 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
       h_allMC[i][j][0][1]->SetMaximum(1.32);
     
       sprintf(text1,"#sqrt{s} = 13 TeV,");
-      sprintf(text2,"2#font[52]{l}OS Wqq 2b4j "); //,region_names[i].c_str()
+      sprintf(text2,"2#font[52]{l}OS Wqq %s",region_names[i].c_str()); //
       
       ATLASLabel(0.18,0.87,atl_lable,1,0.065); 
       latex2.DrawLatex(0.18, 0.8, text1);  

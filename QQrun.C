@@ -1,6 +1,6 @@
 
 
-void QQrun(string name="413008_ttw", string comp="d"){
+void QQrun(string name="413008_ttw", string comp="xs"){
   /*
     410156_ttZnunu.root
     410157_ttZqq.root

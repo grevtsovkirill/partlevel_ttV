@@ -87,6 +87,12 @@ public :
    TTreeReaderArray<float> tau_e = {fReader, "tau_e"};
    TTreeReaderArray<char> tau_isHadronic = {fReader, "tau_isHadronic"};
 
+  TTreeReaderArray<int> el_true_type = {fReader, "el_true_type"};
+  TTreeReaderArray<int> el_true_origin = {fReader, "el_true_origin"};
+  TTreeReaderArray<int> mu_true_type = {fReader, "mu_true_type"};
+  TTreeReaderArray<int> mu_true_origin = {fReader, "mu_true_origin"};
+  TTreeReaderArray<char> mu_true_isPrompt = {fReader, "mu_true_isPrompt"};
+
 
  partlevel_wqq(TTree * /*tree*/ =0):fNumberOfEvents(0)  { }
    virtual ~partlevel_wqq() { }

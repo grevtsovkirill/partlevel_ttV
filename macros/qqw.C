@@ -62,9 +62,9 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
   
   Int_t color_sample[8]={632,861,921,922,617,860,0,868};//625
   Int_t linestyle[8]={1, 1, 1, 1,  1, 1,1,1};
-  vector<string> type={"ttW","ttZqq","ttZnunu","ttZee","ttZmumu","ttZtautau","ttbar"};
+  vector<string> type={"ttW","ttZqq","ttZnunu","ttZee","ttZmumu","ttZtautau"};//,"ttbar"};
   
-  string pathversion = "v2_ctag_minDRlb"; //v1_e2b_lJqq
+  string pathversion = "v1_truthInfo"; //v1_e2b_lJqq, v2_ctag_minDRlb
 
   string leg_type="f";
   

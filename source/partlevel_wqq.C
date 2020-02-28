@@ -234,6 +234,8 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
 
   //define lead/sublead lepton and it's charge
 
+  float l0_type=0,l1_type=0;  
+  float l0_true_origin=0,l1_true_origin=0;  
   float l0_charge=0,l1_charge=0;  
   float l0_pt=-999,l1_pt=-999;
   float l0_eta=-999,l1_eta=-999;
@@ -246,7 +248,9 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
     l0_charge= mu_charge[0]; l1_charge= mu_charge[1];
     l0_eta= mu_eta[0]; l1_eta= mu_eta[1];
     l0_pt= mu_pt[0]/1e3; l1_pt= mu_pt[1]/1e3;
-  }
+
+    l0_true_origin= mu_true_origin[0]; l1_true_origin= mu_true_origin[1];
+}
   else if ( dilep_type==3 ){ 
     lep_4v[0].SetPtEtaPhiE(el_pt[0]/1e3,el_eta[0],el_phi[0],el_e[0]);
     lep_4v[1].SetPtEtaPhiE(el_pt[1]/1e3,el_eta[1],el_phi[1],el_e[1]);
@@ -254,6 +258,8 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
     l0_charge= el_charge[0]; l1_charge= el_charge[1];
     l0_eta= el_eta[0]; l1_eta= el_eta[1];
     l0_pt= el_pt[0]/1e3; l1_pt= el_pt[1]/1e3;
+
+    l0_true_origin= el_true_origin[0]; l1_true_origin= el_true_origin[1];
   }
   else if ( dilep_type==2 ){ 
     if(mu_pt[0]>el_pt[0]){ 
@@ -263,6 +269,8 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
       l0_charge= mu_charge[0]; l1_charge= el_charge[0];
       l0_eta= mu_eta[0]; l1_eta= el_eta[0];
       l0_pt= mu_pt[0]/1e3; l1_pt= el_pt[0]/1e3;
+
+      l0_true_origin= mu_true_origin[0]; l1_true_origin= el_true_origin[0];
     }
     else{    
       lep_4v[0].SetPtEtaPhiE(el_pt[0]/1e3,el_eta[0],el_phi[0],el_e[0]);
@@ -271,9 +279,11 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
       l1_charge= mu_charge[0]; l0_charge= el_charge[0];
       l1_eta= mu_eta[0]; l0_eta= el_eta[0];
       l1_pt= mu_pt[0]/1e3; l0_pt= el_pt[0]/1e3;
+
+      l1_true_origin= mu_true_origin[0]; l0_true_origin= el_true_origin[0];
     }
   }
-
+  
 
   int lead_lep=9999, sublead_lep=9999;
   if(  lep_4v[0].Pt()>lep_4v[1].Pt()){

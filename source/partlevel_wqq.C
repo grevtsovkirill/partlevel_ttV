@@ -47,6 +47,15 @@ TH1D *hist_min_DRlb[10][5];
 TH1D *hist_Weights[10];
 TH1D *hist_Whmass[10];
 TH1D *hist_Whpt[10];
+TH1D *hist_lep_truth_origin[10];
+TH1D *hist_lep_truth_origin_0[10];
+TH1D *hist_lep_truth_origin_1[10];
+
+TH1D *hist_lep_truth_type[10];
+TH1D *hist_lep_truth_type_0[10];
+TH1D *hist_lep_truth_type_1[10];
+
+
 /*
  *        0 *        4 *          MUR05_MUF05_PDF261000 *
  *        0 *        5 *           MUR05_MUF1_PDF261000 *
@@ -177,6 +186,14 @@ void partlevel_wqq::SlaveBegin(TTree * /*tree*/)
       hist_Whmass[i] = new TH1D(("Whmass_"+to_string(i)).c_str(), ("m_{Wqq} "+region_names[i]+";m_{Wqq};Events").c_str(), 50, 50, 150); //420, 50, 410
       hist_Whpt[i] = new TH1D(("Whpt_"+to_string(i)).c_str(), ("p_T^{Wqq} "+region_names[i]+";p_T^{Wqq};Events").c_str(),60,0,300 ); //w_binnum, w_bins
 
+      hist_lep_truth_origin[i] = new TH1D(("leps_tr_origin_"+to_string(i)).c_str(), ("Origins 2lOS"+region_names[i]+";Origin;Events").c_str(), 48, 0, 48);
+      hist_lep_truth_origin_0[i] = new TH1D(("lep0_tr_origin_"+to_string(i)).c_str(), ("L0 Origin 2lOS"+region_names[i]+";l0 Origin;Events").c_str(), 48, 0, 48);
+      hist_lep_truth_origin_1[i] = new TH1D(("lep1_tr_origin_"+to_string(i)).c_str(), ("L1 Origin 2lOS"+region_names[i]+";l1 Origin;Events").c_str(), 48, 0, 48);
+
+      hist_lep_truth_type[i] = new TH1D(("leps_tr_type_"+to_string(i)).c_str(), ("Types 2lOS"+region_names[i]+";Type;Events").c_str(), 48, 0, 48);
+      hist_lep_truth_type_0[i] = new TH1D(("lep0_tr_type_"+to_string(i)).c_str(), ("L0 Type 2lOS"+region_names[i]+";l0 Type;Events").c_str(), 48, 0, 48);
+      hist_lep_truth_type_1[i] = new TH1D(("lep1_tr_type_"+to_string(i)).c_str(), ("L1 Type 2lOS"+region_names[i]+";l1 Type;Events").c_str(), 48, 0, 48);
+
       //hist_min_DRlb
       for(int db=0; db<2;db++){
 	hist_min_DRlb[i][db] = new TH1D(("DRlb"+to_string(db)+"_"+to_string(i)).c_str(), (" #DeltaR_{l,b} 2lOS"+region_names[i]+";min#DeltaR_{l,b};Events").c_str(), dr_bins, 0., dr_max);
@@ -234,8 +251,8 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
 
   //define lead/sublead lepton and it's charge
 
-  float l0_type=0,l1_type=0;  
   float l0_true_origin=0,l1_true_origin=0;  
+  float l0_true_type=0,l1_true_type=0;  
   float l0_charge=0,l1_charge=0;  
   float l0_pt=-999,l1_pt=-999;
   float l0_eta=-999,l1_eta=-999;
@@ -250,6 +267,7 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
     l0_pt= mu_pt[0]/1e3; l1_pt= mu_pt[1]/1e3;
 
     l0_true_origin= mu_true_origin[0]; l1_true_origin= mu_true_origin[1];
+    l0_true_type= mu_true_type[0]; l1_true_type= mu_true_type[1];
 }
   else if ( dilep_type==3 ){ 
     lep_4v[0].SetPtEtaPhiE(el_pt[0]/1e3,el_eta[0],el_phi[0],el_e[0]);
@@ -260,6 +278,7 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
     l0_pt= el_pt[0]/1e3; l1_pt= el_pt[1]/1e3;
 
     l0_true_origin= el_true_origin[0]; l1_true_origin= el_true_origin[1];
+    l0_true_type= el_true_type[0]; l1_true_type= el_true_type[1];
   }
   else if ( dilep_type==2 ){ 
     if(mu_pt[0]>el_pt[0]){ 
@@ -271,6 +290,7 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
       l0_pt= mu_pt[0]/1e3; l1_pt= el_pt[0]/1e3;
 
       l0_true_origin= mu_true_origin[0]; l1_true_origin= el_true_origin[0];
+      l0_true_type= mu_true_type[0]; l1_true_type= el_true_type[0];
     }
     else{    
       lep_4v[0].SetPtEtaPhiE(el_pt[0]/1e3,el_eta[0],el_phi[0],el_e[0]);
@@ -281,6 +301,7 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
       l1_pt= mu_pt[0]/1e3; l0_pt= el_pt[0]/1e3;
 
       l1_true_origin= mu_true_origin[0]; l0_true_origin= el_true_origin[0];
+      l1_true_type= mu_true_type[0]; l0_true_type= el_true_type[0];
     }
   }
   
@@ -526,7 +547,17 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
       hist_lep_dPhi[i]->Fill(abs(lep_4v[lead_lep].Phi()-lep_4v[sublead_lep].Phi()), weight_tot);
       hist_Whmass[i]->Fill(pWhadron.M()/1e3, weight_tot);
       hist_Whpt[i]->Fill(pWhadron.Pt()/1e3, weight_tot);
-
+      
+      hist_lep_truth_origin[i]->Fill(l0_true_origin, weight_tot);
+      hist_lep_truth_origin[i]->Fill(l1_true_origin, weight_tot);
+      hist_lep_truth_origin_0[i]->Fill(l0_true_origin, weight_tot);
+      hist_lep_truth_origin_1[i]->Fill(l1_true_origin, weight_tot);
+      
+      hist_lep_truth_type[i]->Fill(l0_true_type, weight_tot);
+      hist_lep_truth_type[i]->Fill(l1_true_type, weight_tot);
+      hist_lep_truth_type_0[i]->Fill(l0_true_type, weight_tot);
+      hist_lep_truth_type_1[i]->Fill(l1_true_type, weight_tot);
+      
       for(int db=0; db<2;db++){
 	hist_min_DRlb[i][db]->Fill(dRlb[db], weight_tot);
       }
@@ -580,6 +611,13 @@ void partlevel_wqq::Terminate()
       hist_lep_dPhi[i]->Write();
       hist_Whmass[i]->Write();
       hist_Whpt[i]->Write();
+      hist_lep_truth_origin[i]->Write();
+      hist_lep_truth_origin_0[i]->Write();
+      hist_lep_truth_origin_1[i]->Write();
+
+      hist_lep_truth_type[i]->Write();
+      hist_lep_truth_type_0[i]->Write();
+      hist_lep_truth_type_1[i]->Write();
       //hist_min_DRlb
       for(int db=0; db<2;db++){
 	hist_min_DRlb[i][db]->Write();

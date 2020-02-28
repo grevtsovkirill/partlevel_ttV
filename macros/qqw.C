@@ -30,11 +30,12 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
   vector<string>  nj_reg={"0","1"};//
   vector<string> region_names={"2b4j","2b4j>0c"};
   //vector<string> variable={"nJets"};//,"Whmass","Whpt","DRlb0","DRlb1","DRlb2","DRlb3"};
-  vector<string> variable={"nJets","Whmass","Whpt","DRlb0","DRlb1"};
+  vector<string> variable={"nJets","Whmass","Whpt","DRlb0","DRlb1","leps_tr_origin","leps_tr_type"};
   //,"DRlb2","DRlb3"
   //vector<string> variable={"nJets","DRll01","Whmass","lep_Pt_0","lep_Pt_1","jet_Pt_4","jet_Pt_5","jet_Pt_6","Bjet_Pt_0","Bjet_Pt_1","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT_leps","HT","nBtagJets","MET","lep_Eta_0","lep_Eta_1","lep_Phi_0","lep_Phi_1","lep_dPhi","jet_Pt_1","jet_Pt_2","jet_Pt_3"}; //
   vector<string> variable_X={"Number of jets","m_{Wqq}","p_T^{Wqq}",
 			     "min#Delta R_{l_{0},b}","min#Delta R_{l_{1},b}",
+			     "TruthOrigin","TruthType",
 			     //"#Delta R_{l_{1},b_{0}}","#Delta R_{l_{1},b_{1}}",
 			     "#Delta R_{l_{0},l_{1}}","Leading lepton #font[52]{p}_{T} [GeV]","Subeading lepton #font[52]{p}_{T} [GeV]",
 			     "4th jet #font[52]{p}_{T} [GeV]","5th jet #font[52]{p}_{T} [GeV]","6th jet #font[52]{p}_{T} [GeV]",
@@ -271,7 +272,7 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
 	
 
       
-      sprintf(o_name,"WqqPlots/v1_shapes_full/%s.pdf",canvas_name);   
+      sprintf(o_name,"WqqPlots/v1_stack_full/%s.pdf",canvas_name);   
       canv[i][j]->Print(o_name);
   
     }

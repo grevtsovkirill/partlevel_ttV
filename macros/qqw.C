@@ -55,10 +55,14 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
   sample_map["ttW"]= "413008";
   sample_map["ttbar"]= "410472";
   sample_map["ttZqq"]= "410157";
+  sample_map["ttZnunu"]= "410156";
+  sample_map["ttZee"]= "410218";
+  sample_map["ttZmumu"]= "410219";
+  sample_map["ttZtautau"]= "410220";
   
-  Int_t color_sample[8]={632,861,0,921,922,617,860,868};//625
+  Int_t color_sample[8]={632,861,921,922,617,860,0,868};//625
   Int_t linestyle[8]={1, 1, 1, 1,  1, 1,1,1};
-  vector<string> type={"ttW","ttZqq","ttbar"};
+  vector<string> type={"ttW","ttZqq","ttZnunu","ttZee","ttZmumu","ttZtautau","ttbar"};
   
   string pathversion = "v2_ctag_minDRlb"; //v1_e2b_lJqq
 
@@ -137,7 +141,7 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
 	    h_var[i][j][0][t]->SetXTitle((variable_X[j]).c_str());
 	    h_var[i][j][0][t]->GetYaxis()->SetTitleSize(0.06); 
 	    h_var[i][j][0][t]->GetYaxis()->SetTitleOffset(0.7); 
-	    h_var[i][j][0][t]->SetMaximum(h_var[i][j][0][t]->GetMaximum()*1.6);
+	    h_var[i][j][0][t]->SetMaximum(h_var[i][j][0][t]->GetMaximum()*1.6); //1.6
 	    h_var[i][j][0][t]->Draw("E1");
 	  }
 
@@ -225,8 +229,8 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
       h_allMC[i][j][0][1]->GetYaxis()->SetNdivisions(405, kTRUE);      
       h_allMC[i][j][0][1]->GetXaxis()->SetTickLength(0.1); 
       h_allMC[i][j][0][1]->SetLineWidth(2);
-      h_allMC[i][j][0][1]->SetMinimum(0.68);
-      h_allMC[i][j][0][1]->SetMaximum(1.32);
+      h_allMC[i][j][0][1]->SetMinimum(0.88);
+      h_allMC[i][j][0][1]->SetMaximum(1.12);
     
       sprintf(text1,"#sqrt{s} = 13 TeV,");
       sprintf(text2,"2#font[52]{l}OS Wqq %s",region_names[i].c_str()); //
@@ -246,6 +250,8 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
 
       }
       else{
+	h_var[i][j][3][0]->SetMinimum(0.68);
+	h_var[i][j][3][0]->SetMaximum(1.32);
 	h_var[i][j][3][0]->SetYTitle("Ratio to ttW");
 	h_var[i][j][3][0]->Draw("hist");
 	for(int t=1;t<type.size();t++){
@@ -265,8 +271,8 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
 	
 
       
-      sprintf(o_name,"WqqPlots/v0_stack_xs/%s.pdf",canvas_name);   
-      //canv[i][j]->Print(o_name);
+      sprintf(o_name,"WqqPlots/v1_shapes_full/%s.pdf",canvas_name);   
+      canv[i][j]->Print(o_name);
   
     }
   }

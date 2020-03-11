@@ -1,4 +1,4 @@
-#define partlevel_wqq_cxx
+#defiOAne partlevel_wqq_cxx
 
 
 #include "partlevel_wqq.h"
@@ -104,7 +104,6 @@ void partlevel_wqq::SlaveBegin(TTree * /*tree*/)
   smw=  std::stod (tmp);
   //cout.precision(17);
   std::cout << "SumW ="<< tmp<< ", double - "<< smw << std::endl;
-  Double_t sig_Sherpa= 652;  Double_t sig_MG= 548;
 
   input_name=input_option.substr(input_option.find("/")+1,(input_option.find("_")-input_option.find("/")-1));
   comp_name=input_option.substr(input_option.find("-")+1);
@@ -118,13 +117,24 @@ void partlevel_wqq::SlaveBegin(TTree * /*tree*/)
   //*/ 
   std::map<std::string, double> xs_map;
   
-  xs_map["413008"]= 652;
-  xs_map["410157"]= 528;
-  xs_map["410156"]= 155;
-  xs_map["410218"]= 36.9;
-  xs_map["410219"]= 36.9;
-  xs_map["410220"]= 36.6;
-  xs_map["410472"]= 729770*0.10547;
+  xs_map["413008"]= 0.652 * 0.920 ;
+  xs_map["410157"]= 0.52771 * 1.11 ;
+  xs_map["410156"]= 0.15499 * 1.11;
+  xs_map["410155"]= 0.54830 * 1.10;
+  xs_map["410218"]= 0.036888 * 1.12 ;
+  xs_map["410219"]= 0.036895 * 1.12 ;
+  xs_map["410220"]= 0.036599 * 1.12 ;
+  xs_map["410472"]= 76.95 * 1.1398;
+  xs_map["410658"]= 36.993 * 1.191;
+  xs_map["410659"]= 22.175 * 1.183;
+  xs_map["410644"]= 2.0268 * 1.015 ;
+  xs_map["410645"]= 1.2676 * 1.015;
+  xs_map["304014"]= 0.0016398 * 1.0;
+  xs_map["410080"]= 0.0091622 * 1.0042 ;
+  xs_map["410081"]= 0.0080975 * 1.2231 ;
+  xs_map["410408"]= 0.016046 * 1.0 ;
+
+
   std::cout << "input_name ="<< input_name<< ", comp_name - "<< comp_name<< ", xs = "<<xs_map[input_name] << std::endl;  
   Double_t gen_xs=1;
   gen_xs=xs_map[input_name];

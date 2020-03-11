@@ -75,7 +75,7 @@ vector<string> weight_names = {"MUR05_MUF05","MUR05_MUF1","MUR1_MUF05","MUR1_MUF
   /* sel_array[3]=(Nhtaus == 0 && Njets >= 4 && abs(mWPDG - pWhadron.M())/1e3<5 );  // Region 5GeV Wmass region    */
 
  
-vector<string> region_names={"2b4j", ">0cjet"};
+vector<string> region_names={"2b4j", ">0cjet","Wwidnow","Wwidnow>0cjet"};
 //vector<string> region_names={"0#tau_{had} 1#font[52]{b} #geq4#font[52]{j}", "0#tau_{had} #geq2#font[52]{b} #geq4#font[52]{j}","0#tau_{had} 1#font[52]{b} 3#font[52]{j}", "0#tau_{had} #geq2#font[52]{b} 3#font[52]{j}","1#tau_{had} #geq1#font[52]{b} #geq3#font[52]{j}", "0t=3j","0tg4j","otg3g0b"};
 //,
 			     //"1t 1b 4j", "1t 2b 4j","1t 1b 3j", "1t 2b 3j"};
@@ -151,7 +151,8 @@ void partlevel_wqq::SlaveBegin(TTree * /*tree*/)
     Float_t jet_bins[]={0,20,25,33,45,60,80,110,200}; Int_t  jet_binnum = sizeof(jet_bins)/sizeof(Float_t) - 1;
     Float_t bjet_bins[]={0,20,25,33,45,60,80,110,150,200,300,500}; Int_t  bjet_binnum = sizeof(bjet_bins)/sizeof(Float_t) - 1;
     //Float_t w_bins[]={0,10,20,25,33,45,60,80,110,140,180,240,400}; Int_t  w_binnum = sizeof(w_bins)/sizeof(Float_t) - 1;
-    Float_t dr_max=4.8; Int_t dr_bins=12; 
+    Float_t dr_max=4.8; Int_t dr_bins=12;
+    Float_t origin_bins = 48;
     for(int i=0; i<(int)region_names.size();i++){
       hist_DRll01[i] = new TH1D(("DRll01_"+to_string(i)).c_str(), ("#DeltaR_{l_{0},l_{1}} 2lOS"+region_names[i]+";#DeltaR_{l_{0},l_{1}};Events").c_str(), dr_bins, 0., dr_max);
       hist_lep_Pt_0[i] = new TH1D(("lep_Pt_0_"+to_string(i)).c_str(), ("Leading lepton Pt 2lOS"+region_names[i]+";p_{T}(l_{0})[GeV];Events").c_str(), lep_binnum, lep_bins);//100, 0, 500
@@ -186,13 +187,13 @@ void partlevel_wqq::SlaveBegin(TTree * /*tree*/)
       hist_Whmass[i] = new TH1D(("Whmass_"+to_string(i)).c_str(), ("m_{Wqq} "+region_names[i]+";m_{Wqq};Events").c_str(), 50, 50, 150); //420, 50, 410
       hist_Whpt[i] = new TH1D(("Whpt_"+to_string(i)).c_str(), ("p_T^{Wqq} "+region_names[i]+";p_T^{Wqq};Events").c_str(),60,0,300 ); //w_binnum, w_bins
 
-      hist_lep_truth_origin[i] = new TH1D(("leps_tr_origin_"+to_string(i)).c_str(), ("Origins 2lOS"+region_names[i]+";Origin;Events").c_str(), 48, 0, 48);
-      hist_lep_truth_origin_0[i] = new TH1D(("lep0_tr_origin_"+to_string(i)).c_str(), ("L0 Origin 2lOS"+region_names[i]+";l0 Origin;Events").c_str(), 48, 0, 48);
-      hist_lep_truth_origin_1[i] = new TH1D(("lep1_tr_origin_"+to_string(i)).c_str(), ("L1 Origin 2lOS"+region_names[i]+";l1 Origin;Events").c_str(), 48, 0, 48);
+      hist_lep_truth_origin[i] = new TH1D(("leps_tr_origin_"+to_string(i)).c_str(), ("Origins 2lOS"+region_names[i]+";Origin;Events").c_str(), origin_bins, 0, origin_bins);
+      hist_lep_truth_origin_0[i] = new TH1D(("lep0_tr_origin_"+to_string(i)).c_str(), ("L0 Origin 2lOS"+region_names[i]+";l0 Origin;Events").c_str(), origin_bins, 0, origin_bins);
+      hist_lep_truth_origin_1[i] = new TH1D(("lep1_tr_origin_"+to_string(i)).c_str(), ("L1 Origin 2lOS"+region_names[i]+";l1 Origin;Events").c_str(), origin_bins, 0, origin_bins);
 
-      hist_lep_truth_type[i] = new TH1D(("leps_tr_type_"+to_string(i)).c_str(), ("Types 2lOS"+region_names[i]+";Type;Events").c_str(), 48, 0, 48);
-      hist_lep_truth_type_0[i] = new TH1D(("lep0_tr_type_"+to_string(i)).c_str(), ("L0 Type 2lOS"+region_names[i]+";l0 Type;Events").c_str(), 48, 0, 48);
-      hist_lep_truth_type_1[i] = new TH1D(("lep1_tr_type_"+to_string(i)).c_str(), ("L1 Type 2lOS"+region_names[i]+";l1 Type;Events").c_str(), 48, 0, 48);
+      hist_lep_truth_type[i] = new TH1D(("leps_tr_type_"+to_string(i)).c_str(), ("Types 2lOS"+region_names[i]+";Type;Events").c_str(), origin_bins, 0, origin_bins);
+      hist_lep_truth_type_0[i] = new TH1D(("lep0_tr_type_"+to_string(i)).c_str(), ("L0 Type 2lOS"+region_names[i]+";l0 Type;Events").c_str(), origin_bins, 0, origin_bins);
+      hist_lep_truth_type_1[i] = new TH1D(("lep1_tr_type_"+to_string(i)).c_str(), ("L1 Type 2lOS"+region_names[i]+";l1 Type;Events").c_str(), origin_bins, 0, origin_bins);
 
       //hist_min_DRlb
       for(int db=0; db<2;db++){
@@ -503,6 +504,9 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
 
   sel_array[0]=(Nhtaus == 0 && Njets >= 4 );  // Region inclusive
   sel_array[1]=(Nhtaus == 0 && Njets >= 4 && Ncjets>0 );  // 
+  sel_array[2]=(Nhtaus == 0 && Njets >= 4 && abs(pWhadron.M()-mWPDG)<1e4);
+  sel_array[3]=(Nhtaus == 0 && Njets >= 4 && Ncjets>0 && abs(pWhadron.M()-mWPDG)<1e4);  //
+  
   //sel_array[2]=(Nhtaus == 0 && Njets >= 4 && abs(mWPDG - pWhadron.M())/1e3<10 );  // Region 10GeV Wmass region
   //sel_array[3]=(Nhtaus == 0 && Njets >= 4 && abs(mWPDG - pWhadron.M())/1e3<5 );  // Region 5GeV Wmass region
 

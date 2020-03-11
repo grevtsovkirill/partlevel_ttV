@@ -27,15 +27,15 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
   TH1D* h_var[10][35][20][50];
   TH1D* h_allMC[10][35][20][50];
   
-  vector<string>  nj_reg={"0","1"};//
-  vector<string> region_names={"2b4j","2b4j>0c"};
+  vector<string>  nj_reg={"0","1","2","3"};//
+  vector<string> region_names={"2b4j","2b4j>0c","2b4jww","2b4jww>0c"};
   //vector<string> variable={"nJets"};//,"Whmass","Whpt","DRlb0","DRlb1","DRlb2","DRlb3"};
-  vector<string> variable={"nJets","Whmass","Whpt","DRlb0","DRlb1","leps_tr_origin","leps_tr_type"};
+  vector<string> variable={"nJets","Whmass","Whpt","DRlb0","DRlb1","leps_tr_type","leps_tr_origin","lep0_tr_origin","lep1_tr_origin"};
   //,"DRlb2","DRlb3"
   //vector<string> variable={"nJets","DRll01","Whmass","lep_Pt_0","lep_Pt_1","jet_Pt_4","jet_Pt_5","jet_Pt_6","Bjet_Pt_0","Bjet_Pt_1","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT_leps","HT","nBtagJets","MET","lep_Eta_0","lep_Eta_1","lep_Phi_0","lep_Phi_1","lep_dPhi","jet_Pt_1","jet_Pt_2","jet_Pt_3"}; //
   vector<string> variable_X={"Number of jets","m_{Wqq}","p_T^{Wqq}",
 			     "min#Delta R_{l_{0},b}","min#Delta R_{l_{1},b}",
-			     "TruthOrigin","TruthType",
+			     "TruthType","Origin","L0origin","L1origin",
 			     //"#Delta R_{l_{1},b_{0}}","#Delta R_{l_{1},b_{1}}",
 			     "#Delta R_{l_{0},l_{1}}","Leading lepton #font[52]{p}_{T} [GeV]","Subeading lepton #font[52]{p}_{T} [GeV]",
 			     "4th jet #font[52]{p}_{T} [GeV]","5th jet #font[52]{p}_{T} [GeV]","6th jet #font[52]{p}_{T} [GeV]",
@@ -45,6 +45,15 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
 			     "#font[52]{HT}^{jets} [GeV]","#font[52]{HT}^{lep} [GeV]","#font[52]{HT} [GeV]",
 			     "Number of #font[52]{b}-jets","#font[52]{E}_{T}^{miss}","Leading lepton #eta","Subleading lepton #eta","Leading lepton #phi","Subleading lepton #phi","#Delta #phi ^{ll}",
 			     "1th jet #font[52]{p}_{T} [GeV]","2nd jet #font[52]{p}_{T} [GeV]","3rd jet #font[52]{p}_{T} [GeV]"  };  
+  string truthOriginLabel[] = {
+			       "NonDefined - 0","SingleElec - 1","SingleMuon - 2","SinglePhot - 3","SingleTau - 4","PhotonConv - 5","DalitzDec - 6","ElMagProc - 7",
+			       "Mu - 8","TauLep - 9","top - 10","QuarkWeakDec - 11","WBoson - 12","ZBoson - 13","Higgs - 14","HiggsMSSM - 15","HeavyBoson - 16",
+			       "WBosonLRSM - 17","NuREle - 18","NuRMu - 19","NuRTau - 20","LQ - 21","SUSY - 22","LightMeson - 23","StrangeMeson - 24","CharmedMeson - 25",
+			       "BottomMeson - 26","CCbarMeson - 27","JPsi - 28","BBbarMeson - 29","LightBaryon - 30","StrangeBaryon - 31","CharmedBaryon - 32","BottomBaryon - 33",
+			       "PionDecay - 34","KaonDecay - 35","BremPhot - 36","PromptPhot - 37","UndrPhot - 38","ISRPhot - 39","FSRPhot - 40","NucReact - 41","PiZero - 42",
+			       "DiBoson - 43","ZorHeavyBoson - 44","QCD - 45", "OtherBSM - 46,", "MultiBoson- 47",
+  };
+
   
 
   //'413008_ttw','410472_ttbar','410156_ttZnunu','410157_ttZqq','410218_ttee','410219_ttmumu','410220_tttautau
@@ -63,7 +72,8 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
   
   Int_t color_sample[8]={632,861,921,922,617,860,0,868};//625
   Int_t linestyle[8]={1, 1, 1, 1,  1, 1,1,1};
-  vector<string> type={"ttW","ttZqq","ttZnunu","ttZee","ttZmumu","ttZtautau"};//,"ttbar"};
+  vector<string> type={"ttW","ttZqq","ttZnunu","ttZee","ttZmumu","ttZtautau","ttbar"};
+  //vector<string> type={"ttbar"};
   
   string pathversion = "v1_truthInfo"; //v1_e2b_lJqq, v2_ctag_minDRlb
 
@@ -98,7 +108,7 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
     for(int j=0;j<variable.size();j++){
       
       sprintf(canvas_name,"c_Region_%s_%s",nj_reg[i].c_str(), variable[j].c_str() );
-      cout << "canvas_name "<< canvas_name<< endl;
+      //cout << "canvas_name "<< canvas_name<< endl;
       canv[i][j] = new TCanvas(canvas_name, "", 800, 600);
       
       sprintf(p1_name,"p1_%s_%s",nj_reg[i].c_str(),variable[j].c_str() );
@@ -143,6 +153,8 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
 	    h_var[i][j][0][t]->GetYaxis()->SetTitleSize(0.06); 
 	    h_var[i][j][0][t]->GetYaxis()->SetTitleOffset(0.7); 
 	    h_var[i][j][0][t]->SetMaximum(h_var[i][j][0][t]->GetMaximum()*1.6); //1.6
+
+	      
 	    h_var[i][j][0][t]->Draw("E1");
 	  }
 
@@ -243,14 +255,37 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
 
 
       pad2[i][j]->cd();
+
+
       //*
       if(do_stack){
+
+	if(variable[j]=="leps_tr_origin" || variable[j]=="lep0_tr_origin" || variable[j]=="lep1_tr_origin"){
+	  int Nbins = h_allMC[i][j][0][1]->GetNbinsX();
+	  cout << " === " <<Nbins<< "   "<< truthOriginLabel[40]<<endl;
+	  for (int bin=1;bin<=Nbins;++bin){ 
+	    h_allMC[i][j][0][1]->GetXaxis()->SetBinLabel(bin,truthOriginLabel[bin-1].c_str());
+	  }
+
+	}
+
 	h_allMC[i][j][0][1]->SetYTitle("No sense Ratio");
 	h_allMC[i][j][0][1]->Draw("E1");
 	h_allMC[i][j][0][1]->Draw("histsame");
-
+	h_allMC[i][j][0][1]->Draw("textsame");
+	
       }
       else{
+
+	if(variable[j]=="leps_tr_origin"|| variable[j]=="lep0_tr_origin" || variable[j]=="lep1_tr_origin"){
+	  int Nbins = h_var[i][j][3][0]->GetNbinsX();
+	  cout << " === " <<Nbins<< "   "<< truthOriginLabel[40]<<endl;
+	  for (int bin=1;bin<=Nbins;++bin){ 
+	    h_var[i][j][3][0]->GetXaxis()->SetBinLabel(bin,truthOriginLabel[bin-1].c_str());
+	  }
+	  
+	}
+	
 	h_var[i][j][3][0]->SetMinimum(0.68);
 	h_var[i][j][3][0]->SetMaximum(1.32);
 	h_var[i][j][3][0]->SetYTitle("Ratio to ttW");
@@ -273,7 +308,7 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
 
       
       sprintf(o_name,"WqqPlots/v1_stack_full/%s.pdf",canvas_name);   
-      canv[i][j]->Print(o_name);
+      //canv[i][j]->Print(o_name);
   
     }
   }

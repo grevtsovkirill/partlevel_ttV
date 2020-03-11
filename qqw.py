@@ -1,6 +1,6 @@
 import os
 
-samples = ['413008_ttw','410155_ttw','410156_ttZnunu','410157_ttZqq','410218_ttee','410219_ttmumu','410220_tttautau']
+samples = ['413008_ttw','410155_ttw','410156_ttZnunu','410157_ttZqq','410218_ttee','410219_ttmumu','410220_tttautau','410472_ttbar']
 #suff = "norm" ,'410472_ttbar'
 suff = "xs"
 #samples = ['410220_tttautau']

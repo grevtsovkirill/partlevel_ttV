@@ -75,7 +75,7 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
   vector<string> type={"ttW","ttZqq","ttZnunu","ttZee","ttZmumu","ttZtautau","ttbar"};
   //vector<string> type={"ttbar"};
   
-  string pathversion = "v1_truthInfo"; //v1_e2b_lJqq, v2_ctag_minDRlb
+  string pathversion = "v1_truthInfo_newXS"; //v1_truthInfo //v1_e2b_lJqq, v2_ctag_minDRlb
 
   string leg_type="f";
   
@@ -213,8 +213,8 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
 	
 	if(do_log){
 	  pad1[i][j]->SetLogy();
-	  hs->SetMaximum(hs->GetMaximum()*1e2); 
-	  hs->SetMinimum(1e-1); 
+	  hs->SetMaximum(hs->GetMaximum()*1e1); 
+	  hs->SetMinimum(1e-4); 
 	}
 	else
 	  hs->SetMaximum(hs->GetMaximum()*1.6); 

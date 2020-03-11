@@ -1,4 +1,4 @@
-#defiOAne partlevel_wqq_cxx
+#define partlevel_wqq_cxx
 
 
 #include "partlevel_wqq.h"

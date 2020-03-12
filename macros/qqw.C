@@ -16,7 +16,7 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
 
   TFile *file[10][10];
   TLatex latex2; latex2.SetTextSize(0.06); latex2.SetNDC();
-  char sf_name[1000] ;char band_name[1000] ;
+  char sf_name[1000] ;char band_name[1000] ;char ytest[1000];
   char text[1000];  char text1[1000];  char text2[1000]; 
   TString atl_lable = "Internal";
   TLegend* legend[100][100];
@@ -26,7 +26,8 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
   char canvas_name[1000];char p1_name[1000];  char p2_name[1000]; char o_name[1000];
   TH1D* h_var[10][35][20][50];
   TH1D* h_allMC[10][35][20][50];
-  
+
+  //vector<string>  nj_reg={"0"};vector<string> region_names={"2b4j"};
   vector<string>  nj_reg={"0","1","2","3"};//
   vector<string> region_names={"2b4j","2b4j>0c","2b4jww","2b4jww>0c"};
   //vector<string> variable={"nJets"};//,"Whmass","Whpt","DRlb0","DRlb1","DRlb2","DRlb3"};
@@ -69,7 +70,7 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
   sample_map["ttZee"]= "410218";
   sample_map["ttZmumu"]= "410219";
   sample_map["ttZtautau"]= "410220";
-  
+  //632,
   Int_t color_sample[8]={632,861,921,922,617,860,0,868};//625
   Int_t linestyle[8]={1, 1, 1, 1,  1, 1,1,1};
   vector<string> type={"ttW","ttZqq","ttZnunu","ttZee","ttZmumu","ttZtautau","ttbar"};
@@ -106,6 +107,9 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
 
   for(int i=0;i<nj_reg.size();i++){
     for(int j=0;j<variable.size();j++){
+      std::map<string,float> yields;
+      yields["TotalMC"] = 0.;
+      yields["TotalBkg"] = 0.;
       
       sprintf(canvas_name,"c_Region_%s_%s",nj_reg[i].c_str(), variable[j].c_str() );
       //cout << "canvas_name "<< canvas_name<< endl;
@@ -129,15 +133,21 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
       pad1[i][j]->Draw();
       pad2[i][j]->Draw();
       
-      legend[i][j] = new TLegend(0.5,0.6,0.9,0.9);
+      legend[i][j] = new TLegend(0.5,0.5,0.9,0.9);
       legend[i][j]->SetTextFont(42);legend[i][j]->SetFillColor(0);  legend[i][j]->SetBorderSize(0); legend[i][j]->SetFillStyle(0);  legend[i][j]->SetTextSize(0.05);
       
       THStack *hs = new THStack("hs","Stacked 1D histograms");
-
+ 
       pad1[i][j]->cd();
 
       for(int t=0;t<type.size();t++){
 	cout << " - load file: "<< t << " - "<<  type[t] << endl;
+	
+	yields[type[t]] = (h_var[i][j][0][t]->GetBinContent(0) + h_var[i][j][0][t]->Integral() +  h_var[i][j][0][t]->GetBinContent(h_var[i][j][0][t]->GetNbinsX() + 1)) ;
+	if (type[t] != "ttW")yields["TotalBkg"] += yields[type[t]];
+	yields["TotalMC"] += yields[type[t]];
+	cout << type[t] << "\t" << yields[type[t]] << "\t"  << endl;
+				
 	if(t==0){	  
 	  sprintf(sf_name,"total_%s_%s_%s",variable[j].c_str(),nj_reg[i].c_str(),type[t].c_str());   
 	  h_allMC[i][j][0][0] = (TH1D*)h_var[i][j][0][t]->Clone();
@@ -178,7 +188,9 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
 	  h_var[i][j][0][t]->Draw("E1histsame");
 	}
 	hs->Add(h_var[i][j][0][t]);
-	legend[i][j]->AddEntry(h_var[i][j][0][t],(type[t]+ " ").c_str(),leg_type.c_str());		
+	sprintf(ytest,"%0.2f",yields[type[t]]);
+	//cout << " ============ "<< ytest<< endl;//to_string(yields[type[t]] )
+	legend[i][j]->AddEntry(h_var[i][j][0][t],(type[t]+ "  "+ ytest).c_str(),leg_type.c_str());		
 
 	//
 	if(!do_stack){
@@ -202,6 +214,7 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
 	}
 	
       }
+      //cout << "TotalMC = " << "\t" << yields[ "TotalMC"] << "\t" << yields[ "TotalBkg"] << "\t"  << endl;
 
       if(do_stack){
 	hs->Draw("hist");
@@ -213,16 +226,18 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
 	
 	if(do_log){
 	  pad1[i][j]->SetLogy();
-	  hs->SetMaximum(hs->GetMaximum()*1e1); 
-	  hs->SetMinimum(1e-4); 
+	  hs->SetMaximum(hs->GetMaximum()*1e2); 
+	  hs->SetMinimum(1e-1); 
 	}
 	else
 	  hs->SetMaximum(hs->GetMaximum()*1.6); 
 	
-	
-	legend[i][j]->AddEntry(h_allMC[i][j][0][0],"MC (tbr by data) ","P");
+	sprintf(ytest,"TotMC %0.2f",yields["TotalMC"]);
+	legend[i][j]->AddEntry(h_allMC[i][j][0][0], ytest ,"P");
+	sprintf(ytest," S/B = %0.2f %%",yields["ttW"]/yields[ "TotalBkg"]*100);
+	legend[i][j]->AddEntry(h_allMC[i][j][0][0],ytest ,"");
 	h_allMC[i][j][0][0]->Draw("E1same");
-	
+	cout << "h_allMC[i][j][0][0] = "<< h_allMC[i][j][0][0]->GetSumOfWeights()<< ", integral = "<< h_allMC[i][j][0][0]->GetBinContent(0) +h_allMC[i][j][0][0]->Integral() + h_allMC[i][j][0][0]->GetBinContent(h_allMC[i][j][0][0]->GetNbinsX() + 1)<< endl;
 	if (sampleversion == "norm")
 	  hs->GetYaxis()->SetTitle("Normalized");
 	else
@@ -307,7 +322,7 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
 	
 
       
-      sprintf(o_name,"WqqPlots/v1_stack_full/%s.pdf",canvas_name);   
+      sprintf(o_name,"WqqPlots/v1_newxs/%s.pdf",canvas_name);   
       //canv[i][j]->Print(o_name);
   
     }

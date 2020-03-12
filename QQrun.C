@@ -17,7 +17,8 @@ void QQrun(string name="413008_ttw", string comp="xs"){
   //if(name.find("Sherpa")!= std::string::npos) name1="413008_ttw"; 
   //else if(name.find("MG")!= std::string::npos) name1="410155";
 
-  string path="/Users/grevtsov/Documents/working_files/ttH/Wtt_run2/Files/ttWqq/v1_0228/"+name+".root";;
+  //string path="/Users/grevtsov/Documents/working_files/ttH/Wtt_run2/Files/ttWqq/v1_0228/"+name+".root";;
+  string path="/nfs/dust/atlas/group/top/ttH_ML/ttW_run2/ttWqq/v1_0228/"+name+".root";
   cout << "path = " << path<< endl;
 
 

@@ -70,6 +70,16 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
   sample_map["ttZee"]= "410218";
   sample_map["ttZmumu"]= "410219";
   sample_map["ttZtautau"]= "410220";
+  sample_map["topt"]= "410658";
+  sample_map["atopt"]= "410659";
+  sample_map["tops"]= "410644";
+  sample_map["atops"]= "410644";
+  sample_map["threeTop"]= "304014";
+  sample_map["fourTop"]= "410080";
+  sample_map["ttWW"]= "410081";
+  sample_map["Wtz"]= "410408";
+  //           '304014_threeTop','410080_fourTop','410081_ttww','410408_WtZ']
+
   //632,
   Int_t color_sample[8]={632,861,921,922,617,860,0,868};//625
   Int_t linestyle[8]={1, 1, 1, 1,  1, 1,1,1};

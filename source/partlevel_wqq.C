@@ -138,7 +138,7 @@ void partlevel_wqq::SlaveBegin(TTree * /*tree*/)
   std::cout << "input_name ="<< input_name<< ", comp_name - "<< comp_name<< ", xs = "<<xs_map[input_name] << std::endl;  
   Double_t gen_xs=1;
   gen_xs=xs_map[input_name];
-  Acc=gen_xs/smw;
+  Acc=gen_xs*1e3/smw;
   //Acc=1/smw;
   
   const std::vector<TString> s_cutDescs =

@@ -359,7 +359,8 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
   vector<TLorentzVector> ljets_vec;
   vector<TLorentzVector> bjets_vec;
   vector<TLorentzVector> cjets_vec;
-
+  //vector<int> jet_true_type;
+  
   //loop over jet vectors
   int lowjets=0;
   for(unsigned int j=0;j<jet_pt.GetSize(); j++){
@@ -368,7 +369,7 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
       return 0;
       cout <<lowjets<< endl;
     }
-
+  
     if(fabs(jet_eta[j])>2.5) return 0;
   
     Njets+=1;
@@ -377,10 +378,11 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
     jj.SetPtEtaPhiE(jet_pt[j],jet_eta[j],jet_phi[j],jet_e[j]);
     jets_vec.push_back(jj);
 
+    //cout << "    jet_true_type["<<j<<"]" << jet_true_type[j]<< "    jet_true_origin["<<j<<"]" << jet_true_origin[j]<<endl;
     if(jet_nGhosts_bHadron[j]>0){
       Nbjets+=1;
       bjets_vec.push_back(jj);
-
+      //cout<< " - b-jet jet_nGhosts_bHadron>0"<< endl;
       //if(jet_nGhosts_cHadron[j]>0) cout << " ======  ====== b and c simultaneously!?  ======  ====== "<< endl;
       
     }
@@ -391,8 +393,11 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
       if(jet_nGhosts_cHadron[j]>0){
 	Ncjets+=1;
 	cjets_vec.push_back(jj);
+	//cout<< " - c-jet jet_nGhosts_cHadron>0"<< endl;
 	//cout << " ======  ======  c but not b  ======  ====== "<< endl;
       }
+      //else
+	//cout<< " - light-jet"<< endl;
     }
     
     HTjet+=jet_pt[j];
@@ -578,8 +583,11 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
       hist_lep_truth_type_1[i]->Fill(l1_true_type, weight_tot);
 
 
-      hist_jet_truth_origin[i]->Fill(l0_true_origin, weight_tot);
-      hist_jet_truth_type[i]->Fill(l0_true_type, weight_tot);
+      for(int j=0; j<Njets;j++){
+	//jet_true_type[j]<< "    jet_true_origin["<<j<<"]" << jet_true_origin[j]<<endl;
+	hist_jet_truth_origin[i]->Fill(jet_true_origin[j], weight_tot);
+	hist_jet_truth_type[i]->Fill(jet_true_type[j], weight_tot);
+      }
       
       for(int db=0; db<2;db++){
 	hist_min_DRlb[i][db]->Fill(dRlb[db], weight_tot);

@@ -92,6 +92,8 @@ public :
   TTreeReaderArray<int> mu_true_type = {fReader, "mu_true_type"};
   TTreeReaderArray<int> mu_true_origin = {fReader, "mu_true_origin"};
   TTreeReaderArray<char> mu_true_isPrompt = {fReader, "mu_true_isPrompt"};
+  TTreeReaderArray<int> jet_true_type = {fReader, "jet_true_type"};
+  TTreeReaderArray<int> jet_true_origin = {fReader, "jet_true_origin"};
 
 
   partlevel_wqq(TTree * /*tree*/ =0):fNumberOfEvents(0)  { }

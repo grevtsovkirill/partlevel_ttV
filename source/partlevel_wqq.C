@@ -55,6 +55,9 @@ TH1D *hist_lep_truth_type[10];
 TH1D *hist_lep_truth_type_0[10];
 TH1D *hist_lep_truth_type_1[10];
 
+TH1D *hist_jet_truth_origin[10];
+TH1D *hist_jet_truth_type[10];
+
 
 /*
  *        0 *        4 *          MUR05_MUF05_PDF261000 *
@@ -205,6 +208,8 @@ void partlevel_wqq::SlaveBegin(TTree * /*tree*/)
       hist_lep_truth_type_0[i] = new TH1D(("lep0_tr_type_"+to_string(i)).c_str(), ("L0 Type 2lOS"+region_names[i]+";l0 Type;Events").c_str(), origin_bins, 0, origin_bins);
       hist_lep_truth_type_1[i] = new TH1D(("lep1_tr_type_"+to_string(i)).c_str(), ("L1 Type 2lOS"+region_names[i]+";l1 Type;Events").c_str(), origin_bins, 0, origin_bins);
 
+      hist_jet_truth_origin[i] = new TH1D(("jets_tr_origin_"+to_string(i)).c_str(), ("Origins 2lOS"+region_names[i]+";Origin;Events").c_str(), origin_bins, 0, origin_bins);
+      hist_jet_truth_type[i] = new TH1D(("jets_tr_type_"+to_string(i)).c_str(), ("Types 2lOS"+region_names[i]+";Type;Events").c_str(), origin_bins, 0, origin_bins);
       //hist_min_DRlb
       for(int db=0; db<2;db++){
 	hist_min_DRlb[i][db] = new TH1D(("DRlb"+to_string(db)+"_"+to_string(i)).c_str(), (" #DeltaR_{l,b} 2lOS"+region_names[i]+";min#DeltaR_{l,b};Events").c_str(), dr_bins, 0., dr_max);
@@ -571,6 +576,10 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
       hist_lep_truth_type[i]->Fill(l1_true_type, weight_tot);
       hist_lep_truth_type_0[i]->Fill(l0_true_type, weight_tot);
       hist_lep_truth_type_1[i]->Fill(l1_true_type, weight_tot);
+
+
+      hist_jet_truth_origin[i]->Fill(l0_true_origin, weight_tot);
+      hist_jet_truth_type[i]->Fill(l0_true_type, weight_tot);
       
       for(int db=0; db<2;db++){
 	hist_min_DRlb[i][db]->Fill(dRlb[db], weight_tot);
@@ -632,6 +641,10 @@ void partlevel_wqq::Terminate()
       hist_lep_truth_type[i]->Write();
       hist_lep_truth_type_0[i]->Write();
       hist_lep_truth_type_1[i]->Write();
+
+      hist_jet_truth_origin[i]->Write();
+      hist_jet_truth_type[i]->Write();
+      
       //hist_min_DRlb
       for(int db=0; db<2;db++){
 	hist_min_DRlb[i][db]->Write();

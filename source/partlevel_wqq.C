@@ -359,7 +359,8 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
   vector<TLorentzVector> ljets_vec;
   vector<TLorentzVector> bjets_vec;
   vector<TLorentzVector> cjets_vec;
-  //vector<int> jet_true_type;
+  vector<int> sel_jet_true_type;
+  vector<int> sel_jet_true_origin;
   
   //loop over jet vectors
   int lowjets=0;
@@ -377,8 +378,10 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
     TLorentzVector jj;
     jj.SetPtEtaPhiE(jet_pt[j],jet_eta[j],jet_phi[j],jet_e[j]);
     jets_vec.push_back(jj);
-
+    sel_jet_true_type.push_back(jet_true_type[j]);
+    sel_jet_true_origin.push_back(jet_true_origin[j]);
     //cout << "    jet_true_type["<<j<<"]" << jet_true_type[j]<< "    jet_true_origin["<<j<<"]" << jet_true_origin[j]<<endl;
+    
     if(jet_nGhosts_bHadron[j]>0){
       Nbjets+=1;
       bjets_vec.push_back(jj);
@@ -516,7 +519,7 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
     dRl0b.push_back( lep_4v[lead_lep].DeltaR( bjets_vec[i] ) );
     dRl1b.push_back( lep_4v[sublead_lep].DeltaR( bjets_vec[i] ) );
   }
-  
+   
   Double_t dRlb[2];
   dRlb[0]= *min_element(dRl0b.begin(),dRl0b.end());
   dRlb[1]= *min_element(dRl1b.begin(),dRl1b.end());
@@ -584,9 +587,9 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
 
 
       for(int j=0; j<Njets;j++){
-	//jet_true_type[j]<< "    jet_true_origin["<<j<<"]" << jet_true_origin[j]<<endl;
-	hist_jet_truth_origin[i]->Fill(jet_true_origin[j], weight_tot);
-	hist_jet_truth_type[i]->Fill(jet_true_type[j], weight_tot);
+	//cout << "    jet_true_type["<<j<<"/"<<Njets<<"]/sel = " << jet_true_type[j]<< " / "<<  sel_jet_true_type[j]<< "    jet_true_origin["<<j<<"]" << jet_true_origin[j]<< ", pt="<<jets_vec[j].Pt()/1e3<<endl;
+	hist_jet_truth_origin[i]->Fill(sel_jet_true_origin[j], weight_tot);
+	hist_jet_truth_type[i]->Fill(sel_jet_true_type[j], weight_tot);
       }
       
       for(int db=0; db<2;db++){

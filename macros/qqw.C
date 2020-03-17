@@ -307,7 +307,7 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
 	   variable[j]=="lep0_tr_origin" ||
 	   variable[j]=="lep1_tr_origin"){
 	  int Nbins = h_allMC[i][j][0][1]->GetNbinsX();
-	  //cout << " === " <<Nbins<< "   "<< truthOriginLabel[40]<<endl;
+	  // cout << " === " <<Nbins<< "   "<< truthOriginLabel[40]<<endl;
 	  for (int bin=1;bin<=Nbins;++bin){ 
 	    cout << h_allMC[i][j][0][0]->GetBinContent(bin) <<endl;
 	    if(h_allMC[i][j][0][0]->GetBinContent(bin)!=0)

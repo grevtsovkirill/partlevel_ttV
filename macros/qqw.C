@@ -20,6 +20,7 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
   char text[1000];  char text1[1000];  char text2[1000]; 
   TString atl_lable = "Internal";
   TLegend* legend[100][100];
+  TLegend* legend1[100][100];
   TCanvas * canv[100][100];
   TPad * pad1[100][100];
   TPad * pad2[100][100];
@@ -65,26 +66,27 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
   //vector<string> type={"413008_ttw","410472_ttbar","410156_ttZnunu","410157_ttZqq","410218_ttee","410219_ttmumu","410220_tttautau"};
   std::map<std::string, std::string> sample_map;
   sample_map["ttW"]= "413008";
+  sample_map["ttW_aMC"]= "410155";
   sample_map["ttbar"]= "410472";
   sample_map["ttZqq"]= "410157";
   sample_map["ttZnunu"]= "410156";
   sample_map["ttZee"]= "410218";
   sample_map["ttZmumu"]= "410219";
   sample_map["ttZtautau"]= "410220";
-  sample_map["topt"]= "410658";
-  sample_map["atopt"]= "410659";
-  sample_map["tops"]= "410644";
-  sample_map["atops"]= "410644";
-  sample_map["threeTop"]= "304014";
-  sample_map["fourTop"]= "410080";
-  sample_map["ttWW"]= "410081";
-  sample_map["Wtz"]= "410408";
+  sample_map["topt"]= "410658"; // 0
+  sample_map["atopt"]= "410659"; // 0
+  sample_map["tops"]= "410644"; // 0
+  sample_map["atops"]= "410644"; // 0
+  sample_map["threeTop"]= "304014"; // non-zero
+  sample_map["fourTop"]= "410080"; // non-zero
+  sample_map["ttWW"]= "410081"; // non-zero
+  sample_map["Wtz"]= "410408";  // non-zero
   //           '304014_threeTop','410080_fourTop','410081_ttww','410408_WtZ']
 
   //632,
-  Int_t color_sample[8]={632,861,921,922,617,860,0,868};//625
-  Int_t linestyle[8]={1, 1, 1, 1,  1, 1,1,1};
-  vector<string> type={"ttW","ttZqq","ttZnunu","ttZee","ttZmumu","ttZtautau","ttbar"};
+  Int_t color_sample[8]={632,861,921,922,617,860,868,0};//625
+  //Int_t linestyle[8]={1, 1, 1, 1,  1, 1,1,1};
+  vector<string> type={"ttW","ttZqq","ttZnunu","ttZee","ttZmumu","ttZtautau","threeTop","ttbar"};
   //vector<string> type={"ttbar"};
   
   string pathversion = "v2_MCTC_0"; //v1_truthInfo //v1_e2b_lJqq, v2_ctag_minDRlb //v1_truthInfo_newXS
@@ -145,8 +147,10 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
       pad2[i][j]->Draw();
       
       legend[i][j] = new TLegend(0.5,0.5,0.9,0.9);
-      legend[i][j]->SetTextFont(42);legend[i][j]->SetFillColor(0);  legend[i][j]->SetBorderSize(0); legend[i][j]->SetFillStyle(0);  legend[i][j]->SetTextSize(0.05);
+      legend[i][j]->SetNColumns(2);
       
+      legend[i][j]->SetTextFont(42);legend[i][j]->SetFillColor(0);  legend[i][j]->SetBorderSize(0); legend[i][j]->SetFillStyle(0);  legend[i][j]->SetTextSize(0.05);
+
       THStack *hs = new THStack("hs","Stacked 1D histograms");
  
       pad1[i][j]->cd();
@@ -195,7 +199,7 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
 
 	if(!do_stack){
 	  h_var[i][j][0][t]->SetLineWidth(2);
-	  h_var[i][j][0][t]->SetLineStyle(linestyle[t]);
+	  //h_var[i][j][0][t]->SetLineStyle(linestyle[t]);
 	  h_var[i][j][0][t]->Draw("E1histsame");
 	}
 	hs->Add(h_var[i][j][0][t]);
@@ -324,7 +328,7 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
 	    h_var[i][j][3][t]->SetLineColor(1);
 	    h_var[i][j][3][t]->SetMarkerColor(1);
 	  }
-	  h_var[i][j][3][t]->SetLineStyle(linestyle[t]);
+	  //h_var[i][j][3][t]->SetLineStyle(linestyle[t]);
 	  h_var[i][j][3][t]->Draw("histsame");
 	
 	}

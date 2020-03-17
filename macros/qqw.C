@@ -84,9 +84,9 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
   //           '304014_threeTop','410080_fourTop','410081_ttww','410408_WtZ']
 
   //632,
-  Int_t color_sample[8]={632,861,921,922,617,860,868,0};//625
+  Int_t color_sample[11]={632,868,867,865,801,802,805,922,921,920,0};//625
   //Int_t linestyle[8]={1, 1, 1, 1,  1, 1,1,1};
-  vector<string> type={"ttW","ttZqq","ttZnunu","ttZee","ttZmumu","ttZtautau","threeTop","ttbar"};
+  vector<string> type={"ttW","ttZee","ttZmumu","ttZqq","Wtz","ttWW","ttZtautau","fourTop","ttZnunu","threeTop","ttbar"};
   //vector<string> type={"ttbar"};
   
   string pathversion = "v2_MCTC_0"; //v1_truthInfo //v1_e2b_lJqq, v2_ctag_minDRlb //v1_truthInfo_newXS

@@ -48,6 +48,7 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
 			     "#font[52]{HT}^{jets} [GeV]","#font[52]{HT}^{lep} [GeV]","#font[52]{HT} [GeV]",
 			     "Number of #font[52]{b}-jets","#font[52]{E}_{T}^{miss}","Leading lepton #eta","Subleading lepton #eta","Leading lepton #phi","Subleading lepton #phi","#Delta #phi ^{ll}",
 			     "1th jet #font[52]{p}_{T} [GeV]","2nd jet #font[52]{p}_{T} [GeV]","3rd jet #font[52]{p}_{T} [GeV]"  };  
+  //*
   string truthOriginLabel[] = {
 			       "NonDefined - 0","SingleElec - 1","SingleMuon - 2","SinglePhot - 3","SingleTau - 4","PhotonConv - 5","DalitzDec - 6","ElMagProc - 7",
 			       "Mu - 8","TauLep - 9","top - 10","QuarkWeakDec - 11","WBoson - 12","ZBoson - 13","Higgs - 14","HiggsMSSM - 15","HeavyBoson - 16",
@@ -56,7 +57,18 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
 			       "PionDecay - 34","KaonDecay - 35","BremPhot - 36","PromptPhot - 37","UndrPhot - 38","ISRPhot - 39","FSRPhot - 40","NucReact - 41","PiZero - 42",
 			       "DiBoson - 43","ZorHeavyBoson - 44","QCD - 45", "OtherBSM - 46,", "MultiBoson- 47",
   };
+  //*/
 
+  /*
+  string truthOriginLabel[] = {
+			       "NonDefined - 0","SingleElec - 1","SingleMuon - 2","","","","","ElMagProc - 7",
+			       "Mu - 8","TauLep - 9","top - 10","QuarkWeakDec - 11","WBoson - 12","ZBoson - 13","Higgs - 14","HiggsMSSM - 15","HeavyBoson - 16",
+			       "WBosonLRSM - 17","","","","","","LightMeson - 23","StrangeMeson - 24","CharmedMeson - 25",
+			       "BottomMeson - 26","CCbarMeson - 27","JPsi - 28","BBbarMeson - 29","LightBaryon - 30","StrangeBaryon - 31","CharmedBaryon - 32","BottomBaryon - 33",
+			       "PionDecay - 34","KaonDecay - 35","BremPhot - 36","PromptPhot - 37","UndrPhot - 38","ISRPhot - 39","FSRPhot - 40","NucReact - 41","PiZero - 42",
+			       "DiBoson - 43","ZorHeavyBoson - 44","QCD - 45", "OtherBSM - 46,", "MultiBoson- 47",
+  };
+  //*/
   
 
   //'413008_ttw','410472_ttbar','410156_ttZnunu','410157_ttZqq','410218_ttee','410219_ttmumu','410220_tttautau
@@ -290,11 +302,16 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
       //*
       if(do_stack){
 
-	if(variable[j]=="leps_tr_origin" || variable[j]=="lep0_tr_origin" || variable[j]=="lep1_tr_origin"){
+	if(variable[j]=="leps_tr_origin" ||
+	   variable[j]=="jets_tr_origin" ||
+	   variable[j]=="lep0_tr_origin" ||
+	   variable[j]=="lep1_tr_origin"){
 	  int Nbins = h_allMC[i][j][0][1]->GetNbinsX();
-	  cout << " === " <<Nbins<< "   "<< truthOriginLabel[40]<<endl;
+	  //cout << " === " <<Nbins<< "   "<< truthOriginLabel[40]<<endl;
 	  for (int bin=1;bin<=Nbins;++bin){ 
-	    h_allMC[i][j][0][1]->GetXaxis()->SetBinLabel(bin,truthOriginLabel[bin-1].c_str());
+	    cout << h_allMC[i][j][0][0]->GetBinContent(bin) <<endl;
+	    if(h_allMC[i][j][0][0]->GetBinContent(bin)!=0)
+	      h_allMC[i][j][0][1]->GetXaxis()->SetBinLabel(bin,truthOriginLabel[bin-1].c_str());
 	  }
 
 	}

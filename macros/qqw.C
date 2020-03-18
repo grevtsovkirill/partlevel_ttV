@@ -37,7 +37,7 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
   //vector<string> variable={"nJets","DRll01","Whmass","lep_Pt_0","lep_Pt_1","jet_Pt_4","jet_Pt_5","jet_Pt_6","Bjet_Pt_0","Bjet_Pt_1","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT_leps","HT","nBtagJets","MET","lep_Eta_0","lep_Eta_1","lep_Phi_0","lep_Phi_1","lep_dPhi","jet_Pt_1","jet_Pt_2","jet_Pt_3"}; //
   vector<string> variable_X={"Number of jets","m_{Wqq}","p_T^{Wqq}",
 			     "min#Delta R_{l_{0},b}","min#Delta R_{l_{1},b}",
-			     "Lep TruthType","Lep Origin","Jet TruthType","Jet Origin",
+			     "Leps TruthType","Leps Origin","Jets TruthType","Jets Origin",
 			     "L0origin","L1origin",
 			     //"#Delta R_{l_{1},b_{0}}","#Delta R_{l_{1},b_{1}}",
 			     "#Delta R_{l_{0},l_{1}}","Leading lepton #font[52]{p}_{T} [GeV]","Subeading lepton #font[52]{p}_{T} [GeV]",
@@ -58,6 +58,49 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
 			       "DiBoson - 43","ZorHeavyBoson - 44","QCD - 45", "OtherBSM - 46,", "MultiBoson- 47",
   };
   //*/
+
+  string truthTypeLabel[] =  { 
+    "Unknown           =  0",
+    "UnknownElectron   =  1",
+    "IsoElectron       =  2",
+    "NonIsoElectron    =  3",
+    "BkgElectron       =  4",
+    "UnknownMuon       =  5",
+    "IsoMuon           =  6",
+    "NonIsoMuon        =  7",
+    "BkgMuon           =  8",
+    "UnknownTau        =  9",
+    "IsoTau            =  10",
+    "NonIsoTau         =  11",
+    "BkgTau            =  12",
+    "UnknownPhoton     =  13",
+    "IsoPhoton         =  14",
+    "NonIsoPhoton      =  15",
+    "BkgPhoton         =  16",
+    "Hadron            =  17",
+    "Neutrino          =  18",
+    "NuclFrag          =  19",
+    "NonPrimary        =  20",
+    "GenParticle       =  21",
+    "SUSYParticle      =  22",
+    "OtherBSMParticle  =  39",
+    "BBbarMesonPart    =  23",
+    "BottomMesonPart   =  24",
+    "CCbarMesonPart    =  25",
+    "CharmedMesonPart  =  26",
+    "BottomBaryonPart  =  27",
+    "CharmedBaryonPart =  28",
+    "StrangeBaryonPart =  29",
+    "LightBaryonPart   =  30",
+    "StrangeMesonPart  =  31",
+    "LightMesonPart    =  32",
+    "BJet              =  33",
+    "CJet              =  34",
+    "LJet              =  35",
+    "GJet              =  36",
+    "TauJet            =  37",
+    "UnknownJet        =  38"
+  };
 
   /*
   string truthOriginLabel[] = {
@@ -253,7 +296,7 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
 	
 	if(do_log){
 	  pad1[i][j]->SetLogy();
-	  hs->SetMaximum(hs->GetMaximum()*1e2); 
+	  hs->SetMaximum(hs->GetMaximum()*1e3); 
 	  hs->SetMinimum(1e-1); 
 	}
 	else
@@ -302,16 +345,19 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
       //*
       if(do_stack){
 
-	if(variable[j]=="leps_tr_origin" ||
-	   variable[j]=="jets_tr_origin" ||
-	   variable[j]=="lep0_tr_origin" ||
-	   variable[j]=="lep1_tr_origin"){
+	if(variable[j]=="leps_tr_origin" ||	   variable[j]=="jets_tr_origin" ||
+	   //variable[j]=="lep0_tr_origin" ||	   variable[j]=="lep1_tr_origin" ||
+	   variable[j]=="leps_tr_type" ||	   variable[j]=="jets_tr_type"){
 	  int Nbins = h_allMC[i][j][0][1]->GetNbinsX();
 	  // cout << " === " <<Nbins<< "   "<< truthOriginLabel[40]<<endl;
 	  for (int bin=1;bin<=Nbins;++bin){ 
-	    cout << h_allMC[i][j][0][0]->GetBinContent(bin) <<endl;
-	    if(h_allMC[i][j][0][0]->GetBinContent(bin)!=0)
-	      h_allMC[i][j][0][1]->GetXaxis()->SetBinLabel(bin,truthOriginLabel[bin-1].c_str());
+	    //cout << h_allMC[i][j][0][0]->GetBinContent(bin) <<endl;
+	    if(h_allMC[i][j][0][0]->GetBinContent(bin)!=0){
+	      if(variable[j]=="leps_tr_origin" ||	   variable[j]=="jets_tr_origin" )
+		h_allMC[i][j][0][1]->GetXaxis()->SetBinLabel(bin,truthOriginLabel[bin-1].c_str());
+	      if(variable[j]=="leps_tr_type" ||	   variable[j]=="jets_tr_type" )
+		h_allMC[i][j][0][1]->GetXaxis()->SetBinLabel(bin,truthTypeLabel[bin-1].c_str());
+	    }
 	  }
 
 	}
@@ -326,7 +372,7 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
 
 	if(variable[j]=="leps_tr_origin"|| variable[j]=="lep0_tr_origin" || variable[j]=="lep1_tr_origin"){
 	  int Nbins = h_var[i][j][3][0]->GetNbinsX();
-	  cout << " === " <<Nbins<< "   "<< truthOriginLabel[40]<<endl;
+	  //cout << " === " <<Nbins<< "   "<< truthOriginLabel[40]<<endl;
 	  for (int bin=1;bin<=Nbins;++bin){ 
 	    h_var[i][j][3][0]->GetXaxis()->SetBinLabel(bin,truthOriginLabel[bin-1].c_str());
 	  }

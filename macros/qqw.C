@@ -9,7 +9,7 @@
 #include "/Users/grevtsov/Documents/working_files/AtlasStyle/AtlasUtils.C"
 
 void ATLASLabel(Double_t x,Double_t y,const char* text="",Color_t color=1, Double_t tsize=0.05);
-void qqw(string sampleversion = "xs",  bool do_stack=true)
+void qqw(string sampleversion = "xs",  bool do_stack=true,bool do_log = true, bool do_text = false)
 {
   gROOT->Reset();
   SetAtlasStyle();
@@ -63,10 +63,10 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
 			      "Unknown  =  0", "UnknownElectron=  1", "IsoElectron =  2", "NonIsoElectron =  3", "BkgElectron =  4", "UnknownMuon =  5",
 			      "IsoMuon  =  6", "NonIsoMuon  =  7", "BkgMuon  =  8", "UnknownTau  =  9", "IsoTau=  10", "NonIsoTau=  11",
 			      "BkgTau=  12", "UnknownPhoton  =  13", "IsoPhoton=  14", "NonIsoPhoton=  15", "BkgPhoton=  16", "Hadron=  17",
-			      "Neutrino =  18", "NuclFrag =  19", "NonPrimary  =  20", "GenParticle =  21", "SUSYParticle=  22", "OtherBSMParticle  =  39",
-			      "BBbarMesonPart =  23", "BottomMesonPart=  24", "CCbarMesonPart =  25", "CharmedMesonPart  =  26", "BottomBaryonPart  =  27", "CharmedBaryonPart =  28",
-			      "StrangeBaryonPart =  29", "LightBaryonPart=  30", "StrangeMesonPart  =  31", "LightMesonPart =  32", "BJet  =  33", "CJet  =  34",
-			      "LJet  =  35", "GJet  =  36", "TauJet=  37", "UnknownJet  =  38"
+			      "Neutrino =  18", "NuclFrag =  19", "NonPrimary  =  20", "GenParticle =  21", "SUSYParticle=  22",
+			      "BBbarMesonPart =  23", "BottomMesonPart=  24", "CCbarMesonPart =  25", "CharmedMesonPart  =  26", "BottomBaryonPart  =  27",
+			      "CharmedBaryonPart =  28","StrangeBaryonPart =  29", "LightBaryonPart=  30", "StrangeMesonPart  =  31", "LightMesonPart =  32",
+			      "BJet  =  33", "CJet  =  34", "LJet  =  35", "GJet  =  36", "TauJet=  37", "UnknownJet  =  38", "OtherBSMParticle  =  39"
   };
 
   /*
@@ -106,21 +106,19 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
   //           '304014_threeTop','410080_fourTop','410081_ttww','410408_WtZ']
 
   //632,
-  Int_t color_sample[11]={632,868,867,865,801,802,805,922,921,920,0};//625
-  //Int_t linestyle[8]={1, 1, 1, 1,  1, 1,1,1};
-  vector<string> type={"ttW","ttZee","ttZmumu","ttZqq","Wtz","ttWW","ttZtautau","fourTop","ttZnunu","threeTop","ttbar"};
+  Int_t color_sample[12]={632,868,867,865,801,802,805,922,921,920,0};//625
+  vector<string> type={"ttW","ttZee","ttZmumu","ttZqq","Wtz","ttWW","ttZtautau","fourTop","ttZnunu","threeTop","ttbar"}; //"ttW_aMC"
   //vector<string> type={"ttbar"};
+  //vector<string> type={"ttW","ttW_aMC"};
   
   string pathversion = "v2_MCTC_0"; //v1_truthInfo //v1_e2b_lJqq, v2_ctag_minDRlb //v1_truthInfo_newXS
 
-  string leg_type="f";
-  
-  bool do_log;
+  string leg_type="f";  
 
   //=false;
   
-  if (sampleversion != "norm")
-    do_log=true;
+  //if (sampleversion != "norm")
+  //  do_log=true;
   
   Double_t norm_hist=0;
   for(int t=0;t<type.size();t++){
@@ -274,6 +272,10 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
 	sprintf(ytest," S/B = %0.2f %%",yields["ttW"]/yields[ "TotalBkg"]*100);
 	legend[i][j]->AddEntry(h_allMC[i][j][0][0],ytest ,"");
 	h_allMC[i][j][0][0]->Draw("E1same");
+	if (do_text){
+	  h_allMC[i][j][0][0]->SetMarkerSize(2);	
+	  h_allMC[i][j][0][0]->Draw("text0same");
+	}
 	cout << "h_allMC[i][j][0][0] = "<< h_allMC[i][j][0][0]->GetSumOfWeights()<< ", integral = "<< h_allMC[i][j][0][0]->GetBinContent(0) +h_allMC[i][j][0][0]->Integral() + h_allMC[i][j][0][0]->GetBinContent(h_allMC[i][j][0][0]->GetNbinsX() + 1)<< endl;
 	if (sampleversion == "norm")
 	  hs->GetYaxis()->SetTitle("Normalized");
@@ -331,8 +333,7 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
 
 	h_allMC[i][j][0][1]->SetYTitle("No sense Ratio");
 	h_allMC[i][j][0][1]->Draw("E1");
-	h_allMC[i][j][0][1]->Draw("histsame");
-	h_allMC[i][j][0][1]->Draw("textsame");
+	h_allMC[i][j][0][1]->Draw("histsame");	
 	
       }
       else{
@@ -367,7 +368,7 @@ void qqw(string sampleversion = "xs",  bool do_stack=true)
 	
 
       
-      sprintf(o_name,"WqqPlots/v1_newxs/%s.pdf",canvas_name);   
+      sprintf(o_name,"WqqPlots/v2_ttWOnlytruth/%s.pdf",canvas_name);   //v2_ttbarOnlytruth
       //canv[i][j]->Print(o_name);
   
     }

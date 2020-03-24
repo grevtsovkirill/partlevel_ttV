@@ -21,17 +21,11 @@ void recoQQ(string name="413008", string comp="xs", bool onNAF = true){
   weight_chain->Add(path.c_str());
   Double_t  sum_w=0;
   Float_t totalEventsWeighted;
-  vector<float> *totalEventsWeighted_mc_generator_weights=0;
   weight_chain->SetBranchAddress("totalEventsWeighted",&totalEventsWeighted);
-  weight_chain->SetBranchAddress("totalEventsWeighted_mc_generator_weights",&totalEventsWeighted_mc_generator_weights);
-
-  int mc_weight_index=9999;
-  mc_weight_index=0;
 
   for(int i=0; i<weight_chain->GetEntries();i++){
     weight_chain->GetEntry(i);
-    if(i==0)    cout<< "mc_weight_index= "<< mc_weight_index<< endl;
-    sum_w+=totalEventsWeighted_mc_generator_weights->at(mc_weight_index);
+    sum_w+=totalEventsWeighted;
   }
   cout<<" total sw:"<<to_string(sum_w)<<endl;
 

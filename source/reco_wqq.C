@@ -248,6 +248,8 @@ Bool_t reco_wqq::Process(Long64_t entry)
   weight_tot=weight_to_use ;
   int cf_counter=0;
 
+
+  /*
   //loop over electrons and muons
   nEl = el_pt.GetSize();
   nMu = mu_pt.GetSize();
@@ -597,7 +599,7 @@ Bool_t reco_wqq::Process(Long64_t entry)
       }
     }
   }  
-  
+  //*/
   return kTRUE;
 }
 

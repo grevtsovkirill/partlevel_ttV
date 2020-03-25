@@ -453,30 +453,30 @@ Bool_t reco_wqq::Process(Long64_t entry)
 	if(Njets >= 5) hist_jet_Pt_5[i]->Fill(jets_vec[4].Pt()/1e3, weight_tot);
 	if(Njets >= 6) hist_jet_Pt_6[i]->Fill(jets_vec[5].Pt()/1e3, weight_tot);
       }
-      /*
-      hist_Bjet_Pt_0[i]->Fill(bjets_vec[0].Pt()/1e3, weight_tot);
-      if(Nbjets > 1){
-	hist_Bjet_Pt_1[i]->Fill(bjets_vec[1].Pt()/1e3, weight_tot);
-      }
+      /* hist_Bjet_Pt_0[i]->Fill(bjets_vec[0].Pt()/1e3, weight_tot); */
+      /* if(Nbjets > 1){ */
+      /* 	hist_Bjet_Pt_1[i]->Fill(bjets_vec[1].Pt()/1e3, weight_tot); */
+      /* } */
 
-      hist_min_DRl0j[i]->Fill(min_DRl0j, weight_tot);
-      hist_min_DRl1j[i]->Fill(min_DRl1j, weight_tot);
-      hist_maxEta_ll[i]->Fill(max_eta, weight_tot);
-      hist_HT_jets[i]->Fill(HTjet/1000, weight_tot);
-      hist_HT_leps[i]->Fill( (lep_4v[lead_lep].Pt()+lep_4v[sublead_lep].Pt()), weight_tot);
-      hist_HT[i]->Fill(HTall/1000, weight_tot);
-      hist_nJets[i]->Fill(Njets, weight_tot);
-      hist_nBtagJets[i]->Fill(Nbjets, weight_tot);
+      /* hist_min_DRl0j[i]->Fill(min_DRl0j, weight_tot); */
+      /* hist_min_DRl1j[i]->Fill(min_DRl1j, weight_tot); */
+      /* hist_maxEta_ll[i]->Fill(max_eta, weight_tot); */
+      hist_HT_jets[i]->Fill(*HT_jets/1e3, weight_tot);
+      hist_HT_leps[i]->Fill( *HT_lep/1e3, weight_tot);
+      hist_HT[i]->Fill(*HT/1e3, weight_tot);
+      hist_nJets[i]->Fill(*nJets_OR, weight_tot);
+      hist_nBtagJets[i]->Fill(*nJets_OR_DL1r_70, weight_tot);
       hist_MET[i]->Fill(met, weight_tot);
 
-      hist_lep_Eta_0[i]->Fill(lep_4v[lead_lep].Eta(), weight_tot);
-      hist_lep_Eta_1[i]->Fill(lep_4v[sublead_lep].Eta(), weight_tot);
-      hist_lep_Phi_0[i]->Fill(lep_4v[lead_lep].Phi(), weight_tot);
-      hist_lep_Phi_1[i]->Fill(lep_4v[sublead_lep].Phi(), weight_tot);
-      hist_lep_dPhi[i]->Fill(abs(lep_4v[lead_lep].Phi()-lep_4v[sublead_lep].Phi()), weight_tot);
+      hist_lep_Eta_0[i]->Fill(*lep_Eta_0, weight_tot);
+      hist_lep_Eta_1[i]->Fill(*lep_Eta_1, weight_tot);
+      hist_lep_Phi_0[i]->Fill(*lep_Phi_0, weight_tot);
+      hist_lep_Phi_1[i]->Fill(*lep_Phi_1, weight_tot);
+      hist_lep_dPhi[i]->Fill(abs(*lep_Phi_0-*lep_Phi_1), weight_tot);
       hist_Whmass[i]->Fill(pWhadron.M()/1e3, weight_tot);
       hist_Whpt[i]->Fill(pWhadron.Pt()/1e3, weight_tot);
-      
+
+      /*
       hist_lep_truth_origin[i]->Fill(l0_true_origin, weight_tot);
       hist_lep_truth_origin[i]->Fill(l1_true_origin, weight_tot);
       hist_lep_truth_origin_0[i]->Fill(l0_true_origin, weight_tot);

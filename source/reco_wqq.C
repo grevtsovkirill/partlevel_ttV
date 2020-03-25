@@ -291,14 +291,41 @@ Bool_t reco_wqq::Process(Long64_t entry)
   if(*nJets_OR<4) return 0;
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
-    
+
+  vector<float> jets_pt = {*jets_Pt_0,*jets_Pt_1,*jets_Pt_2,*jets_Pt_3,*jets_Pt_4,*jets_Pt_5};
+  vector<float> jets_eta = {*jets_Eta_0,*jets_Eta_1,*jets_Eta_2,*jets_Eta_3,*jets_Eta_4,*jets_Eta_5};
+  vector<float> jets_phi = {*jets_Phi_0,*jets_Phi_1,*jets_Phi_2,*jets_Phi_3,*jets_Phi_4,*jets_Phi_5};
+  vector<float> jets_e = {*jets_E_0,*jets_E_1,*jets_E_2,*jets_E_3,*jets_E_4,*jets_E_5};
+
+  int Njets=0, Nbjets=0, Ncjets=0;
+  int lowjets=0;
+  vector<TLorentzVector> jets_vec;
+  for(unsigned int j=0;j<jets_pt.size(); j++){
+    if(jets_pt[j]/1000.<25){
+      lowjets++;
+      return 0;
+      cout <<lowjets<< endl;
+    }
+  
+    if(fabs(jets_eta[j])>2.5) return 0;
+  
+    Njets+=1;
+
+    TLorentzVector jj;
+    jj.SetPtEtaPhiE(jets_pt[j],jets_eta[j],jets_phi[j],jets_e[j]);
+    jets_vec.push_back(jj);
+  }
+
+  if(Njets!=*nJets_OR)
+    cout<< "*nJets_OR ="<<*nJets_OR<<", Njets = "<<Njets<<endl;
+  
   /*
  
   float max_eta=  max ( fabs( l0_eta ), fabs( l1_eta ) ); 
-  int Njets=0, Nbjets=0, Ncjets=0;
+  
   float HTall=0, HTjet=0; 
   //loop over jet vectors
-  int lowjets=0;
+
   for(unsigned int j=0;j<jet_pt.GetSize(); j++){
     if(jet_pt[j]/1000.<25){
       lowjets++;
@@ -310,9 +337,6 @@ Bool_t reco_wqq::Process(Long64_t entry)
   
     Njets+=1;
 
-    TLorentzVector jj;
-    jj.SetPtEtaPhiE(jet_pt[j],jet_eta[j],jet_phi[j],jet_e[j]);
-    jets_vec.push_back(jj);
     sel_jet_true_type.push_back(jet_true_type[j]);
     sel_jet_true_origin.push_back(jet_true_origin[j]);
     //cout << "    jet_true_type["<<j<<"]" << jet_true_type[j]<< "    jet_true_origin["<<j<<"]" << jet_true_origin[j]<<endl;

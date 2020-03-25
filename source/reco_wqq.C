@@ -9,6 +9,7 @@
 #include <map>
 
 TH1F *h_cutflow_2l[2];
+int debug=0;
 string input_name="";
 string input_option="";
 string comp_name="";
@@ -283,23 +284,19 @@ Bool_t reco_wqq::Process(Long64_t entry)
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
 
-  if(*nJets_OR_DL1r_70!=2) return 0;
-  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
-  cf_counter++;
-
-  // if(Njets<3 || Nbjets<1) return 0;
-  if(*nJets_OR<4) return 0;
-  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
-  cf_counter++;
 
   vector<float> jets_pt = {*jets_Pt_0,*jets_Pt_1,*jets_Pt_2,*jets_Pt_3,*jets_Pt_4,*jets_Pt_5};
   vector<float> jets_eta = {*jets_Eta_0,*jets_Eta_1,*jets_Eta_2,*jets_Eta_3,*jets_Eta_4,*jets_Eta_5};
   vector<float> jets_phi = {*jets_Phi_0,*jets_Phi_1,*jets_Phi_2,*jets_Phi_3,*jets_Phi_4,*jets_Phi_5};
   vector<float> jets_e = {*jets_E_0,*jets_E_1,*jets_E_2,*jets_E_3,*jets_E_4,*jets_E_5};
 
+  vector<int> jets_btag = {*jets_btagFlag_DL1r_FixedCutBEff_70_0,*jets_btagFlag_DL1r_FixedCutBEff_70_1,*jets_btagFlag_DL1r_FixedCutBEff_70_2,*jets_btagFlag_DL1r_FixedCutBEff_70_3,*jets_btagFlag_DL1r_FixedCutBEff_70_4,*jets_btagFlag_DL1r_FixedCutBEff_70_5};
+
   int Njets=0, Nbjets=0, Ncjets=0;
   int lowjets=0;
   vector<TLorentzVector> jets_vec;
+  vector<TLorentzVector> bjets_vec;
+  vector<TLorentzVector> nonbjets_vec;
   for(unsigned int j=0;j<jets_pt.size(); j++){
     if(jets_pt[j]/1000.<25){
       lowjets++;
@@ -314,10 +311,35 @@ Bool_t reco_wqq::Process(Long64_t entry)
     TLorentzVector jj;
     jj.SetPtEtaPhiE(jets_pt[j],jets_eta[j],jets_phi[j],jets_e[j]);
     jets_vec.push_back(jj);
+
+
+    if(jets_btag[j]>0){
+      Nbjets+=1;
+      bjets_vec.push_back(jj);
+    }
+    else
+      nonbjets_vec.push_back(jj);
   }
 
-  if(Njets!=*nJets_OR)
-    cout<< "*nJets_OR ="<<*nJets_OR<<", Njets = "<<Njets<<endl;
+
+  if(debug>4){
+    if(Njets!=*nJets_OR)
+      cout<< "*nJets_OR ="<<*nJets_OR<<", Njets = "<<Njets<<endl;
+    
+    if(Nbjets!=*nJets_OR_DL1r_70)
+      cout<< "    nJets_OR_DL1r_70="<<*nJets_OR_DL1r_70<< ", Nbjets="<<Nbjets <<endl;
+  }
+  
+  //Bjets
+  if(*nJets_OR_DL1r_70!=2) return 0;
+  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
+  cf_counter++;
+
+  // if(Njets<3 || Nbjets<1) return 0;
+  if(*nJets_OR<4) return 0;
+  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
+  cf_counter++;
+  
   
   /*
  

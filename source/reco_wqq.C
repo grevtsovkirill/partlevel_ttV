@@ -260,6 +260,14 @@ Bool_t reco_wqq::Process(Long64_t entry)
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
 
+  //lep Pt cuts
+  if(*lep_Pt_1<20*1e3) return 0;  
+  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
+  cf_counter++;
+  if(*lep_Pt_0<25*1e3) return 0;  
+  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
+  cf_counter++;
+
   
   /*
   //loop over electrons and muons
@@ -333,14 +341,6 @@ Bool_t reco_wqq::Process(Long64_t entry)
     lead_lep=0;sublead_lep=1;}
   else {    lead_lep=1;sublead_lep=0;}
   
-
-  //lep Pt cuts
-  if(lep_4v[sublead_lep].Pt()<20) return 0;  
-  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
-  cf_counter++;
-  if(lep_4v[lead_lep].Pt()<25) return 0;  
-  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
-  cf_counter++;
 
 
   //lep eta cuts

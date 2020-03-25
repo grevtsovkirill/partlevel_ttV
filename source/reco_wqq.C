@@ -256,7 +256,7 @@ Bool_t reco_wqq::Process(Long64_t entry)
   cf_counter++;
 
   //Nleps
-  if(*dilep_type!=0) return 0;
+  if(!*dilep_type) return 0;
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
 

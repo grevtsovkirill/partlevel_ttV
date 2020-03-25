@@ -273,16 +273,12 @@ Bool_t reco_wqq::Process(Long64_t entry)
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
   
-  /*
-
-
-  float charges=l0_charge+l1_charge;
-  //SS
-  //f(charges!=0)       cout <<"      +====+++ big trouble     " << endl;
   //OS
-  if(charges!=0) return 0;
+  if(*lep_ID_0 * *lep_ID_1 > 0) return 0;
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
+
+  /*
  
   float max_eta=  max ( fabs( l0_eta ), fabs( l1_eta ) ); 
 

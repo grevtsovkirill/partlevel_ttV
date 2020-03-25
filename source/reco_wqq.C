@@ -79,7 +79,7 @@ vector<string> weight_names = {"MUR05_MUF05","MUR05_MUF1","MUR1_MUF05","MUR1_MUF
   /* sel_array[3]=(Nhtaus == 0 && Njets >= 4 && abs(mWPDG - pWhadron.M())/1e3<5 );  // Region 5GeV Wmass region    */
 
  
-vector<string> region_names={"2b4j", ">0cjet","Wwidnow","Wwidnow>0cjet"};
+vector<string> region_names={"2b4j","2b4j","Wwidnow","Wwidnow"}; //,"Wwidnow>0cjet"
 //vector<string> region_names={"0#tau_{had} 1#font[52]{b} #geq4#font[52]{j}", "0#tau_{had} #geq2#font[52]{b} #geq4#font[52]{j}","0#tau_{had} 1#font[52]{b} 3#font[52]{j}", "0#tau_{had} #geq2#font[52]{b} 3#font[52]{j}","1#tau_{had} #geq1#font[52]{b} #geq3#font[52]{j}", "0t=3j","0tg4j","otg3g0b"};
 //,
 			     //"1t 1b 4j", "1t 2b 4j","1t 1b 3j", "1t 2b 3j"};
@@ -147,8 +147,8 @@ void reco_wqq::SlaveBegin(TTree * /*tree*/)
   //Acc=1/smw;
   
   const std::vector<TString> s_cutDescs =
-    {  "Preselections","Nleps","lepPt1>20","lepPt0>25","lepCentr","tightLeps","OS","2b","4j",
-       "Whad", "4j2b",">0cj"};//"w>20","w>10","w>5"
+    {  "Preselections","Nleps","lepPt1>20","lepPt0>25","lepCentr","tightLeps","OS","2b","4j","0tau",
+       "Whad", "4j2b","Wwind"};//"w>20","w>10","w>5"
   int Ncuts = s_cutDescs.size();
   h_cutflow_2l[0] = new TH1F("cf2l","cf2l",Ncuts,0,Ncuts);
   h_cutflow_2l[1] = new TH1F("cf2l_raw","cf2l_raw",Ncuts,0,Ncuts);
@@ -319,6 +319,8 @@ Bool_t reco_wqq::Process(Long64_t entry)
     }
     else
       nonbjets_vec.push_back(jj);
+
+    //check option of getting c-tagger
   }
 
 
@@ -341,83 +343,47 @@ Bool_t reco_wqq::Process(Long64_t entry)
   cf_counter++;
   
   
+  //cout << " -------  search for  Wqq:   jets_vec.size() = "<< jets_vec.size()  << endl;
+  double bestWmass = 1000.0*1e6;
+  double mWPDG = 80.399*1e3;
+  int Wj1index = -1, Wj2index = -1;
+  bool found_w=false;
+  double wmass=999;
+  for (unsigned int i = 0; i < (nonbjets_vec.size() - 1); ++i) {
+    for (unsigned int j = i + 1; j < nonbjets_vec.size(); ++j) {
+      wmass = (nonbjets_vec[i] + nonbjets_vec[j]).M();
+      
+      if (fabs(wmass - mWPDG) < fabs(bestWmass - mWPDG)) {
+	bestWmass = wmass;
+	Wj1index = i;
+	Wj2index = j;
+	found_w=true;	
+	
+	//cout << " -------====  bestWmass [i="<<i<<", j="<<j<<"] =  "<< bestWmass  << endl;
+
+      }
+    }
+  }
+
+  // 0-taus
+  if (*nTaus_OR_Pt25) return 0;
+  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
+  cf_counter++;
+
+  // found W->qq
+  if (!found_w) return 0;
+  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
+  cf_counter++;
+  
+  TLorentzVector pjet1 = nonbjets_vec[Wj1index];
+  TLorentzVector pjet2 = nonbjets_vec[Wj2index];
+  // compute hadronic W boson
+  TLorentzVector pWhadron = pjet1 + pjet2;
+  if(debug>2)
+    cout << " -------====  Wmass =  "<< bestWmass << ", Njets = "<<Njets <<  ", Nbjets = "<<Nbjets   << endl;
   /*
  
-  float max_eta=  max ( fabs( l0_eta ), fabs( l1_eta ) ); 
-  
-  float HTall=0, HTjet=0; 
-  //loop over jet vectors
-
-  for(unsigned int j=0;j<jet_pt.GetSize(); j++){
-    if(jet_pt[j]/1000.<25){
-      lowjets++;
-      return 0;
-      cout <<lowjets<< endl;
-    }
-  
-    if(fabs(jet_eta[j])>2.5) return 0;
-  
-    Njets+=1;
-
-    sel_jet_true_type.push_back(jet_true_type[j]);
-    sel_jet_true_origin.push_back(jet_true_origin[j]);
-    //cout << "    jet_true_type["<<j<<"]" << jet_true_type[j]<< "    jet_true_origin["<<j<<"]" << jet_true_origin[j]<<endl;
-    
-    if(jet_nGhosts_bHadron[j]>0){
-      Nbjets+=1;
-      bjets_vec.push_back(jj);
-      //cout<< " - b-jet jet_nGhosts_bHadron>0"<< endl;
-      //if(jet_nGhosts_cHadron[j]>0) cout << " ======  ====== b and c simultaneously!?  ======  ====== "<< endl;
-      
-    }
-    else{
-      ljets_vec.push_back(jj);
-      
-      
-      if(jet_nGhosts_cHadron[j]>0){
-	Ncjets+=1;
-	cjets_vec.push_back(jj);
-	//cout<< " - c-jet jet_nGhosts_cHadron>0"<< endl;
-	//cout << " ======  ======  c but not b  ======  ====== "<< endl;
-      }
-      //else
-	//cout<< " - light-jet"<< endl;
-    }
-    
-    HTjet+=jet_pt[j];
-    
-  }
-
-
-
-  HTall=HTjet+(lep_4v[lead_lep].Pt()+lep_4v[sublead_lep].Pt())*1000;
-
-  // check pt ordering in jets
-  double jptmax=0;
-  for (unsigned int i=0; i<jets_vec.size();i++){
-    if(jets_vec[i].Pt()/1e3>jptmax){    jptmax=jets_vec[i].Pt()/1e3;
-
-      if(i!=0)     cout << "pT (jet #"<<i<<")=" <<jets_vec[i].Pt()/1e3<< ", while jet0="<< jets_vec[0].Pt()/1e3<<endl;
-    }
-  }
-
-  double bjptmax=0;
-  for (unsigned int i=0; i<bjets_vec.size();i++){
-    if(bjets_vec[i].Pt()/1e3>bjptmax){    bjptmax=bjets_vec[i].Pt()/1e3;
-
-      if(i!=0)     cout << "pT (bjet #"<<i<<")=" <<bjets_vec[i].Pt()/1e3<< ", while bjet0="<< bjets_vec[0].Pt()/1e3<<endl;
-    }
-  }
-
-  double ljptmax=0;
-  for (unsigned int i=0; i<ljets_vec.size();i++){
-    if(ljets_vec[i].Pt()/1e3>ljptmax){    ljptmax=ljets_vec[i].Pt()/1e3;
-
-      if(i!=0)     cout << "pT (bjet #"<<i<<")=" <<ljets_vec[i].Pt()/1e3<< ", while ljet0="<< ljets_vec[0].Pt()/1e3<<endl;
-    }
-  }
-
-
+  float max_eta=  max ( fabs( l0_eta ), fabs( l1_eta ) );   
   // DeltaRs
   float DRll01=-9999;
   //DRll01= sqrt( pow( (lep_4v[lead_lep].Eta()-lep_4v[sublead_lep].Eta()) ,2) + pow ( ( acos( cos( lep_4v[lead_lep].Phi()-lep_4v[sublead_lep].Phi() )  ) ) ,2) );
@@ -446,42 +412,6 @@ Bool_t reco_wqq::Process(Long64_t entry)
     Ntaus+=1;
     if(tau_isHadronic[t]!=0) Nhtaus+=1;
   }
-
-
-  
-  //cout << " -------  search for  Wqq:   jets_vec.size() = "<< jets_vec.size()  << endl;
-  double bestWmass = 1000.0*1e6;
-  double mWPDG = 80.399*1e3;
-  int Wj1index = -1, Wj2index = -1;
-  bool found_w=false;
-  double wmass=999;
-  for (unsigned int i = 0; i < (ljets_vec.size() - 1); ++i) {
-    for (unsigned int j = i + 1; j < ljets_vec.size(); ++j) {
-      wmass = (ljets_vec[i] + ljets_vec[j]).M();
-      
-      if (fabs(wmass - mWPDG) < fabs(bestWmass - mWPDG)) {
-	bestWmass = wmass;
-	Wj1index = i;
-	Wj2index = j;
-	found_w=true;	
-	
-	//cout << " -------====  bestWmass [i="<<i<<", j="<<j<<"] =  "<< bestWmass  << endl;
-
-      }
-    }
-  }
-
-  // found W->qq
-  if (!found_w) return 0;
-  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
-  cf_counter++;
-  
-  TLorentzVector pjet1 = ljets_vec[Wj1index];
-  TLorentzVector pjet2 = ljets_vec[Wj2index];
-  // compute hadronic W boson
-  TLorentzVector pWhadron = pjet1 + pjet2;
-
-
   vector<float> dRl0b;  vector<float> dRl1b;
   for(int i=0; i<Nbjets;i++){
     dRl0b.push_back( lep_4v[lead_lep].DeltaR( bjets_vec[i] ) );
@@ -491,12 +421,19 @@ Bool_t reco_wqq::Process(Long64_t entry)
   Double_t dRlb[2];
   dRlb[0]= *min_element(dRl0b.begin(),dRl0b.end());
   dRlb[1]= *min_element(dRl1b.begin(),dRl1b.end());
+
+  */
+
   
 
-  sel_array[0]=(Nhtaus == 0 && Njets >= 4 );  // Region inclusive
-  sel_array[1]=(Nhtaus == 0 && Njets >= 4 && Ncjets>0 );  // 
-  sel_array[2]=(Nhtaus == 0 && Njets >= 4 && abs(pWhadron.M()-mWPDG)<1e4);
-  sel_array[3]=(Nhtaus == 0 && Njets >= 4 && Ncjets>0 && abs(pWhadron.M()-mWPDG)<1e4);  //
+
+  
+  
+  
+  sel_array[0]=( Njets >= 4 );  // Region inclusive
+  sel_array[1]=( Njets >= 4  );  // && Ncjets>0
+  sel_array[2]=( Njets >= 4 && abs(pWhadron.M()-mWPDG)<1e4);
+  sel_array[3]=(Njets >= 4 && abs(pWhadron.M()-mWPDG)<1e4);  // && Ncjets>0
   
   //sel_array[2]=(Nhtaus == 0 && Njets >= 4 && abs(mWPDG - pWhadron.M())/1e3<10 );  // Region 10GeV Wmass region
   //sel_array[3]=(Nhtaus == 0 && Njets >= 4 && abs(mWPDG - pWhadron.M())/1e3<5 );  // Region 5GeV Wmass region
@@ -504,7 +441,7 @@ Bool_t reco_wqq::Process(Long64_t entry)
   //cout << " -------====  Wmass =  "<< bestWmass << ", Njets = "<<Njets <<  ", Nbjets = "<<Nbjets <<  ", Ncjets = "<<Ncjets << ", dRlb[0] = " <<dRlb[0]<< ", dRlb[1] = " <<dRlb[1]  << endl;
 
   float met = *met_met/1000.;
-
+  /*
   for(int i=0; i<(int)region_names.size();i++){
     if(sel_array[i]){
       h_cutflow_2l[0]->Fill(cf_counter+i,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter+i,1);

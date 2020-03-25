@@ -146,7 +146,7 @@ void reco_wqq::SlaveBegin(TTree * /*tree*/)
   //Acc=1/smw;
   
   const std::vector<TString> s_cutDescs =
-    {  "Preselections","Nleps","lepPt1>20","lepPt0>25","lepCentr","OS","jPt/eta","2b","4j",
+    {  "Preselections","Nleps","lepPt1>20","lepPt0>25","lepCentr","OS","2b","4j",
        "Whad", "4j2b",">0cj"};//"w>20","w>10","w>5"
   int Ncuts = s_cutDescs.size();
   h_cutflow_2l[0] = new TH1F("cf2l","cf2l",Ncuts,0,Ncuts);
@@ -278,19 +278,20 @@ Bool_t reco_wqq::Process(Long64_t entry)
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
 
+  if(*nJets_OR_DL1r_70!=2) return 0;
+  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
+  cf_counter++;
+
+  // if(Njets<3 || Nbjets<1) return 0;
+  if(*nJets_OR<4) return 0;
+  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
+  cf_counter++;
+    
   /*
  
   float max_eta=  max ( fabs( l0_eta ), fabs( l1_eta ) ); 
-
   int Njets=0, Nbjets=0, Ncjets=0;
   float HTall=0, HTjet=0; 
-  vector<TLorentzVector> jets_vec;
-  vector<TLorentzVector> ljets_vec;
-  vector<TLorentzVector> bjets_vec;
-  vector<TLorentzVector> cjets_vec;
-  vector<int> sel_jet_true_type;
-  vector<int> sel_jet_true_origin;
-  
   //loop over jet vectors
   int lowjets=0;
   for(unsigned int j=0;j<jet_pt.GetSize(); j++){
@@ -335,19 +336,6 @@ Bool_t reco_wqq::Process(Long64_t entry)
     HTjet+=jet_pt[j];
     
   }
-  if(lowjets>0) return 0;
-  //central jets above 25 gev
-  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
-  cf_counter++;
-
-  if(Nbjets!=2) return 0;
-  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
-  cf_counter++;
-
-  // if(Njets<3 || Nbjets<1) return 0;
-  if(Njets<4) return 0;
-  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
-  cf_counter++;
 
 
 

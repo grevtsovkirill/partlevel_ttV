@@ -268,85 +268,12 @@ Bool_t reco_wqq::Process(Long64_t entry)
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
 
-  
-  /*
-  //loop over electrons and muons
-  nEl = el_pt.GetSize();
-  nMu = mu_pt.GetSize();
-  const int totleptons = nEl+nMu;
-  int dilep_type = 1 + nEl;//  1(mumu) 2(OF) 3(ee)
-  //Nlep
-
-
-
-  //define lead/sublead lepton and it's charge
-
-  float l0_true_origin=0,l1_true_origin=0;  
-  float l0_true_type=0,l1_true_type=0;  
-  float l0_charge=0,l1_charge=0;  
-  float l0_pt=-999,l1_pt=-999;
-  float l0_eta=-999,l1_eta=-999;
-  TLorentzVector lep_4v[2];
-
-  if ( dilep_type==1 ){ 
-    lep_4v[0].SetPtEtaPhiE(mu_pt[0]/1e3,mu_eta[0],mu_phi[0],mu_e[0]);
-    lep_4v[1].SetPtEtaPhiE(mu_pt[1]/1e3,mu_eta[1],mu_phi[1],mu_e[1]);
-
-    l0_charge= mu_charge[0]; l1_charge= mu_charge[1];
-    l0_eta= mu_eta[0]; l1_eta= mu_eta[1];
-    l0_pt= mu_pt[0]/1e3; l1_pt= mu_pt[1]/1e3;
-
-    l0_true_origin= mu_true_origin[0]; l1_true_origin= mu_true_origin[1];
-    l0_true_type= mu_true_type[0]; l1_true_type= mu_true_type[1];
-}
-  else if ( dilep_type==3 ){ 
-    lep_4v[0].SetPtEtaPhiE(el_pt[0]/1e3,el_eta[0],el_phi[0],el_e[0]);
-    lep_4v[1].SetPtEtaPhiE(el_pt[1]/1e3,el_eta[1],el_phi[1],el_e[1]);
-
-    l0_charge= el_charge[0]; l1_charge= el_charge[1];
-    l0_eta= el_eta[0]; l1_eta= el_eta[1];
-    l0_pt= el_pt[0]/1e3; l1_pt= el_pt[1]/1e3;
-
-    l0_true_origin= el_true_origin[0]; l1_true_origin= el_true_origin[1];
-    l0_true_type= el_true_type[0]; l1_true_type= el_true_type[1];
-  }
-  else if ( dilep_type==2 ){ 
-    if(mu_pt[0]>el_pt[0]){ 
-      lep_4v[0].SetPtEtaPhiE(mu_pt[0]/1e3,mu_eta[0],mu_phi[0],mu_e[0]);
-      lep_4v[1].SetPtEtaPhiE(el_pt[0]/1e3,el_eta[0],el_phi[0],el_e[0]);
-
-      l0_charge= mu_charge[0]; l1_charge= el_charge[0];
-      l0_eta= mu_eta[0]; l1_eta= el_eta[0];
-      l0_pt= mu_pt[0]/1e3; l1_pt= el_pt[0]/1e3;
-
-      l0_true_origin= mu_true_origin[0]; l1_true_origin= el_true_origin[0];
-      l0_true_type= mu_true_type[0]; l1_true_type= el_true_type[0];
-    }
-    else{    
-      lep_4v[0].SetPtEtaPhiE(el_pt[0]/1e3,el_eta[0],el_phi[0],el_e[0]);
-      lep_4v[1].SetPtEtaPhiE(mu_pt[0]/1e3,mu_eta[0],mu_phi[0],mu_e[0]);
-
-      l1_charge= mu_charge[0]; l0_charge= el_charge[0];
-      l1_eta= mu_eta[0]; l0_eta= el_eta[0];
-      l1_pt= mu_pt[0]/1e3; l0_pt= el_pt[0]/1e3;
-
-      l1_true_origin= mu_true_origin[0]; l0_true_origin= el_true_origin[0];
-      l1_true_type= mu_true_type[0]; l0_true_type= el_true_type[0];
-    }
-  }
-  
-
-  int lead_lep=9999, sublead_lep=9999;
-  if(  lep_4v[0].Pt()>lep_4v[1].Pt()){
-    lead_lep=0;sublead_lep=1;}
-  else {    lead_lep=1;sublead_lep=0;}
-  
-
-
   //lep eta cuts
-  if(abs(lep_4v[lead_lep].Eta())>2.5||abs(lep_4v[sublead_lep].Eta())>2.5) return 0;  
+  if(abs(*lep_Eta_0)>2.5||abs(*lep_Eta_1)>2.5) return 0;  
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
+  
+  /*
 
 
   float charges=l0_charge+l1_charge;

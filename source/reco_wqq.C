@@ -108,7 +108,7 @@ void reco_wqq::SlaveBegin(TTree * /*tree*/)
   //cout.precision(17);
   std::cout << "SumW ="<< tmp<< ", double - "<< smw << std::endl;
 
-  input_name=input_option.substr(input_option.find("/")+1,(input_option.find("_")-input_option.find("/")-1));
+  input_name=input_option.substr(input_option.find("/")+1,(input_option.find("-")-input_option.find("/")-1));
   comp_name=input_option.substr(input_option.find("-")+1);
 
   //1 / (sum of weights per variation)
@@ -141,7 +141,7 @@ void reco_wqq::SlaveBegin(TTree * /*tree*/)
   std::cout << "input_name ="<< input_name<< ", comp_name - "<< comp_name<< ", xs = "<<xs_map[input_name] << std::endl;  
   Double_t gen_xs=1;
   gen_xs=xs_map[input_name];
-  Acc=gen_xs*1e3/smw;
+  totalEventsWeighted=gen_xs*1e3/smw;
   //Acc=1/smw;
   
   const std::vector<TString> s_cutDescs =
@@ -240,9 +240,14 @@ Bool_t reco_wqq::Process(Long64_t entry)
 
   //weight definitions
   Double_t weight_to_use=1;
-  weight_to_use = *weight_mc *Acc;
-  weight_tot=weight_to_use ;
+  //weight_to_use = *weight_mc *totalEventsWeighted;
+  weight_to_use = (36074.6*(*randomRunNumber<=311481)+43813.7*(*randomRunNumber>311481 && *randomRunNumber <=341649)+58450.1*(*randomRunNumber>341649))
+    * *weight_pileup
+    * *weight_jvt
+    * totalEventsWeighted;
 
+  weight_tot=weight_to_use ;
+  //cout<< "weight_tot = "<< weight_tot<< endl;
   int cf_counter=0;
 
   //presel

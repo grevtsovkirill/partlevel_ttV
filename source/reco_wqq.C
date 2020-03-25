@@ -241,14 +241,20 @@ Bool_t reco_wqq::Process(Long64_t entry)
   //weight definitions
   Double_t weight_to_use=1;
   weight_to_use = *weight_mc *Acc;
-
-  double shift=0;
-  double shift2=0;
-  double pdf_var_up=1,pdf_var_down=1;
   weight_tot=weight_to_use ;
+
   int cf_counter=0;
 
+  //presel
+  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
+  cf_counter++;
 
+  //Nleps
+  if(*dilep_type!=0) return 0;
+  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
+  cf_counter++;
+
+  
   /*
   //loop over electrons and muons
   nEl = el_pt.GetSize();
@@ -258,14 +264,6 @@ Bool_t reco_wqq::Process(Long64_t entry)
   //Nlep
 
 
-  //presel
-  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
-  cf_counter++;
-
-  //Nleps
-  if(totleptons!=2) return 0;
-  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
-  cf_counter++;
 
   //define lead/sublead lepton and it's charge
 
@@ -612,7 +610,7 @@ void reco_wqq::Terminate()
   printf("\nTotal Number of Events: %d\n", fNumberOfEvents);
 
   if(!stoploop){
-    string outname="wqq_"+input_name+"_"+comp_name+".root";
+    string outname="wqq_reco_"+input_name+"_"+comp_name+".root";
     TFile hfile(outname.c_str(),"RECREATE"); //,"tHq"
     //*
     h_cutflow_2l[0]->Write(); 

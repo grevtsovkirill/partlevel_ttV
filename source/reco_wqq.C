@@ -142,7 +142,7 @@ void reco_wqq::SlaveBegin(TTree * /*tree*/)
   std::cout << "input_name ="<< input_name<< ", comp_name - "<< comp_name<< ", xs = "<<xs_map[input_name] << std::endl;  
   Double_t gen_xs=1;
   gen_xs=xs_map[input_name];
-  totalEventsWeighted=gen_xs*1e3/smw;
+  totalEventsWeighted=gen_xs/smw; //*1e3 match units of integrated luminosity to be in pb
   //Acc=1/smw;
   
   const std::vector<TString> s_cutDescs =

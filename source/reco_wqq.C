@@ -146,7 +146,7 @@ void reco_wqq::SlaveBegin(TTree * /*tree*/)
   //Acc=1/smw;
   
   const std::vector<TString> s_cutDescs =
-    {  "Preselections","Nleps","lepPt1>20","lepPt0>25","lepCentr","OS","2b","4j",
+    {  "Preselections","Nleps","lepPt1>20","lepPt0>25","lepCentr","tightLeps","OS","2b","4j",
        "Whad", "4j2b",">0cj"};//"w>20","w>10","w>5"
   int Ncuts = s_cutDescs.size();
   h_cutflow_2l[0] = new TH1F("cf2l","cf2l",Ncuts,0,Ncuts);
@@ -272,7 +272,12 @@ Bool_t reco_wqq::Process(Long64_t entry)
   if(abs(*lep_Eta_0)>2.5||abs(*lep_Eta_1)>2.5) return 0;  
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
-  
+
+  //tight leptons
+  if(!*lep_isTight_0||!*lep_isTight_1) return 0;  
+  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
+  cf_counter++;
+
   //OS
   if(*lep_ID_0 * *lep_ID_1 > 0) return 0;
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);

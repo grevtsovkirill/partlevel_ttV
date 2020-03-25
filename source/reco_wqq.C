@@ -422,12 +422,7 @@ Bool_t reco_wqq::Process(Long64_t entry)
   dRlb[0]= *min_element(dRl0b.begin(),dRl0b.end());
   dRlb[1]= *min_element(dRl1b.begin(),dRl1b.end());
 
-  */
-
-  
-
-
-  
+  */  
   
   
   sel_array[0]=( Njets >= 4 );  // Region inclusive
@@ -441,14 +436,15 @@ Bool_t reco_wqq::Process(Long64_t entry)
   //cout << " -------====  Wmass =  "<< bestWmass << ", Njets = "<<Njets <<  ", Nbjets = "<<Nbjets <<  ", Ncjets = "<<Ncjets << ", dRlb[0] = " <<dRlb[0]<< ", dRlb[1] = " <<dRlb[1]  << endl;
 
   float met = *met_met/1000.;
-  /*
   for(int i=0; i<(int)region_names.size();i++){
     if(sel_array[i]){
       h_cutflow_2l[0]->Fill(cf_counter+i,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter+i,1);
+
+      hist_lep_Pt_0[i]->Fill(*lep_Pt_0/1e3, weight_tot);
+      hist_lep_Pt_1[i]->Fill(*lep_Pt_1/1e3, weight_tot);
+      hist_DRll01[i]->Fill(*DRll01, weight_tot);
+
       
-      hist_DRll01[i]->Fill(DRll01, weight_tot);
-      hist_lep_Pt_0[i]->Fill(lep_4v[lead_lep].Pt(), weight_tot);
-      hist_lep_Pt_1[i]->Fill(lep_4v[sublead_lep].Pt(), weight_tot);
       hist_jet_Pt_1[i]->Fill(jets_vec[0].Pt()/1e3, weight_tot);
       hist_jet_Pt_2[i]->Fill(jets_vec[1].Pt()/1e3, weight_tot);
       hist_jet_Pt_3[i]->Fill(jets_vec[2].Pt()/1e3, weight_tot);
@@ -457,6 +453,7 @@ Bool_t reco_wqq::Process(Long64_t entry)
 	if(Njets >= 5) hist_jet_Pt_5[i]->Fill(jets_vec[4].Pt()/1e3, weight_tot);
 	if(Njets >= 6) hist_jet_Pt_6[i]->Fill(jets_vec[5].Pt()/1e3, weight_tot);
       }
+      /*
       hist_Bjet_Pt_0[i]->Fill(bjets_vec[0].Pt()/1e3, weight_tot);
       if(Nbjets > 1){
 	hist_Bjet_Pt_1[i]->Fill(bjets_vec[1].Pt()/1e3, weight_tot);
@@ -500,9 +497,10 @@ Bool_t reco_wqq::Process(Long64_t entry)
       for(int db=0; db<2;db++){
 	hist_min_DRlb[i][db]->Fill(dRlb[db], weight_tot);
       }
+  //*/
+
     }
   }  
-  //*/
   return kTRUE;
 }
 

@@ -39,33 +39,8 @@ void QQrun(string name="413008_ttw", string comp="xs", bool onNAF = true, bool m
   weight_chain->SetBranchAddress("totalEventsWeighted",&totalEventsWeighted);
   weight_chain->SetBranchAddress("totalEventsWeighted_mc_generator_weights",&totalEventsWeighted_mc_generator_weights);
 
-
-  // MG nominal =0;    scaleup = 4, scaledown = 8
-  // Sherpa nom = 0/7, scaleup = 10, scaledown= 4
   int mc_weight_index=9999;
   mc_weight_index=0;
-  //Only nominal
-  /*
-  if(name.compare("Sherpa")==0){ 
-    mc_weight_index=0;
-  }
-  else if(name.compare("MG")==0){
-    mc_weight_index=0;
-  }
-  else if (name.find("SherpaScaleUp")!= std::string::npos){
-    mc_weight_index=10;
-  }
-  else if (name.find("SherpaScaleDown")!= std::string::npos){
-    mc_weight_index=4;
-  }  else if (name.find("MGScaleUp")!= std::string::npos){
-    mc_weight_index=4;
-  }
-  else if (name.find("MGScaleDown")!= std::string::npos){
-    mc_weight_index=8;
-  }
-  else {std::cout << " error - incorrect variation. "<<  std::endl;
-  }
-  //*/
 
   for(int i=0; i<weight_chain->GetEntries();i++){
     weight_chain->GetEntry(i);

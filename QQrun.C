@@ -1,6 +1,4 @@
-
-
-void QQrun(string name="413008_ttw", string comp="xs", bool onNAF = true){
+void QQrun(string name="413008_ttw", string comp="xs", bool onNAF = true, bool multi_file = false){
   /*
     410156_ttZnunu.root
     410157_ttZqq.root
@@ -19,12 +17,15 @@ void QQrun(string name="413008_ttw", string comp="xs", bool onNAF = true){
   string path="";
   string prod_version = "v2_0311"; //v1_0228
   if(onNAF)
-    path="/nfs/dust/atlas/group/top/ttH_ML/ttW_run2/ttWqq/"+prod_version+"/"+name+".root";  
+    path="/nfs/dust/atlas/group/top/ttH_ML/ttW_run2/ttWqq/"+prod_version+"/";  
   else
-    path="/Users/grevtsov/Documents/working_files/ttH/Wtt_run2/Files/ttWqq/"+prod_version+"/"+name+".root";
+    path="/Users/grevtsov/Documents/working_files/ttH/Wtt_run2/Files/ttWqq/"+prod_version+"/";
 
   cout << "path = " << path<< endl;
 
+  if(!multi_file){
+    path = path+name+".root";
+  }
 
 
   TChain *weight_chain=new TChain("sumWeights");

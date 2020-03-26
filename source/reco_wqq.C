@@ -381,9 +381,10 @@ Bool_t reco_wqq::Process(Long64_t entry)
   TLorentzVector pWhadron = pjet1 + pjet2;
   if(debug>2)
     cout << " -------====  Wmass =  "<< bestWmass << ", Njets = "<<Njets <<  ", Nbjets = "<<Nbjets   << endl;
+
   /*
  
-  float max_eta=  max ( fabs( l0_eta ), fabs( l1_eta ) );   
+
   // DeltaRs
   float DRll01=-9999;
   //DRll01= sqrt( pow( (lep_4v[lead_lep].Eta()-lep_4v[sublead_lep].Eta()) ,2) + pow ( ( acos( cos( lep_4v[lead_lep].Phi()-lep_4v[sublead_lep].Phi() )  ) ) ,2) );
@@ -424,16 +425,11 @@ Bool_t reco_wqq::Process(Long64_t entry)
 
   */  
   
-  
+  float max_eta=  max ( fabs( *lep_Eta_0 ), fabs( *lep_Eta_1 ) );  
   sel_array[0]=( Njets >= 4 );  // Region inclusive
   sel_array[1]=( Njets >= 4  );  // && Ncjets>0
   sel_array[2]=( Njets >= 4 && abs(pWhadron.M()-mWPDG)<1e4);
   sel_array[3]=(Njets >= 4 && abs(pWhadron.M()-mWPDG)<1e4);  // && Ncjets>0
-  
-  //sel_array[2]=(Nhtaus == 0 && Njets >= 4 && abs(mWPDG - pWhadron.M())/1e3<10 );  // Region 10GeV Wmass region
-  //sel_array[3]=(Nhtaus == 0 && Njets >= 4 && abs(mWPDG - pWhadron.M())/1e3<5 );  // Region 5GeV Wmass region
-
-  //cout << " -------====  Wmass =  "<< bestWmass << ", Njets = "<<Njets <<  ", Nbjets = "<<Nbjets <<  ", Ncjets = "<<Ncjets << ", dRlb[0] = " <<dRlb[0]<< ", dRlb[1] = " <<dRlb[1]  << endl;
 
   float met = *met_met/1000.;
   for(int i=0; i<(int)region_names.size();i++){
@@ -443,7 +439,6 @@ Bool_t reco_wqq::Process(Long64_t entry)
       hist_lep_Pt_0[i]->Fill(*lep_Pt_0/1e3, weight_tot);
       hist_lep_Pt_1[i]->Fill(*lep_Pt_1/1e3, weight_tot);
       hist_DRll01[i]->Fill(*DRll01, weight_tot);
-
       
       hist_jet_Pt_1[i]->Fill(jets_vec[0].Pt()/1e3, weight_tot);
       hist_jet_Pt_2[i]->Fill(jets_vec[1].Pt()/1e3, weight_tot);
@@ -460,7 +455,7 @@ Bool_t reco_wqq::Process(Long64_t entry)
 
       /* hist_min_DRl0j[i]->Fill(min_DRl0j, weight_tot); */
       /* hist_min_DRl1j[i]->Fill(min_DRl1j, weight_tot); */
-      /* hist_maxEta_ll[i]->Fill(max_eta, weight_tot); */
+      hist_maxEta_ll[i]->Fill(max_eta, weight_tot);
       hist_HT_jets[i]->Fill(*HT_jets/1e3, weight_tot);
       hist_HT_leps[i]->Fill( *HT_lep/1e3, weight_tot);
       hist_HT[i]->Fill(*HT/1e3, weight_tot);

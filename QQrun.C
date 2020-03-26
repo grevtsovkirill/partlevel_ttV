@@ -1,12 +1,4 @@
 void QQrun(string name="413008_ttw", string comp="xs", bool onNAF = true, bool multi_file = false, int num_split =4){
-  /*
-    410156_ttZnunu.root
-    410157_ttZqq.root
-    410218_ttee.root
-    410219_ttmumu.root
-    410220_tttautau.root
-    413008_ttw.root
-  */
   TChain *ch=new TChain("particleLevel");
   string tmp="";
   string path="";
@@ -24,9 +16,6 @@ void QQrun(string name="413008_ttw", string comp="xs", bool onNAF = true, bool m
 
 
   TChain *weight_chain=new TChain("sumWeights");
-  //weight_chain->Add((path+"a.root").c_str());
-  //weight_chain->Add((path+"d.root").c_str());
-  //weight_chain->Add((path+"e.root").c_str());
   if(!multi_file){
     weight_chain->Add(path.c_str());
   }

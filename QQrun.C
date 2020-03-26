@@ -1,4 +1,4 @@
-void QQrun(string name="413008_ttw", string comp="xs", bool onNAF = true, bool multi_file = false){
+void QQrun(string name="413008_ttw", string comp="xs", bool onNAF = true, bool multi_file = false, int num_split =4){
   /*
     410156_ttZnunu.root
     410157_ttZqq.root
@@ -8,6 +8,7 @@ void QQrun(string name="413008_ttw", string comp="xs", bool onNAF = true, bool m
     413008_ttw.root
   */
   TChain *ch=new TChain("particleLevel");
+  string tmp="";
   string path="";
   string prod_version = "v2_0311"; //v1_0228
   if(onNAF)
@@ -29,6 +30,13 @@ void QQrun(string name="413008_ttw", string comp="xs", bool onNAF = true, bool m
   if(!multi_file){
     weight_chain->Add(path.c_str());
   }
+  else{
+    for(int i=0; i<num_split;i++){      
+      tmp = path+name+to_string(i)+".root";
+      weight_chain->Add(tmp.c_str());
+    }
+  }
+
   Double_t  sum_w=0;
   Float_t totalEventsWeighted;
   vector<float> *totalEventsWeighted_mc_generator_weights=0;
@@ -47,6 +55,12 @@ void QQrun(string name="413008_ttw", string comp="xs", bool onNAF = true, bool m
 
   if(!multi_file){
     ch->Add(path.c_str());
+  }
+  else{
+    for(int i=0; i<num_split;i++){      
+      tmp = path+name+to_string(i)+".root";
+      ch->Add(tmp.c_str());
+    }
   }
 
   cout << ch->GetNtrees()<< ", entr: "<< ch->GetEntries()<< endl;

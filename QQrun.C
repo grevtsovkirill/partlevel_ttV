@@ -7,13 +7,7 @@ void QQrun(string name="413008_ttw", string comp="xs", bool onNAF = true, bool m
     410220_tttautau.root
     413008_ttw.root
   */
-
-
   TChain *ch=new TChain("particleLevel");
-  string choose_tag="";
-  string name1="";
-  //if(name.find("Sherpa")!= std::string::npos) name1="413008_ttw"; 
-  //else if(name.find("MG")!= std::string::npos) name1="410155";
   string path="";
   string prod_version = "v2_0311"; //v1_0228
   if(onNAF)
@@ -32,7 +26,9 @@ void QQrun(string name="413008_ttw", string comp="xs", bool onNAF = true, bool m
   //weight_chain->Add((path+"a.root").c_str());
   //weight_chain->Add((path+"d.root").c_str());
   //weight_chain->Add((path+"e.root").c_str());
-  weight_chain->Add(path.c_str());
+  if(!multi_file){
+    weight_chain->Add(path.c_str());
+  }
   Double_t  sum_w=0;
   Float_t totalEventsWeighted;
   vector<float> *totalEventsWeighted_mc_generator_weights=0;
@@ -49,7 +45,10 @@ void QQrun(string name="413008_ttw", string comp="xs", bool onNAF = true, bool m
   }
   cout<<" total sw:"<<to_string(sum_w)<<endl;
 
-  ch->Add(path.c_str());
+  if(!multi_file){
+    ch->Add(path.c_str());
+  }
+
   cout << ch->GetNtrees()<< ", entr: "<< ch->GetEntries()<< endl;
   string  option=to_string(sum_w)+"/"+name+"-"+comp;
 

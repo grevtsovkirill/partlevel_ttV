@@ -581,6 +581,9 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
 	hist_jet_truth_origin[i]->Fill(sel_jet_true_origin[j], weight_tot);
 	hist_jet_truth_type[i]->Fill(sel_jet_true_type[j], weight_tot);
 
+	hist_mqq_jet_truth_origin[i]->Fill(sel_jet_true_origin[j],pWhadron.M()/1e3, weight_tot);
+	hist_mqq_jet_truth_origin[i]->Fill(sel_jet_true_origin[j],pWhadron.M()/1e3, weight_tot);
+
 	hist_mqq_jet_truth_type[i]->Fill(sel_jet_true_type[j],pWhadron.M()/1e3, weight_tot);
 	hist_mqq_jet_truth_type[i]->Fill(sel_jet_true_type[j],pWhadron.M()/1e3, weight_tot);
 

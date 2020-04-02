@@ -58,31 +58,9 @@ TH1D *hist_lep_truth_type_1[10];
 TH1D *hist_jet_truth_origin[10];
 TH1D *hist_jet_truth_type[10];
 
-
-/*
- *        0 *        4 *          MUR05_MUF05_PDF261000 *
- *        0 *        5 *           MUR05_MUF1_PDF261000 *
- *        0 *        6 *           MUR1_MUF05_PDF261000 *
- *        0 *        7 *            MUR1_MUF1_PDF261000 *
- *        0 *        8 *            MUR1_MUF2_PDF261000 *
- *        0 *        9 *            MUR2_MUF1_PDF261000 *
- *        0 *       10 *            MUR2_MUF2_PDF261000 *
-
-*/
-
 vector<string> weight_names = {"MUR05_MUF05","MUR05_MUF1","MUR1_MUF05","MUR1_MUF1","MUR1_MUF2","MUR2_MUF1","MUR2_MUF2"};
-
-  /* sel_array[0]=(Nhtaus == 0 && Njets >= 4 );  // Region inclusive                                                                                                                                                                    */
-  /* sel_array[1]=(Nhtaus == 0 && Njets >= 4 && abs(mWPDG - pWhadron.M())/1e3<20 );  // Region 20GeV Wmass region                                                                                                                       */
-  /* sel_array[2]=(Nhtaus == 0 && Njets >= 4 && abs(mWPDG - pWhadron.M())/1e3<10 );  // Region 10GeV Wmass region                                                                                                                       */
-  /* sel_array[3]=(Nhtaus == 0 && Njets >= 4 && abs(mWPDG - pWhadron.M())/1e3<5 );  // Region 5GeV Wmass region    */
-
  
 vector<string> region_names={"2b4j", ">0cjet","Wwidnow","Wwidnow>0cjet"};
-//vector<string> region_names={"0#tau_{had} 1#font[52]{b} #geq4#font[52]{j}", "0#tau_{had} #geq2#font[52]{b} #geq4#font[52]{j}","0#tau_{had} 1#font[52]{b} 3#font[52]{j}", "0#tau_{had} #geq2#font[52]{b} 3#font[52]{j}","1#tau_{had} #geq1#font[52]{b} #geq3#font[52]{j}", "0t=3j","0tg4j","otg3g0b"};
-//,
-			     //"1t 1b 4j", "1t 2b 4j","1t 1b 3j", "1t 2b 3j"};
-
 void partlevel_wqq::Begin(TTree * /*tree*/)
 {
   TString option = GetOption();
@@ -111,13 +89,6 @@ void partlevel_wqq::SlaveBegin(TTree * /*tree*/)
   input_name=input_option.substr(input_option.find("/")+1,(input_option.find("_")-input_option.find("/")-1));
   comp_name=input_option.substr(input_option.find("-")+1);
 
-  //1 / (sum of weights per variation)
-  // xs from ami , 
-  /*
-  #ttW       0.00065206 nb
-  # ttZ(qq)  0.00052821 nb
-  # ttbar    0.72977 nb
-  //*/ 
   std::map<std::string, double> xs_map;
   
   xs_map["413008"]= 0.652 * 0.920 ;

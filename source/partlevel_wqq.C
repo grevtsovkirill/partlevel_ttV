@@ -57,6 +57,15 @@ TH1D *hist_lep_truth_type_1[10];
 
 TH1D *hist_jet_truth_origin[10];
 TH1D *hist_jet_truth_type[10];
+TH1D *hist_jet0_truth_origin[10];
+TH1D *hist_jet0_truth_type[10];
+TH1D *hist_jet1_truth_origin[10];
+TH1D *hist_jet1_truth_type[10];
+
+TH2D *hist_mqq_jet_truth_origin[10];
+TH2D *hist_mqqP_jet_truth_origin[10];
+TH2D *hist_mqq_jet_truth_type[10];
+TH2D *hist_mqqP_jet_truth_type[10];
 
 vector<string> weight_names = {"MUR05_MUF05","MUR05_MUF1","MUR1_MUF05","MUR1_MUF1","MUR1_MUF2","MUR2_MUF1","MUR2_MUF2"};
  
@@ -182,10 +191,20 @@ void partlevel_wqq::SlaveBegin(TTree * /*tree*/)
 
       hist_jet_truth_origin[i] = new TH1D(("jets_tr_origin_"+to_string(i)).c_str(), ("Origins 2lOS"+region_names[i]+";Origin;Events").c_str(), origin_bins, 0, origin_bins);
       hist_jet_truth_type[i] = new TH1D(("jets_tr_type_"+to_string(i)).c_str(), ("Types 2lOS"+region_names[i]+";Type;Events").c_str(), origin_bins, 0, origin_bins);
-      //hist_min_DRlb
+
+      hist_jet0_truth_origin[i] = new TH1D(("jet0_tr_origin_"+to_string(i)).c_str(), ("Origins 2lOS"+region_names[i]+";Origin;Events").c_str(), origin_bins, 0, origin_bins);
+      hist_jet0_truth_type[i] = new TH1D(("jet0_tr_type_"+to_string(i)).c_str(), ("Types 2lOS"+region_names[i]+";Type;Events").c_str(), origin_bins, 0, origin_bins);
+      hist_jet1_truth_origin[i] = new TH1D(("jet1_tr_origin_"+to_string(i)).c_str(), ("Origins 2lOS"+region_names[i]+";Origin;Events").c_str(), origin_bins, 0, origin_bins);
+      hist_jet1_truth_type[i] = new TH1D(("jet1_tr_type_"+to_string(i)).c_str(), ("Types 2lOS"+region_names[i]+";Type;Events").c_str(), origin_bins, 0, origin_bins);
+        //hist_min_DRlb
       for(int db=0; db<2;db++){
 	hist_min_DRlb[i][db] = new TH1D(("DRlb"+to_string(db)+"_"+to_string(i)).c_str(), (" #DeltaR_{l,b} 2lOS"+region_names[i]+";min#DeltaR_{l,b};Events").c_str(), dr_bins, 0., dr_max);
       }
+      
+      hist_mqq_jet_truth_origin[i] = new TH2D(("mqq_jets_tr_origin_"+to_string(i)).c_str(), ("Origins 2lOS"+region_names[i]+";Origin;Events").c_str(), origin_bins, 0, origin_bins,50, 50, 150);
+      hist_mqqP_jet_truth_origin[i] = new TH2D(("mqq_qqjet_tr_origin_"+to_string(i)).c_str(), ("Origins 2lOS"+region_names[i]+";Origin;Events").c_str(), origin_bins, 0, origin_bins,50, 50, 150);
+      hist_mqq_jet_truth_type[i] = new TH2D(("mqq_jets_tr_type_"+to_string(i)).c_str(), ("Types 2lOS"+region_names[i]+";Type;Events").c_str(), origin_bins, 0, origin_bins,50, 50, 150);
+      hist_mqqP_jet_truth_type[i] = new TH2D(("mqq_qqjet_tr_type_"+to_string(i)).c_str(), ("Types 2lOS"+region_names[i]+";Type;Events").c_str(), origin_bins, 0, origin_bins,50, 50, 150);
 
   }
 
@@ -334,6 +353,8 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
   vector<int> sel_jet_true_type;
   vector<int> sel_jet_true_origin;
   
+  vector<int> mqq_jet_true_type;
+  vector<int> mqq_jet_true_origin;
   //loop over jet vectors
   int lowjets=0;
   for(unsigned int j=0;j<jet_pt.GetSize(); j++){
@@ -352,13 +373,10 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
     jets_vec.push_back(jj);
     sel_jet_true_type.push_back(jet_true_type[j]);
     sel_jet_true_origin.push_back(jet_true_origin[j]);
-    //cout << "    jet_true_type["<<j<<"]" << jet_true_type[j]<< "    jet_true_origin["<<j<<"]" << jet_true_origin[j]<<endl;
-    
+
     if(jet_nGhosts_bHadron[j]>0){
       Nbjets+=1;
       bjets_vec.push_back(jj);
-      //cout<< " - b-jet jet_nGhosts_bHadron>0"<< endl;
-      //if(jet_nGhosts_cHadron[j]>0) cout << " ======  ====== b and c simultaneously!?  ======  ====== "<< endl;
       
     }
     else{
@@ -368,11 +386,11 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
       if(jet_nGhosts_cHadron[j]>0){
 	Ncjets+=1;
 	cjets_vec.push_back(jj);
-	//cout<< " - c-jet jet_nGhosts_cHadron>0"<< endl;
-	//cout << " ======  ======  c but not b  ======  ====== "<< endl;
       }
-      //else
-	//cout<< " - light-jet"<< endl;
+
+      mqq_jet_true_type.push_back(jet_true_type[j]);
+      mqq_jet_true_origin.push_back(jet_true_origin[j]);
+
     }
     
     HTjet+=jet_pt[j];
@@ -562,7 +580,22 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
 	//cout << "    jet_true_type["<<j<<"/"<<Njets<<"]/sel = " << jet_true_type[j]<< " / "<<  sel_jet_true_type[j]<< "    jet_true_origin["<<j<<"]" << jet_true_origin[j]<< ", pt="<<jets_vec[j].Pt()/1e3<<endl;
 	hist_jet_truth_origin[i]->Fill(sel_jet_true_origin[j], weight_tot);
 	hist_jet_truth_type[i]->Fill(sel_jet_true_type[j], weight_tot);
+
+	hist_mqq_jet_truth_type[i]->Fill(sel_jet_true_type[j],pWhadron.M()/1e3, weight_tot);
+	hist_mqq_jet_truth_type[i]->Fill(sel_jet_true_type[j],pWhadron.M()/1e3, weight_tot);
+
       }
+
+      hist_mqqP_jet_truth_origin[i]->Fill(mqq_jet_true_origin[Wj1index],pWhadron.M()/1e3, weight_tot);
+      hist_mqqP_jet_truth_origin[i]->Fill(mqq_jet_true_origin[Wj2index],pWhadron.M()/1e3, weight_tot);
+
+      hist_mqqP_jet_truth_type[i]->Fill(mqq_jet_true_type[Wj1index],pWhadron.M()/1e3, weight_tot);
+      hist_mqqP_jet_truth_type[i]->Fill(mqq_jet_true_type[Wj2index],pWhadron.M()/1e3, weight_tot);
+
+      hist_jet0_truth_origin[i]->Fill(mqq_jet_true_origin[Wj1index], weight_tot);
+      hist_jet0_truth_type[i]->Fill(mqq_jet_true_type[Wj1index], weight_tot);
+      hist_jet1_truth_origin[i]->Fill(mqq_jet_true_origin[Wj2index], weight_tot);
+      hist_jet1_truth_type[i]->Fill(mqq_jet_true_type[Wj2index], weight_tot);
       
       for(int db=0; db<2;db++){
 	hist_min_DRlb[i][db]->Fill(dRlb[db], weight_tot);
@@ -627,6 +660,17 @@ void partlevel_wqq::Terminate()
 
       hist_jet_truth_origin[i]->Write();
       hist_jet_truth_type[i]->Write();
+
+      hist_mqq_jet_truth_origin[i]->Write();
+      hist_mqqP_jet_truth_origin[i]->Write();
+
+      hist_mqq_jet_truth_type[i]->Write();
+      hist_mqqP_jet_truth_type[i]->Write();
+
+      hist_jet0_truth_origin[i]->Write();
+      hist_jet0_truth_type[i]->Write();
+      hist_jet1_truth_origin[i]->Write();
+      hist_jet1_truth_type[i]->Write();
       
       //hist_min_DRlb
       for(int db=0; db<2;db++){

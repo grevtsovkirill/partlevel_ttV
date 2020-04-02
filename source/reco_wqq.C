@@ -351,16 +351,10 @@ Bool_t reco_wqq::Process(Long64_t entry)
   double wmass=999;
   for (unsigned int i = 0; i < (nonbjets_vec.size() - 1); ++i) {
     for (unsigned int j = i + 1; j < nonbjets_vec.size(); ++j) {
-      wmass = (nonbjets_vec[i] + nonbjets_vec[j]).M();
-      
+      wmass = (nonbjets_vec[i] + nonbjets_vec[j]).M();      
       if (fabs(wmass - mWPDG) < fabs(bestWmass - mWPDG)) {
 	bestWmass = wmass;
-	Wj1index = i;
-	Wj2index = j;
-	found_w=true;	
-	
-	//cout << " -------====  bestWmass [i="<<i<<", j="<<j<<"] =  "<< bestWmass  << endl;
-
+	Wj1index = i;	Wj2index = j;	found_w=true;	
       }
     }
   }

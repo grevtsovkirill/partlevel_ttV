@@ -197,9 +197,22 @@ void partlevel_ttW::SlaveBegin(TTree * /*tree*/)
     newfile = new TFile("skim.root","recreate"); 
     treeTrex = new TTree("treeTrex","treeTrex");
     treeTrex->Branch("Njets",&Njets,"Njets/I");
+    treeTrex->Branch("Nbjets",&Nbjets,"Nbjets/I");
+    treeTrex->Branch("HTall",&HTall,"HTall/F");
+    treeTrex->Branch("HTjet",&HTjet,"HTjet/F");
+    treeTrex->Branch("b0_pt",&b0_pt,"b0_pt/F");
+    treeTrex->Branch("l0_pt",&l0_pt,"l0_pt/F");
     treeTrex->Branch("DRll01",&DRll01,"DRll01/F");
+    treeTrex->Branch("max_eta",&max_eta,"max_eta/F");
+    treeTrex->Branch("lep_dphi",&lep_dphi,"lep_dphi/F");
     treeTrex->Branch("region",&region,"region/I");
     treeTrex->Branch("weight_tot",&weight_tot,"weight_tot/D");
+    treeTrex->Branch("l1_pt",&l1_pt,"l1_pt/F");
+    treeTrex->Branch("l0_eta",&l0_eta,"l0_eta/F");
+    treeTrex->Branch("l1_eta",&l1_eta,"l1_eta/F");
+    treeTrex->Branch("min_DRl0j",&min_DRl0j,"min_DRl0j/F");
+    treeTrex->Branch("min_DRl1j",&min_DRl1j,"min_DRl1j/F");
+    treeTrex->Branch("met",&met,"met/F");
 
 }
 
@@ -284,10 +297,9 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
   cf_counter++;
 
   //define lead/sublead lepton and it's charge
-
   float l0_charge=0,l1_charge=0;  
-  float l0_pt=-999,l1_pt=-999;
-  float l0_eta=-999,l1_eta=-999;
+  l0_pt=-999,l1_pt=-999;
+  l0_eta=-999,l1_eta=-999;
   TLorentzVector lep_4v[2];
 
   if ( dilep_type==1 ){ 
@@ -331,9 +343,6 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
     lead_lep=0;sublead_lep=1;}
   else {    lead_lep=1;sublead_lep=0;}
 
-  //  if(lead_lep!=0)     cout <<  " 0  "<< lep_4v[0].Pt()<< "   1 " << lep_4v[1].Pt()<< ",  leading is "<< lead_lep<< endl;
-  //if ((abs(lep_4v[lead_lep].Pt()-l0_pt)>0.0001) || (abs(lep_4v[sublead_lep].Pt()-l1_pt)>0.0001)) cout <<  " 0  "<< lep_4v[0].Pt()<< "   1 " << lep_4v[1].Pt()<< ",  leading is "<< lead_lep <<  ",  l0pt="<<l0_pt <<  ",  l1pt="<<l1_pt << endl;
-
 
   //lep Pt cuts
   if(lep_4v[sublead_lep].Pt()<20) return 0;  
@@ -357,11 +366,9 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
   if(charges<0) return 0;
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
- 
-  float max_eta=  max ( fabs( l0_eta ), fabs( l1_eta ) ); 
 
-  Njets=0, Nbjets=0;
-  float HTall=0, HTjet=0; 
+  Njets=0; Nbjets=0;
+  HTall=0; HTjet=0; 
   vector<TLorentzVector> jets_vec;
   vector<TLorentzVector> bjets_vec;
 
@@ -425,6 +432,7 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
 
 
   // DeltaRs
+  DRll01 = -9999;
   //DRll01= sqrt( pow( (lep_4v[lead_lep].Eta()-lep_4v[sublead_lep].Eta()) ,2) + pow ( ( acos( cos( lep_4v[lead_lep].Phi()-lep_4v[sublead_lep].Phi() )  ) ) ,2) );
   DRll01=lep_4v[lead_lep].DeltaR( lep_4v[sublead_lep] ); // provide SAME results as "by hand"!!!
   //if (deltaR!=DRll01)   cout << DRll01 << ", dR "<< deltaR<< endl;
@@ -437,7 +445,8 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
     dRl1j.push_back( lep_4v[sublead_lep].DeltaR( jets_vec[i] ) );
   }
   
-  float min_DRl0j=-9999, min_DRl1j=-9999;
+  min_DRl0j=-9999;
+  min_DRl1j=-9999;
   min_DRl0j= *min_element(dRl0j.begin(),dRl0j.end());
   min_DRl1j= *min_element(dRl1j.begin(),dRl1j.end());
 
@@ -459,6 +468,16 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
   }  
 
 
+
+  l0_eta = lep_4v[lead_lep].Eta();
+  l1_eta = lep_4v[sublead_lep].Eta();
+  l0_pt = lep_4v[lead_lep].Pt();
+  l1_pt = lep_4v[sublead_lep].Pt();
+  lep_dphi = abs(lep_4v[lead_lep].Phi()-lep_4v[sublead_lep].Phi());
+  b0_pt = bjets_vec[0].Pt()/1e3;
+  max_eta=  max ( fabs( l0_eta ), fabs( l1_eta ) ); 
+
+  
   //cout <<"Ntaus ="<<Ntaus<<", Nhtaus="<< Nhtaus   << endl;
   //2 same sign charged leptons (e,mu) with pT>25(20)GeV 
   sel_array[0]=(Nhtaus == 0 && Nbjets == 1 && Njets >= 4 );  // Region 1 
@@ -470,7 +489,7 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
   sel_array[5]=(Nhtaus == 0 &&  Njets == 3 );  // 
   sel_array[6]=(Nhtaus == 0 &&  Njets >= 4 );  // 
   sel_array[7]=(Nhtaus == 0 && Nbjets >= 0 &&  Njets >= 3 );  // 
-  float met = *met_met/1000.;
+  met = *met_met/1000.;
 
   if(sel_array[0]) region = 0;
   else if(sel_array[1]) region = 1;

@@ -6,6 +6,8 @@
 #include <TStyle.h>
 #include <TLorentzVector.h>
 #include <math.h>
+#include <TFile.h>
+#include <TTree.h>
 
 TH1F *h_cutflow_2l[2];
 string input_name="";
@@ -43,6 +45,9 @@ TH1D *hist_lep_Phi_1[10];
 TH1D *hist_lep_dPhi[10];
 
 TH1D *hist_Weights[10];
+
+TFile *newfile;
+TTree *treeTrex;
 
 /*
  *        0 *        4 *          MUR05_MUF05_PDF261000 *
@@ -187,6 +192,12 @@ void partlevel_ttW::SlaveBegin(TTree * /*tree*/)
     for(int i=0; i<(int)weight_names.size();i++){
       hist_Weights[i] = new TH1D( (weight_names[i]).c_str(), (weight_names[i]+";weight;Events").c_str(), 300, -4, 4);
     }  
+
+    // ATfiles->ntuples for TRex
+    newfile = new TFile("skim.root","recreate"); 
+    treeTrex = new TTree("treeTrex","treeTrex");
+    treeTrex->Branch("Njets",&Njets,"Njets/I");
+
 }
 
 Bool_t partlevel_ttW::Process(Long64_t entry)
@@ -346,7 +357,7 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
  
   float max_eta=  max ( fabs( l0_eta ), fabs( l1_eta ) ); 
 
-  int Njets=0, Nbjets=0;
+  Njets=0, Nbjets=0;
   float HTall=0, HTjet=0; 
   vector<TLorentzVector> jets_vec;
   vector<TLorentzVector> bjets_vec;
@@ -446,6 +457,8 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
   }  
 
 
+  //fill treeTrex
+  treeTrex->Fill();
 
   //cout <<"Ntaus ="<<Ntaus<<", Nhtaus="<< Nhtaus   << endl;
   //2 same sign charged leptons (e,mu) with pT>25(20)GeV 
@@ -554,6 +567,9 @@ void partlevel_ttW::Terminate()
     //*/
 
     fOutput->Write();
+
+    treeTrex->Write();
+    treeTrex->AutoSave();
   }
   
 }

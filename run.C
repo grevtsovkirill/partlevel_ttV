@@ -1,14 +1,21 @@
 
 
-void run(string name="Sherpa", string comp="a"){
+void run(string name="Sherpa", string comp="a", bool onNAF = true){
   
   TChain *ch=new TChain("particleLevel");
   string choose_tag="";
   string name1="";
   if(name.find("Sherpa")!= std::string::npos) name1="413008"; 
   else if(name.find("MG")!= std::string::npos) name1="410155";
- 
-  string path="/Users/grevtsov/Documents/working_files/ttH/ttH-ML/Combination_ttV/Files/particle_level/"+name1+comp+".root";;
+
+  string prod_version ="ttW_2004";
+  string path="";
+  if(onNAF)
+    path="/nfs/dust/atlas/group/top/ttH_ML/ttV_ATLAS_CMS/particle_level/withTaus/"+prod_version+"/";
+  else
+    path="/Users/grevtsov/Documents/working_files/ttH/ttH-ML/Combination_ttV/Files/particle_level/"+prod_version+"/";
+
+  path = path+name1+comp+".root";
   cout << "path = " << path<< endl;
 
 

@@ -189,7 +189,9 @@ void partlevel_ttW::SlaveBegin(TTree * /*tree*/)
     }  
 
     // ATfiles->ntuples for TRex
-    newfile = new TFile("skim.root","recreate"); 
+    string ntupname="skim_"+input_name+"_"+comp_name+".root";
+    
+    newfile = new TFile(ntupname.c_str(),"recreate"); 
     treeTrex = new TTree("treeTrex","treeTrex");
     treeTrex->Branch("Njets",&Njets,"Njets/I");
     treeTrex->Branch("Nbjets",&Nbjets,"Nbjets/I");

@@ -94,12 +94,7 @@ void partlevel_ttW::SlaveBegin(TTree * /*tree*/)
   smw=  std::stod (tmp);
   //cout.precision(17);
   std::cout << "SumW ="<< tmp<< ", double - "<< smw << std::endl;
-  //1 / (sum of weights per variation)
-  // xs from ami , 
-  // sherpa 413008: 652 fb;  7446700.5
-  // MG 410155: 548 fb ;  4111925.0
   Acc=1/smw;
-  //Acc=1;
 
   input_name=input_option.substr(input_option.find("_")+1,(input_option.find("-")-input_option.find("_")-1));
   comp_name=input_option.substr(input_option.find("-")+1);
@@ -239,42 +234,11 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
   else if (scaledownM_w) weight_to_use = mc_generator_weights[8] *Acc *sig_MG;//8 *   muR=050000E+00muF=050000E+00
   else return 0;
 
-  double shift=0;
-  double shift2=0;
-  //  you have to compute the relative uncertainty using the 30 eigenvectors (index xxx01-xxx30) wrt. the PDF4LHC15 nominal (index xxx00). 
-  // The additional 2 variations (index xxx31 and xxx32) are an alphaS variation, which I'm not sure you have to use (it depends what you want to compute I guess).
-  double pdf_var_up=1,pdf_var_down=1;
-
-  // UGLY:
-//   for (int i=1; i<31;i++){
-//     shift2+=pow((PDF4LHC15_nnlo_30_pdfas[i]-PDF4LHC15_nnlo_30_pdfas[0]),2);
-//   }
-//   shift=sqrt(shift2);
-//   pdf_var_up=(PDF4LHC15_nnlo_30_pdfas[0]+shift)/PDF4LHC15_nnlo_30_pdfas[0];
-//   pdf_var_down=(PDF4LHC15_nnlo_30_pdfas[0]-shift)/PDF4LHC15_nnlo_30_pdfas[0];
-
-
-// WRONG - NNPDF uses 68% cl
-//   for (int i=11; i<111;i++){
-//     shift2+=pow((mc_generator_weights[i]-mc_generator_weights[0]),2);
-//   }
-//   shift=sqrt(shift2);
-//   pdf_var_up=(mc_generator_weights[0]+shift)*Acc;
-//   pdf_var_down=(mc_generator_weights[0]-shift)*Acc;
   
   // access names of the weights:
   // sumWeights->Scan("names_mc_generator_weights","","colsize=30")
-  // check values:
-  //
   weight_tot=weight_to_use ;
   //* *weight_pileup ;
-
-  // by hand PDF uncertainties
-  //* pdf_var_up
-  //* pdf_var_down
-
-  //if (entry==0) cout<< "PDF4LHC15_nnlo_30_pdfas [0] = " << PDF4LHC15_nnlo_30_pdfas[0]<<" [1] = " << PDF4LHC15_nnlo_30_pdfas[1]<<endl;
-
 
   int cf_counter=0;
 

@@ -8,18 +8,12 @@ void run(string name="Sherpa", string comp="a"){
   if(name.find("Sherpa")!= std::string::npos) name1="413008"; 
   else if(name.find("MG")!= std::string::npos) name1="410155";
  
-  //string path="/Users/grevtsov/Documents/working_files/ttH/ttH-ML/Combination_ttV/Files/particle_level/"+name1+"d_v3.root";
-  //string path="/Users/grevtsov/Documents/working_files/ttH/ttH-ML/Combination_ttV/Files/particle_level/"+name1+"d_87_v1.root";
-  //string path="/Users/grevtsov/Documents/working_files/ttH/ttH-ML/Combination_ttV/Files/particle_level/"+name1+"_90_v1.root";
   string path="/Users/grevtsov/Documents/working_files/ttH/ttH-ML/Combination_ttV/Files/particle_level/"+name1+comp+".root";;
   cout << "path = " << path<< endl;
 
 
 
   TChain *weight_chain=new TChain("sumWeights");
-  //weight_chain->Add((path+"a.root").c_str());
-  //weight_chain->Add((path+"d.root").c_str());
-  //weight_chain->Add((path+"e.root").c_str());
   weight_chain->Add(path.c_str());
   Double_t  sum_w=0;
   Float_t totalEventsWeighted;
@@ -59,22 +53,10 @@ void run(string name="Sherpa", string comp="a"){
   }
   cout<<" total sw:"<<to_string(sum_w)<<endl;
 
-  //new option definition; "sm"_"opt"
-
-  //ch->Add((path+"a.root").c_str());
-  //ch->Add((path+"d.root").c_str());
-  //ch->Add((path+"e.root").c_str());
   ch->Add(path.c_str());
   cout << ch->GetNtrees()<< ", entr: "<< ch->GetEntries()<< endl;
   string  option=to_string(sum_w)+"_"+name+"-"+comp;
 
   ch->Process("source/partlevel_ttW.C+",option.c_str());
-
-
-  //gROOT->LoadMacro("source/partlevel_ttW.C");
-  //gROOT->ProcessLine(".L source/partlevel_ttW.C+");
-  //partlevel_ttW *sel_run = new partlevel_ttW();
-  //sel_run->ReadOpt(sum_w,mc_weight_index);
-  //ch->Process(sel_run);
 
 }

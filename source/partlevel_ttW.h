@@ -35,8 +35,11 @@ public :
   Double_t weight_tot;
   Int_t       fNumberOfEvents; 
 
-  int Njets ;
-  int Nbjets ;  
+  int Njets = 0;
+  int Nbjets = 0;
+  int region = -99;
+  float DRll01 = -9999;
+  
   // Readers to access the data (delete the ones you do not need).
   TTreeReaderValue<Float_t> weight_mc = {fReader, "weight_mc"};
   TTreeReaderValue<ULong64_t> eventNumber = {fReader, "eventNumber"};

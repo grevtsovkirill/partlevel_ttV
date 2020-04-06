@@ -197,6 +197,9 @@ void partlevel_ttW::SlaveBegin(TTree * /*tree*/)
     newfile = new TFile("skim.root","recreate"); 
     treeTrex = new TTree("treeTrex","treeTrex");
     treeTrex->Branch("Njets",&Njets,"Njets/I");
+    treeTrex->Branch("DRll01",&DRll01,"DRll01/F");
+    treeTrex->Branch("region",&region,"region/I");
+    treeTrex->Branch("weight_tot",&weight_tot,"weight_tot/D");
 
 }
 
@@ -422,7 +425,6 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
 
 
   // DeltaRs
-  float DRll01=-9999;
   //DRll01= sqrt( pow( (lep_4v[lead_lep].Eta()-lep_4v[sublead_lep].Eta()) ,2) + pow ( ( acos( cos( lep_4v[lead_lep].Phi()-lep_4v[sublead_lep].Phi() )  ) ) ,2) );
   DRll01=lep_4v[lead_lep].DeltaR( lep_4v[sublead_lep] ); // provide SAME results as "by hand"!!!
   //if (deltaR!=DRll01)   cout << DRll01 << ", dR "<< deltaR<< endl;
@@ -457,9 +459,6 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
   }  
 
 
-  //fill treeTrex
-  treeTrex->Fill();
-
   //cout <<"Ntaus ="<<Ntaus<<", Nhtaus="<< Nhtaus   << endl;
   //2 same sign charged leptons (e,mu) with pT>25(20)GeV 
   sel_array[0]=(Nhtaus == 0 && Nbjets == 1 && Njets >= 4 );  // Region 1 
@@ -473,6 +472,14 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
   sel_array[7]=(Nhtaus == 0 && Nbjets >= 0 &&  Njets >= 3 );  // 
   float met = *met_met/1000.;
 
+  if(sel_array[0]) region = 0;
+  else if(sel_array[1]) region = 1;
+  else if(sel_array[2]) region = 2;
+  else if(sel_array[3]) region = 3;
+  else if(sel_array[4]) region = 4;
+  else if(sel_array[5]) region = 5;
+  else region = -99;  
+  
   for(int i=0; i<(int)region_names.size();i++){
     if(sel_array[i]){
       h_cutflow_2l[0]->Fill(cf_counter+i,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter+i,1);
@@ -511,6 +518,9 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
     }
   }
   
+  //fill treeTrex
+  treeTrex->Fill();
+
   
   return kTRUE;
 }

@@ -49,16 +49,6 @@ TH1D *hist_Weights[10];
 TFile *newfile;
 TTree *treeTrex;
 
-/*
- *        0 *        4 *          MUR05_MUF05_PDF261000 *
- *        0 *        5 *           MUR05_MUF1_PDF261000 *
- *        0 *        6 *           MUR1_MUF05_PDF261000 *
- *        0 *        7 *            MUR1_MUF1_PDF261000 *
- *        0 *        8 *            MUR1_MUF2_PDF261000 *
- *        0 *        9 *            MUR2_MUF1_PDF261000 *
- *        0 *       10 *            MUR2_MUF2_PDF261000 *
-
-*/
 
 vector<string> weight_names = {"MUR05_MUF05","MUR05_MUF1","MUR1_MUF05","MUR1_MUF1","MUR1_MUF2","MUR2_MUF1","MUR2_MUF2"};
 
@@ -66,9 +56,6 @@ vector<string> weight_names = {"MUR05_MUF05","MUR05_MUF1","MUR1_MUF05","MUR1_MUF
 
  
 vector<string> region_names={"0t 1b 4j", "0t 2b 4j","0t 1b 3j", "0t 2b 3j","1t 1b 3j", "0t=3j","0tg4j","otg3g0b"};
-//vector<string> region_names={"0#tau_{had} 1#font[52]{b} #geq4#font[52]{j}", "0#tau_{had} #geq2#font[52]{b} #geq4#font[52]{j}","0#tau_{had} 1#font[52]{b} 3#font[52]{j}", "0#tau_{had} #geq2#font[52]{b} 3#font[52]{j}","1#tau_{had} #geq1#font[52]{b} #geq3#font[52]{j}", "0t=3j","0tg4j","otg3g0b"};
-//,
-			     //"1t 1b 4j", "1t 2b 4j","1t 1b 3j", "1t 2b 3j"};
 
 void partlevel_ttW::Begin(TTree * /*tree*/)
 {

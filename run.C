@@ -5,7 +5,8 @@ void run(string name="Sherpa", string comp="a", bool onNAF = true){
   TChain *ch=new TChain("particleLevel");
   string choose_tag="";
   string name1="";
-  if(name.find("Sherpa")!= std::string::npos) name1="413008"; 
+  //if(name.find("Sherpa")!= std::string::npos) name1="413008"; 
+  if(name.find("Sherpa")!= std::string::npos) name1="700000"; //tmp fix for 228 
   else if(name.find("MG")!= std::string::npos) name1="410155";
 
   string prod_version ="ttW_2004";

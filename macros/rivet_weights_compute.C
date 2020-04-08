@@ -195,7 +195,8 @@ void rivet_weights_compute(bool norm_xs_plots=false)
       
       sprintf(canvas_name,"c_Region_%s_%s",nj_reg[i].c_str(), variable[j].c_str() );
       cout << "canvas_name "<< canvas_name<< endl;
-      canv[i][j] = new TCanvas(canvas_name, "", 800, 750);
+      //canv[i][j] = new TCanvas(canvas_name, "", 800, 750);
+      canv[i][j] = new TCanvas(canvas_name, "", 600, 750);
       
       sprintf(p1_name,"p1_%s_%s",nj_reg[i].c_str(),variable[j].c_str() );
       sprintf(p2_name,"p2_%s_%s",nj_reg[i].c_str(),variable[j].c_str() );
@@ -351,6 +352,10 @@ void rivet_weights_compute(bool norm_xs_plots=false)
 	// i region, j - variable, t -nom/variation, 
 	h_var[i][j][3][t] = (TH1D*) h_var[i][j][0][t]->Clone(sf_name);
 	//cout << "N var("<<t<<") bins ="<<h_var[i][j][3][t]->GetXaxis()->GetNbins()<< "; N nom bins = "<<h_var[i][j][0][0]->GetXaxis()->GetNbins()<< endl;;
+	//ratio only:
+	//h_var[i][j][3][t]->Divide(h_var[i][j][0][0]);
+	//syst-nom/nom:
+	h_var[i][j][3][t]->Add(h_var[i][j][0][0],-1);
 	h_var[i][j][3][t]->Divide(h_var[i][j][0][0]);
 
 	
@@ -365,9 +370,13 @@ void rivet_weights_compute(bool norm_xs_plots=false)
 	
 	h_var[i][j][3][t]->GetXaxis()->SetTickLength(0.1); 
 	h_var[i][j][3][t]->SetLineWidth(2);
-	
-	h_var[i][j][3][t]->SetMinimum(0.65);
-	h_var[i][j][3][t]->SetMaximum(1.35);
+
+	//ratio
+	//h_var[i][j][3][t]->SetMinimum(0.65);
+	//h_var[i][j][3][t]->SetMaximum(1.35);
+	//(syst-nom_nom:
+	h_var[i][j][3][0]->SetMinimum(-0.4);
+	h_var[i][j][3][0]->SetMaximum(0.4);
 
 	//For comparison Gen-Rivet
 	//h_var[i][j][3][t]->SetMinimum(0.91);
@@ -422,7 +431,8 @@ void rivet_weights_compute(bool norm_xs_plots=false)
       pad2[i][j]->cd();
       
       //h_var[i][j][3][0]->SetYTitle("Ratio to Sherpa");
-      h_var[i][j][3][0]->SetYTitle("Ratio to nominal");
+      //h_var[i][j][3][0]->SetYTitle("Ratio to nominal");
+      h_var[i][j][3][0]->SetYTitle("(Syst-Nom)/Nom");
       //h_var[i][j][3][0]->SetYTitle("Ratio to AT");
       h_var[i][j][3][0]->Draw("hist");
       for(int t=1;t<type.size();t++){
@@ -442,6 +452,8 @@ void rivet_weights_compute(bool norm_xs_plots=false)
       //cout  << "p3["<<i<<j<<"] h_var[0][1][0][0]  nb ="<< h_var[0][1][0][0]->GetXaxis()->GetNbins()  <<endl;
       sprintf(sf_name,"ratio_%s_%s_%s",variable[j].c_str(),nj_reg[i].c_str(),type[0].c_str());   
       h_var[i][j][15][0] = (TH1D*) h_var[i][j][3][0]->Clone(sf_name);
+      h_var[i][j][15][0]->SetMinimum(0.45);
+      h_var[i][j][15][0]->SetMaximum(1.55);
       h_var[i][j][15][0]->SetYTitle("Envelope");
       h_var[i][j][15][0]->Draw("hist");
       h_var[i][j][8][0]->Draw("histsame");

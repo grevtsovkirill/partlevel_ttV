@@ -254,11 +254,45 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
   // sumWeights->Scan("names_mc_generator_weights","","colsize=30")
   weight_tot=weight_to_use ;
   //* *weight_pileup ;
+
+  //Sherpa 221 
+  /*
   weight_r2f2 = weight_to_use/(*weight_mc) * mc_generator_weights[10] ;
   weight_r2f1 = weight_to_use/(*weight_mc) * mc_generator_weights[9] ;
   weight_r1f2 = weight_to_use/(*weight_mc) * mc_generator_weights[8] ;
   weight_r1f05 = weight_to_use/(*weight_mc) * mc_generator_weights[6] ;
   weight_r05f1 = weight_to_use/(*weight_mc) * mc_generator_weights[5] ;
+  weight_r05f05 = weight_to_use/(*weight_mc) * mc_generator_weights[4] ;
+  //*/
+
+  /*
+*        0 *        4 * MUR05_MUF05_PDF261000_PSMUR05_ *
+*        0 *        5 * ME_ONLY_MUR05_MUF05_PDF261000_ *
+*        0 *        6 * MUR05_MUF1_PDF261000_PSMUR05_P *
+*        0 *        7 * ME_ONLY_MUR05_MUF1_PDF261000_P *
+*        0 *        8 * MUR1_MUF05_PDF261000_PSMUR1_PS *
+*        0 *        9 * ME_ONLY_MUR1_MUF05_PDF261000_P *
+*        0 *       10 *            MUR1_MUF1_PDF261000 *
+*        0 *       11 *    ME_ONLY_MUR1_MUF1_PDF261000 *
+*        0 *       12 * MUR1_MUF2_PDF261000_PSMUR1_PSM *
+*        0 *       13 * ME_ONLY_MUR1_MUF2_PDF261000_PS *
+*        0 *       14 * MUR2_MUF1_PDF261000_PSMUR2_PSM *
+*        0 *       15 * ME_ONLY_MUR2_MUF1_PDF261000_PS *
+*        0 *       16 * MUR2_MUF2_PDF261000_PSMUR2_PSM *
+*        0 *       17 * ME_ONLY_MUR2_MUF2_PDF261000_PS *  ,"MUR0.5_MUF0.5_PDF261000_PSMUR0.5_PSMUF0.5"
+     ,"MUR0.5_MUF1_PDF261000_PSMUR0.5_PSMUF1"
+     ,"MUR1_MUF0.5_PDF261000_PSMUR1_PSMUF0.5"
+     ,"MUR2_MUF1_PDF261000_PSMUR2_PSMUF1"
+     ,"MUR1_MUF2_PDF261000_PSMUR1_PSMUF2"
+     ,"MUR2_MUF2_PDF261000_PSMUR2_PSMUF2"
+     };
+  //*/
+  //sherpa 228
+  weight_r2f2 = weight_to_use/(*weight_mc) * mc_generator_weights[16] ;
+  weight_r2f1 = weight_to_use/(*weight_mc) * mc_generator_weights[14] ;
+  weight_r1f2 = weight_to_use/(*weight_mc) * mc_generator_weights[12] ;
+  weight_r1f05 = weight_to_use/(*weight_mc) * mc_generator_weights[8] ;
+  weight_r05f1 = weight_to_use/(*weight_mc) * mc_generator_weights[6] ;
   weight_r05f05 = weight_to_use/(*weight_mc) * mc_generator_weights[4] ;
 
   int cf_counter=0;

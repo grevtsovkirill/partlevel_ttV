@@ -32,7 +32,7 @@ public :
   int nEl;
   int nMu;
   int Nlep;
-  Double_t weight_tot;
+  Double_t weight_tot, weight_r2f2,weight_r2f1,weight_r1f2,weight_r1f05,weight_r05f1,weight_r05f05;
   Int_t       fNumberOfEvents; 
 
   int region = -99;

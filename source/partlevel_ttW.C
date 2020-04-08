@@ -8,6 +8,8 @@
 #include <math.h>
 #include <TFile.h>
 #include <TTree.h>
+#include <tuple>
+#include <map>
 
 TH1F *h_cutflow_2l[2];
 string input_name="";
@@ -48,6 +50,20 @@ TH1D *hist_Weights[10];
 
 TFile *newfile;
 TTree *treeTrex;
+const std::map<std::string, std::tuple<int, int, int>>   var_weights = {
+		 { "Sherpa", std::make_tuple(7, 10, 4)},
+  };
+/*
+  *        0 *        4 *          MUR05_MUF05_PDF261000 *
+*        0 *        5 *           MUR05_MUF1_PDF261000 *
+*        0 *        6 *           MUR1_MUF05_PDF261000 *
+*        0 *        7 *            MUR1_MUF1_PDF261000 *
+*        0 *        8 *            MUR1_MUF2_PDF261000 *
+*        0 *        9 *            MUR2_MUF1_PDF261000 *
+*        0 *       10 *            MUR2_MUF2_PDF261000 *
+//*/
+  //vector<string> weight_names = {"MUR05_MUF05","MUR05_MUF1","MUR1_MUF05","MUR1_MUF1","MUR1_MUF2","MUR2_MUF1","MUR2_MUF2"};
+  // nom , 
 
 
 vector<string> weight_names = {"MUR05_MUF05","MUR05_MUF1","MUR1_MUF05","MUR1_MUF1","MUR1_MUF2","MUR2_MUF1","MUR2_MUF2"};
@@ -85,9 +101,11 @@ void partlevel_ttW::SlaveBegin(TTree * /*tree*/)
 
   input_name=input_option.substr(input_option.find("_")+1,(input_option.find("-")-input_option.find("_")-1));
   comp_name=input_option.substr(input_option.find("-")+1);
-				 
-  std::cout << "var ="<< input_name<< ", comp_name - "<< comp_name << std::endl;
 
+  auto tuple = var_weights.find(input_name)->second;
+    
+  std::cout << "var ="<< input_name<< ", comp_name - "<< comp_name << std::endl;
+  std::cout << "$$$$$$$$$$$$$$$$$$$$ 0   = "<< get<0>(tuple)  << " 1  = "<< get<1>(tuple)<<"; 2  = "<< get<2>(tuple)<< std::endl;
   std::cout << "variation =";
   if(input_name.compare("Sherpa")==0){
     std::cout << " nominal Sherpa"<<  std::endl;
@@ -115,6 +133,7 @@ void partlevel_ttW::SlaveBegin(TTree * /*tree*/)
   else {std::cout << " error - incorrect variation. Stop."<<  std::endl; stoploop=true;}
 
 
+  
   
   const std::vector<TString> s_cutDescs =
     {  "Preselections","Nleps","lepPt1>20","lepPt0>25","lepCentr","SS","jPt/eta","3j1b",
@@ -198,6 +217,13 @@ void partlevel_ttW::SlaveBegin(TTree * /*tree*/)
     treeTrex->Branch("min_DRl1j",&min_DRl1j,"min_DRl1j/F");
     treeTrex->Branch("met",&met,"met/F");
 
+    treeTrex->Branch("weight_r2f2",&weight_r2f2,"weight_r2f2/D");
+    treeTrex->Branch("weight_r2f1",&weight_r2f1,"weight_r2f1/D");
+    treeTrex->Branch("weight_r1f2",&weight_r1f2,"weight_r1f2/D");
+    treeTrex->Branch("weight_r1f05",&weight_r1f05,"weight_r1f05/D");
+    treeTrex->Branch("weight_r05f1",&weight_r05f1,"weight_r05f1/D");
+    treeTrex->Branch("weight_r05f05",&weight_r05f05,"weight_r05f05/D");
+
 }
 
 Bool_t partlevel_ttW::Process(Long64_t entry)
@@ -222,15 +248,20 @@ Bool_t partlevel_ttW::Process(Long64_t entry)
   else if (scaleupM_w) weight_to_use = mc_generator_weights[4] *Acc *sig_MG; //4 *   muR=020000E+01muF=020000E+01
   else if (scaledownM_w) weight_to_use = mc_generator_weights[8] *Acc *sig_MG;//8 *   muR=050000E+00muF=050000E+00
   else return 0;
-
   
+  //cout<< "weight_mc/mc_generator_weights[wind] = "<< *weight_mc/mc_generator_weights[wind] <<  endl;
   // access names of the weights:
   // sumWeights->Scan("names_mc_generator_weights","","colsize=30")
   weight_tot=weight_to_use ;
   //* *weight_pileup ;
+  weight_r2f2 = weight_to_use/(*weight_mc) * mc_generator_weights[10] ;
+  weight_r2f1 = weight_to_use/(*weight_mc) * mc_generator_weights[9] ;
+  weight_r1f2 = weight_to_use/(*weight_mc) * mc_generator_weights[8] ;
+  weight_r1f05 = weight_to_use/(*weight_mc) * mc_generator_weights[6] ;
+  weight_r05f1 = weight_to_use/(*weight_mc) * mc_generator_weights[5] ;
+  weight_r05f05 = weight_to_use/(*weight_mc) * mc_generator_weights[4] ;
 
   int cf_counter=0;
-
 
   //loop over electrons and muons
   nEl = el_pt.GetSize();

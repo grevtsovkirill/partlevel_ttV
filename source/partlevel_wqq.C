@@ -67,6 +67,9 @@ TH2D *hist_mqqP_jet_truth_origin[10];
 TH2D *hist_mqq_jet_truth_type[10];
 TH2D *hist_mqqP_jet_truth_type[10];
 
+TH1D *hist_qcd_jet_Pt[10];
+TH1D *hist_nqcd_jet_Pt[10];
+
 vector<string> weight_names = {"MUR05_MUF05","MUR05_MUF1","MUR1_MUF05","MUR1_MUF1","MUR1_MUF2","MUR2_MUF1","MUR2_MUF2"};
  
 vector<string> region_names={"2b4j", ">0cjet","Wwidnow","Wwidnow>0cjet"};
@@ -180,6 +183,9 @@ void partlevel_wqq::SlaveBegin(TTree * /*tree*/)
 
       hist_Whmass[i] = new TH1D(("Whmass_"+to_string(i)).c_str(), ("m_{Wqq} "+region_names[i]+";m_{Wqq};Events").c_str(), 50, 50, 150); //420, 50, 410
       hist_Whpt[i] = new TH1D(("Whpt_"+to_string(i)).c_str(), ("p_T^{Wqq} "+region_names[i]+";p_T^{Wqq};Events").c_str(),60,0,300 ); //w_binnum, w_bins
+
+      hist_qcd_jet_Pt[i] = new TH1D(("qcd_pt_"+to_string(i)).c_str(), ("p_T^{QCD} "+region_names[i]+";p_T^{QCD};Events").c_str(),60,0,300 ); //w_binnum, w_bins
+      hist_nqcd_jet_Pt[i] = new TH1D(("nqcd_pt_"+to_string(i)).c_str(), ("p_T^{nonQCD} "+region_names[i]+";p_T^{nonQCD};Events").c_str(),60,0,300 ); //w_binnum, w_bins
 
       hist_lep_truth_origin[i] = new TH1D(("leps_tr_origin_"+to_string(i)).c_str(), ("Origins 2lOS"+region_names[i]+";Origin;Events").c_str(), origin_bins, 0, origin_bins);
       hist_lep_truth_origin_0[i] = new TH1D(("lep0_tr_origin_"+to_string(i)).c_str(), ("L0 Origin 2lOS"+region_names[i]+";l0 Origin;Events").c_str(), origin_bins, 0, origin_bins);
@@ -352,7 +358,9 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
   vector<TLorentzVector> cjets_vec;
   vector<int> sel_jet_true_type;
   vector<int> sel_jet_true_origin;
-  
+
+  vector<int> sel_ljet_true_origin;
+
   vector<int> mqq_jet_true_type;
   vector<int> mqq_jet_true_origin;
   //loop over jet vectors
@@ -382,6 +390,7 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
     else{
       ljets_vec.push_back(jj);
       
+      sel_ljet_true_origin.push_back(jet_true_origin[j]);
       
       if(jet_nGhosts_cHadron[j]>0){
 	Ncjets+=1;
@@ -575,11 +584,20 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
       hist_lep_truth_type_0[i]->Fill(l0_true_type, weight_tot);
       hist_lep_truth_type_1[i]->Fill(l1_true_type, weight_tot);
 
-
+      for(int j=0; j<Njets;j++){
+	if(sel_ljet_true_origin[j]==45){
+	  hist_qcd_jet_Pt[i]->Fill(ljets_vec[j].Pt()/1e3, weight_tot);
+	}
+	else
+	  hist_nqcd_jet_Pt[i]->Fill(ljets_vec[j].Pt()/1e3, weight_tot);
+	  
+      }
+      
       for(int j=0; j<Njets;j++){
 	//cout << "    jet_true_type["<<j<<"/"<<Njets<<"]/sel = " << jet_true_type[j]<< " / "<<  sel_jet_true_type[j]<< "    jet_true_origin["<<j<<"]" << jet_true_origin[j]<< ", pt="<<jets_vec[j].Pt()/1e3<<endl;
 	hist_jet_truth_origin[i]->Fill(sel_jet_true_origin[j], weight_tot);
 	hist_jet_truth_type[i]->Fill(sel_jet_true_type[j], weight_tot);
+
 
 	hist_mqq_jet_truth_origin[i]->Fill(sel_jet_true_origin[j],pWhadron.M()/1e3, weight_tot);
 	hist_mqq_jet_truth_origin[i]->Fill(sel_jet_true_origin[j],pWhadron.M()/1e3, weight_tot);
@@ -653,6 +671,8 @@ void partlevel_wqq::Terminate()
       hist_lep_dPhi[i]->Write();
       hist_Whmass[i]->Write();
       hist_Whpt[i]->Write();
+      hist_qcd_jet_Pt[i]->Write();
+      hist_nqcd_jet_Pt[i]->Write();
       hist_lep_truth_origin[i]->Write();
       hist_lep_truth_origin_0[i]->Write();
       hist_lep_truth_origin_1[i]->Write();

@@ -69,7 +69,7 @@ TH2D *hist_mqqP_jet_truth_type[10];
 
 TH1D *hist_qcd_jet_Pt[10];
 TH1D *hist_nqcd_jet_Pt[10];
-
+TH1D *hist_mjj[10];
 vector<string> weight_names = {"MUR05_MUF05","MUR05_MUF1","MUR1_MUF05","MUR1_MUF1","MUR1_MUF2","MUR2_MUF1","MUR2_MUF2"};
  
 vector<string> region_names={"2b4j", ">0cjet","Wwidnow","Wwidnow>0cjet"};
@@ -183,6 +183,8 @@ void partlevel_wqq::SlaveBegin(TTree * /*tree*/)
 
       hist_Whmass[i] = new TH1D(("Whmass_"+to_string(i)).c_str(), ("m_{Wqq} "+region_names[i]+";m_{Wqq};Events").c_str(), 50, 50, 150); //420, 50, 410
       hist_Whpt[i] = new TH1D(("Whpt_"+to_string(i)).c_str(), ("p_T^{Wqq} "+region_names[i]+";p_T^{Wqq};Events").c_str(),60,0,300 ); //w_binnum, w_bins
+
+      hist_mjj[i] = new TH1D(("mjj_"+to_string(i)).c_str(), ("m_{jj} "+region_names[i]+";m_{jj};Events").c_str(), 50, 50, 150); //420, 50, 410
 
       hist_qcd_jet_Pt[i] = new TH1D(("qcd_pt_"+to_string(i)).c_str(), ("p_T^{QCD} "+region_names[i]+";p_T^{QCD};Events").c_str(),60,0,300 ); //w_binnum, w_bins
       hist_nqcd_jet_Pt[i] = new TH1D(("nqcd_pt_"+to_string(i)).c_str(), ("p_T^{nonQCD} "+region_names[i]+";p_T^{nonQCD};Events").c_str(),60,0,300 ); //w_binnum, w_bins
@@ -503,7 +505,9 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
   }
 
   // found W->qq
-  if (!found_w) return 0;
+  //if (!found_w) return 0;
+  if (ljets_vec.size()<2) return 0;
+
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
   
@@ -512,6 +516,7 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
   // compute hadronic W boson
   TLorentzVector pWhadron = pjet1 + pjet2;
 
+  TLorentzVector pmjj = ljets_vec[0]+ljets_vec[1];;
 
   vector<float> dRl0b;  vector<float> dRl1b;
   for(int i=0; i<Nbjets;i++){
@@ -573,7 +578,9 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
       hist_lep_dPhi[i]->Fill(abs(lep_4v[lead_lep].Phi()-lep_4v[sublead_lep].Phi()), weight_tot);
       hist_Whmass[i]->Fill(pWhadron.M()/1e3, weight_tot);
       hist_Whpt[i]->Fill(pWhadron.Pt()/1e3, weight_tot);
-      
+
+      hist_mjj[i]->Fill(pmjj.M()/1e3, weight_tot);
+
       hist_lep_truth_origin[i]->Fill(l0_true_origin, weight_tot);
       hist_lep_truth_origin[i]->Fill(l1_true_origin, weight_tot);
       hist_lep_truth_origin_0[i]->Fill(l0_true_origin, weight_tot);
@@ -671,6 +678,9 @@ void partlevel_wqq::Terminate()
       hist_lep_dPhi[i]->Write();
       hist_Whmass[i]->Write();
       hist_Whpt[i]->Write();
+
+      hist_mjj[i]->Write();
+
       hist_qcd_jet_Pt[i]->Write();
       hist_nqcd_jet_Pt[i]->Write();
       hist_lep_truth_origin[i]->Write();

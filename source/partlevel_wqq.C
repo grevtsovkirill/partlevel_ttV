@@ -352,7 +352,7 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
  
   float max_eta=  max ( fabs( l0_eta ), fabs( l1_eta ) ); 
 
-  int Njets=0, Nbjets=0, Ncjets=0;
+  int Njets=0, Nbjets=0, Ncjets=0, Nnonb=0;
   float HTall=0, HTjet=0; 
   vector<TLorentzVector> jets_vec;
   vector<TLorentzVector> ljets_vec;
@@ -391,7 +391,7 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
     }
     else{
       ljets_vec.push_back(jj);
-      
+      Nnonb ++;
       sel_ljet_true_origin.push_back(jet_true_origin[j]);
       
       if(jet_nGhosts_cHadron[j]>0){
@@ -506,7 +506,9 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
 
   // found W->qq
   //if (!found_w) return 0;
-  if (ljets_vec.size()<2) return 0;
+  //if (Nnonb!=ljets_vec.size()) cout<< "************* "<< ljets_vec.size()<< " Nnonb = "<<Nnonb<< endl;
+  if (Nnonb<2) return 0;
+  //if (ljets_vec.size()<2) return 0;
 
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
@@ -591,7 +593,7 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
       hist_lep_truth_type_0[i]->Fill(l0_true_type, weight_tot);
       hist_lep_truth_type_1[i]->Fill(l1_true_type, weight_tot);
 
-      for(int j=0; j<Njets;j++){
+      for(int j=0; j<Nnonb;j++){
 	if(sel_ljet_true_origin[j]==45){
 	  hist_qcd_jet_Pt[i]->Fill(ljets_vec[j].Pt()/1e3, weight_tot);
 	}

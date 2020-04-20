@@ -99,6 +99,7 @@ void overlay_per_sample(string sampleversion = "norm",  bool do_stack=false,bool
   Int_t color_sample[12]={632,868,867,865,801,802,805,922,921,920,0};//625
   //vector<string> type={"ttW","ttZee","ttZmumu","ttZqq","Wtz","ttWW","ttZtautau","fourTop","ttZnunu","threeTop","ttbar"}; //"ttW_aMC"
   vector<string> type={"ttbar"};
+  //vector<string> type={"ttW_aMC"};
   //vector<string> type={"ttW","ttW_aMC"};
   //vector<string> type={"ttWpartlevel","ttWreco"};
   //vector<string> type={"ttbar partlevel","ttbar reco"};
@@ -194,6 +195,7 @@ void overlay_per_sample(string sampleversion = "norm",  bool do_stack=false,bool
       h_var[i][j][0][t]->SetMaximum(h_var[i][j][0][t]->GetMaximum()*1.6); //1.6
       
       
+      //h_var[i][j][0][t]->SetAxisRange(0,100,"X"); 
       h_var[i][j][0][t]->Draw("E1");
       h_var[i][j][0][t]->Draw("histsame");
       
@@ -201,21 +203,26 @@ void overlay_per_sample(string sampleversion = "norm",  bool do_stack=false,bool
       h_var[i][j+1][0][t]->SetLineColor(color_sample[t+j]);
       h_var[i][j+1][0][t]->SetMarkerColor(color_sample[t+j]);
       h_var[i][j+1][0][t]->SetMarkerStyle(20+t);
-      
       h_var[i][j+1][0][t]->SetLineWidth(2);
+      //h_var[i][j+1][0][t]->SetAxisRange(0,100,"X"); 
+
       h_var[i][j+1][0][t]->Draw("E1histsame");
       //sprintf(ytest,"%0.2f",yields[type[t]]);
+      h_var[i][j][0][t]->SetAxisRange(0,100,"X"); 
+      h_var[i][j+1][0][t]->SetAxisRange(0,100,"X"); 
       
       sprintf(ytest,"%0.2f", h_var[i][j][0][t]->GetMean());
-      legend[i][j]->AddEntry(h_var[i][j][0][t],"           Mean ","");		
+      legend[i][j]->AddEntry(h_var[i][j][0][t],(type[t]+"    Mean ").c_str(),"");		
       legend[i][j]->AddEntry(h_var[i][j][0][t],(variable[j]+ "  "+ ytest).c_str(),leg_type.c_str());		
       sprintf(ytest,"%0.2f", h_var[i][j+1][0][t]->GetMean());
       legend[i][j]->AddEntry(h_var[i][j+1][0][t],(variable[j+1]+ "  "+ ytest).c_str(),leg_type.c_str());		
 
       //
       sprintf(sf_name,"ratio_%s_%s_%s",variable[j].c_str(),nj_reg[i].c_str(),type[t].c_str());   
-      h_var[i][j][3][t] = (TH1D*) h_var[i][j+1][0][t]->Clone(sf_name);
-      h_var[i][j][3][t]->Divide(h_var[i][j][0][0]);
+      h_var[i][j][3][t] = (TH1D*) h_var[i][j][0][t]->Clone(sf_name);
+      h_var[i][j][4][t] = (TH1D*) h_var[i][j][0][t]->Clone(sf_name);
+      h_var[i][j][3][t]->Divide(h_var[i][j+1][0][0]);
+      h_var[i][j][4][t]->Divide(h_var[i][j][0][0]);
 	  
       h_var[i][j][3][t]->GetXaxis()->SetTitleSize(0.14); 
       h_var[i][j][3][t]->GetYaxis()->SetTitleSize(0.14); 
@@ -246,8 +253,11 @@ void overlay_per_sample(string sampleversion = "norm",  bool do_stack=false,bool
 
       h_var[i][j][3][0]->SetMinimum(0.68);
       h_var[i][j][3][0]->SetMaximum(1.32);
-      h_var[i][j][3][0]->SetYTitle("nonQD/QCD");
+      h_var[i][j][3][0]->SetYTitle("QCD/nonQD");
       h_var[i][j][3][0]->Draw("hist");
+      h_var[i][j][4][0]->Draw("samehist");
+      pad2[i][j]->Update();
+      
       /* for(int t=1;t<type.size();t++){ */
       /* 	h_var[i][j][3][t]->SetLineWidth(3); */
       /* 	h_var[i][j][3][t]->SetLineColor(color_sample[t]); */

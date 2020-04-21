@@ -72,7 +72,7 @@ TH1D *hist_jjpt[10];
 TH1D *hist_mjj[10];
 vector<string> weight_names = {"MUR05_MUF05","MUR05_MUF1","MUR1_MUF05","MUR1_MUF1","MUR1_MUF2","MUR2_MUF1","MUR2_MUF2"};
  
-vector<string> region_names={"2b4j", ">0cjet","Wwidnow","Wwidnow>0cjet"};
+vector<string> region_names={"2b4j", ">0cjet","Wwidnow","Wwidnow>0cjet","WwidnowWpt"};
 void partlevel_wqq::Begin(TTree * /*tree*/)
 {
   TString option = GetOption();
@@ -540,6 +540,7 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
   sel_array[1]=(Nhtaus == 0 && Njets >= 4 && c_flag );  // 
   sel_array[2]=(Nhtaus == 0 && Njets >= 4 && abs(pmjj.M()-mWPDG)<1e4);
   sel_array[3]=(Nhtaus == 0 && Njets >= 4 && c_flag && abs(pmjj.M()-mWPDG)<1e4);  //
+  sel_array[4]=(Nhtaus == 0 && Njets >= 4 && abs(pmjj.M()-mWPDG)<1e4 && (pmjj.Pt()/1e3>90 ) );  //
   
   
   float met = *met_met/1000.;

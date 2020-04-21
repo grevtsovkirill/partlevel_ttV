@@ -529,12 +529,18 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
   Double_t dRlb[2];
   dRlb[0]= *min_element(dRl0b.begin(),dRl0b.end());
   dRlb[1]= *min_element(dRl1b.begin(),dRl1b.end());
-  
+
+  bool c_flag=false;
+  if(mqq_jet_true_type[0]==34 || mqq_jet_true_type[1]==34)
+    c_flag = true;
+    
+    //cout << "mqq_jet_true_type[0]= "<< mqq_jet_true_type[0] << "; mqq_jet_true_type[1] = "<< mqq_jet_true_type[1]<< ";  Ncjets = "<< Ncjets<<endl;
 
   sel_array[0]=(Nhtaus == 0 && Njets >= 4 );  // Region inclusive
-  sel_array[1]=(Nhtaus == 0 && Njets >= 4 && Ncjets>0 );  // 
+  sel_array[1]=(Nhtaus == 0 && Njets >= 4 && c_flag );  // 
   sel_array[2]=(Nhtaus == 0 && Njets >= 4 && abs(pmjj.M()-mWPDG)<1e4);
-  sel_array[3]=(Nhtaus == 0 && Njets >= 4 && Ncjets>0 && abs(pmjj.M()-mWPDG)<1e4);  //
+  sel_array[3]=(Nhtaus == 0 && Njets >= 4 && c_flag && abs(pmjj.M()-mWPDG)<1e4);  //
+  
   
   float met = *met_met/1000.;
 

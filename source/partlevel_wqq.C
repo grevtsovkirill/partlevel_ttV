@@ -533,14 +533,9 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
 
   sel_array[0]=(Nhtaus == 0 && Njets >= 4 );  // Region inclusive
   sel_array[1]=(Nhtaus == 0 && Njets >= 4 && Ncjets>0 );  // 
-  sel_array[2]=(Nhtaus == 0 && Njets >= 4 && abs(pWhadron.M()-mWPDG)<1e4);
-  sel_array[3]=(Nhtaus == 0 && Njets >= 4 && Ncjets>0 && abs(pWhadron.M()-mWPDG)<1e4);  //
+  sel_array[2]=(Nhtaus == 0 && Njets >= 4 && abs(pmjj.M()-mWPDG)<1e4);
+  sel_array[3]=(Nhtaus == 0 && Njets >= 4 && Ncjets>0 && abs(pmjj.M()-mWPDG)<1e4);  //
   
-  //sel_array[2]=(Nhtaus == 0 && Njets >= 4 && abs(mWPDG - pWhadron.M())/1e3<10 );  // Region 10GeV Wmass region
-  //sel_array[3]=(Nhtaus == 0 && Njets >= 4 && abs(mWPDG - pWhadron.M())/1e3<5 );  // Region 5GeV Wmass region
-
-  //cout << " -------====  Wmass =  "<< bestWmass << ", Njets = "<<Njets <<  ", Nbjets = "<<Nbjets <<  ", Ncjets = "<<Ncjets << ", dRlb[0] = " <<dRlb[0]<< ", dRlb[1] = " <<dRlb[1]  << endl;
-
   float met = *met_met/1000.;
 
   for(int i=0; i<(int)region_names.size();i++){

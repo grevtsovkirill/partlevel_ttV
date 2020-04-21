@@ -46,7 +46,6 @@ TH1D *hist_min_DRlb[10][5];
 
 TH1D *hist_Weights[10];
 TH1D *hist_Whmass[10];
-TH1D *hist_Whpt[10];
 TH1D *hist_lep_truth_origin[10];
 TH1D *hist_lep_truth_origin_0[10];
 TH1D *hist_lep_truth_origin_1[10];
@@ -69,6 +68,7 @@ TH2D *hist_mqqP_jet_truth_type[10];
 
 TH1D *hist_qcd_jet_Pt[10];
 TH1D *hist_nqcd_jet_Pt[10];
+TH1D *hist_jjpt[10];
 TH1D *hist_mjj[10];
 vector<string> weight_names = {"MUR05_MUF05","MUR05_MUF1","MUR1_MUF05","MUR1_MUF1","MUR1_MUF2","MUR2_MUF1","MUR2_MUF2"};
  
@@ -182,8 +182,8 @@ void partlevel_wqq::SlaveBegin(TTree * /*tree*/)
       hist_lep_dPhi[i] = new TH1D(("lep_dPhi_"+to_string(i)).c_str(), ("|#Delta#{#phi}_{ll}}| 2lOS"+region_names[i]+";|#{#Delta#phi}_{ll}|;Events").c_str(), 16, 0, 6.4);
 
       hist_Whmass[i] = new TH1D(("Whmass_"+to_string(i)).c_str(), ("m_{Wqq} "+region_names[i]+";m_{Wqq};Events").c_str(), 50, 50, 150); //420, 50, 410
-      hist_Whpt[i] = new TH1D(("Whpt_"+to_string(i)).c_str(), ("p_T^{Wqq} "+region_names[i]+";p_T^{Wqq};Events").c_str(),60,0,300 ); //w_binnum, w_bins
 
+      hist_jjpt[i] = new TH1D(("jjpt_"+to_string(i)).c_str(), ("p_T^{jj} "+region_names[i]+";p_T^{jj};Events").c_str(),60,0,300 ); //w_binnum, w_bins
       hist_mjj[i] = new TH1D(("mjj_"+to_string(i)).c_str(), ("m_{jj} "+region_names[i]+";m_{jj};Events").c_str(), 50, 50, 150); //420, 50, 410
 
       hist_qcd_jet_Pt[i] = new TH1D(("qcd_pt_"+to_string(i)).c_str(), ("p_T^{QCD} "+region_names[i]+";p_T^{QCD};Events").c_str(),60,0,300 ); //w_binnum, w_bins
@@ -580,8 +580,8 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
       hist_lep_Phi_1[i]->Fill(lep_4v[sublead_lep].Phi(), weight_tot);
       hist_lep_dPhi[i]->Fill(abs(lep_4v[lead_lep].Phi()-lep_4v[sublead_lep].Phi()), weight_tot);
       hist_Whmass[i]->Fill(pWhadron.M()/1e3, weight_tot);
-      hist_Whpt[i]->Fill(pWhadron.Pt()/1e3, weight_tot);
 
+      hist_jjpt[i]->Fill(pmjj.Pt()/1e3, weight_tot);
       hist_mjj[i]->Fill(pmjj.M()/1e3, weight_tot);
 
       hist_lep_truth_origin[i]->Fill(l0_true_origin, weight_tot);
@@ -680,7 +680,7 @@ void partlevel_wqq::Terminate()
       hist_lep_Phi_1[i]->Write();
       hist_lep_dPhi[i]->Write();
       hist_Whmass[i]->Write();
-      hist_Whpt[i]->Write();
+      hist_jjpt[i]->Write();
 
       hist_mjj[i]->Write();
 

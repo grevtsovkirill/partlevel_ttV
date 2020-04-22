@@ -37,8 +37,10 @@ void overlay_per_sample(string sampleversion = "norm",  bool do_stack=false,bool
   //vector<string> variable={"nJets","DRll01","Whmass","lep_Pt_0","lep_Pt_1","jet_Pt_4","jet_Pt_5","jet_Pt_6","Bjet_Pt_0","Bjet_Pt_1","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT_leps","HT","nBtagJets","MET","lep_Eta_0","lep_Eta_1","lep_Phi_0","lep_Phi_1","lep_dPhi","jet_Pt_1","jet_Pt_2","jet_Pt_3"}; //
   //,"DRll01"
   //vector<string> variable={"nJets","Whmass","Whpt","lep_Pt_0","lep_Pt_1","jet_Pt_4","jet_Pt_5","jet_Pt_6","Bjet_Pt_0","Bjet_Pt_1","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT_leps","HT","nBtagJets","MET","lep_Eta_0","lep_Eta_1","lep_Phi_0","lep_Phi_1","lep_dPhi","jet_Pt_1","jet_Pt_2","jet_Pt_3"}; //
-  vector<string> variable={"qcd_pt","nqcd_pt"};
-  vector<string> variable_X={"Jet p_T", "Non QCD",
+  //vector<string> variable={"qcd_pt","nqcd_pt"};
+  vector<string> variable={"mjj","Whmass"};
+  vector<string> variable_X={"m_{j0j1}","m_{Wqq}",
+			     "Jet p_T", "Non QCD",
 			     "Number of jets","Number of #font[52]{b}-jets",
 			     "m_{Wqq}","p_T^{Wqq}",
 			     //"min#Delta R_{l_{0},b}","min#Delta R_{l_{1},b}",
@@ -98,8 +100,9 @@ void overlay_per_sample(string sampleversion = "norm",  bool do_stack=false,bool
   //632,
   Int_t color_sample[12]={632,868,867,865,801,802,805,922,921,920,0};//625
   //vector<string> type={"ttW","ttZee","ttZmumu","ttZqq","Wtz","ttWW","ttZtautau","fourTop","ttZnunu","threeTop","ttbar"}; //"ttW_aMC"
-  vector<string> type={"ttbar"};
+  //vector<string> type={"ttbar"};
   //vector<string> type={"ttW_aMC"};
+  vector<string> type={"ttW"};
   //vector<string> type={"ttW","ttW_aMC"};
   //vector<string> type={"ttWpartlevel","ttWreco"};
   //vector<string> type={"ttbar partlevel","ttbar reco"};
@@ -208,8 +211,8 @@ void overlay_per_sample(string sampleversion = "norm",  bool do_stack=false,bool
 
       h_var[i][j+1][0][t]->Draw("E1histsame");
       //sprintf(ytest,"%0.2f",yields[type[t]]);
-      h_var[i][j][0][t]->SetAxisRange(0,100,"X"); 
-      h_var[i][j+1][0][t]->SetAxisRange(0,100,"X"); 
+      //h_var[i][j][0][t]->SetAxisRange(0,100,"X"); 
+      //h_var[i][j+1][0][t]->SetAxisRange(0,100,"X"); 
       
       sprintf(ytest,"%0.2f", h_var[i][j][0][t]->GetMean());
       legend[i][j]->AddEntry(h_var[i][j][0][t],(type[t]+"    Mean ").c_str(),"");		
@@ -253,7 +256,8 @@ void overlay_per_sample(string sampleversion = "norm",  bool do_stack=false,bool
 
       h_var[i][j][3][0]->SetMinimum(0.68);
       h_var[i][j][3][0]->SetMaximum(1.32);
-      h_var[i][j][3][0]->SetYTitle("QCD/nonQD");
+      //h_var[i][j][3][0]->SetYTitle("QCD/nonQD");
+      h_var[i][j][3][0]->SetYTitle("ratio");
       h_var[i][j][3][0]->Draw("hist");
       h_var[i][j][4][0]->Draw("samehist");
       pad2[i][j]->Update();

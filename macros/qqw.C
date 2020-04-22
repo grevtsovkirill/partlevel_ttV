@@ -28,15 +28,15 @@ void qqw(string sampleversion = "xs",  bool do_stack=true,bool do_log = true, bo
   TH1D* h_var[10][35][20][50];
   TH1D* h_allMC[10][35][20][50];
 
-  //vector<string>  nj_reg={"0"};vector<string> region_names={"2b4j"};
-  vector<string>  nj_reg={"0","1","2","3","4"};  vector<string> region_names={"2b4j","2b4j>0c","2b4jww","2b4jww>0c","2b4jwwJJpt"};
+  vector<string>  nj_reg={"0"};vector<string> region_names={"2b4j"};
+  //vector<string>  nj_reg={"0","1","2","3","4"};  vector<string> region_names={"2b4j","2b4j>0c","2b4jww","2b4jww>0c","2b4jwwJJpt"};
   //vector<string> variable={"nJets"};//,"Whmass","Whpt","DRlb0","DRlb1","DRlb2","DRlb3"};
-  //vector<string> variable={"mjj","nJets","Whmass","Whpt",};//,"DRlb0","DRlb1","leps_tr_type","leps_tr_origin","jets_tr_type","jets_tr_origin"};
+  vector<string> variable={"mjj","nJets","Whmass"};//,"DRlb0","DRlb1","leps_tr_type","leps_tr_origin","jets_tr_type","jets_tr_origin"};
   //,"DRlb2","DRlb3"
   //vector<string> variable={"nJets","DRll01","Whmass","lep_Pt_0","lep_Pt_1","jet_Pt_4","jet_Pt_5","jet_Pt_6","Bjet_Pt_0","Bjet_Pt_1","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT_leps","HT","nBtagJets","MET","lep_Eta_0","lep_Eta_1","lep_Phi_0","lep_Phi_1","lep_dPhi","jet_Pt_1","jet_Pt_2","jet_Pt_3"}; //
   //,"DRll01"
 
-  vector<string> variable={"mjj","nJets","Whmass","jjpt","lep_Pt_0","lep_Pt_1","jet_Pt_4","jet_Pt_5","jet_Pt_6","Bjet_Pt_0","Bjet_Pt_1","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT_leps","HT","nBtagJets","MET","lep_Eta_0","lep_Eta_1","lep_Phi_0","lep_Phi_1","lep_dPhi","jet_Pt_1","jet_Pt_2","jet_Pt_3","jets_tr_type","jets_tr_origin"}; //
+  //vector<string> variable={"mjj","nJets","Whmass","jjpt","lep_Pt_0","lep_Pt_1","jet_Pt_4","jet_Pt_5","jet_Pt_6","Bjet_Pt_0","Bjet_Pt_1","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT_leps","HT","nBtagJets","MET","lep_Eta_0","lep_Eta_1","lep_Phi_0","lep_Phi_1","lep_dPhi","jet_Pt_1","jet_Pt_2","jet_Pt_3","jets_tr_type","jets_tr_origin"}; //
   vector<string> variable_X={"m_{j0j1}","Number of jets","m_{Wqq}","p_T^{Wqq}",
 			     //"min#Delta R_{l_{0},b}","min#Delta R_{l_{1},b}",
 			     //"Leps TruthType","Leps Origin","Jets TruthType","Jets Origin",
@@ -108,11 +108,27 @@ void qqw(string sampleversion = "xs",  bool do_stack=true,bool do_log = true, bo
   sample_map["fourTop"]= "410080"; // non-zero
   sample_map["ttWW"]= "410081"; // non-zero
   sample_map["Wtz"]= "410408";  // non-zero
+
+
+  //reco:
+  /*
+    ttHsemilep 345874
+    ttHdilep 345875
+    ZqqZll 363356
+    WqqZvv 363357
+    WqqZll 363358
+    WpqqWmlv 363359
+    llvvjj 364285
+   */
+  user.pfalke.363356.Sherpa.DAOD_HIGG8D1.e5525_s3126_r10201_r10210_p3983.FS_mc16d_ttWprod_v2_output.root
   //           '304014_threeTop','410080_fourTop','410081_ttww','410408_WtZ']
 
   //632,
-  Int_t color_sample[12]={632,868,867,865,801,802,805,922,921,920,0};//625
-  vector<string> type={"ttW","ttZee","ttZmumu","ttZqq","Wtz","ttWW","ttZtautau","fourTop","ttZnunu","threeTop","ttbar"}; //"ttW_aMC"
+  //  Int_t color_sample[12]={632,868,867,865,801,802,805,922,921,920,0};//625
+  //vector<string> type={"ttW","ttZee","ttZmumu","ttZqq","Wtz","ttWW","ttZtautau","fourTop","ttZnunu","threeTop","ttbar"}; //"ttW_aMC"
+  //reco:
+  Int_t color_sample[12]={632,868,867,865,0,801,802,805,922,921,920};//625
+  vector<string> type={"ttW","ttZee","ttZmumu","ttZtautau","ttbarNH"}; //"ttW_aMC"
   //  vector<string> type={"ttbar"};
   //vector<string> type={"ttW","ttbar"};
   //vector<string> type={"ttW","ttW_aMC"};
@@ -124,11 +140,14 @@ void qqw(string sampleversion = "xs",  bool do_stack=true,bool do_log = true, bo
   string pathversion = "v3_ljgeq2"; //v2_MCTC_0 v1_truthInfo //v1_e2b_lJqq, v2_ctag_minDRlb //v1_truthInfo_newXS //reco_v0_gn1v0
 
   string leg_type="f";  
-  string reco_part=""; //"reco_";
+  string reco_part=""; //
+  reco_part="reco_"; pathversion="reco_v3_matchpartlev_medium";
   //=false;
   
   //if (sampleversion != "norm")
   //  do_log=true;
+  //file[0][0] = TFile::Open("input/Wqq/v3_ljgeq2/wqq_413008_xs.root"); 
+  //file[0][1] = TFile::Open("input/Wqq/reco_v3_matchpartlev_medium/wqq_reco_413008_xs.root"); 
   //file[0][0] = TFile::Open("input/Wqq/v2_MCTC_0/wqq_410472_xs.root"); 
   //file[0][1] = TFile::Open("input/Wqq/reco_v0_gn1v0/wqq_reco_410218_xs.root"); 
   //file[0][1] = TFile::Open("input/Wqq/reco_v0_gn1v0/wqq_reco_410470_xs.root");
@@ -226,7 +245,7 @@ void qqw(string sampleversion = "xs",  bool do_stack=true,bool do_log = true, bo
 	h_var[i][j][0][t]->SetMarkerColor(color_sample[t]);
 	h_var[i][j][0][t]->SetMarkerStyle(20+t);
 	if(do_stack)	h_var[i][j][0][t]->SetFillColor(color_sample[t]);
-	if(type[t]=="ttbar"){
+	if(type[t]=="ttbar" || type[t]=="ttbarNH"){
 	  h_var[i][j][0][t]->SetLineColor(1);
 	  h_var[i][j][0][t]->SetMarkerColor(1);
 	}
@@ -378,7 +397,7 @@ void qqw(string sampleversion = "xs",  bool do_stack=true,bool do_log = true, bo
 	  h_var[i][j][3][t]->SetLineWidth(3);
 	  h_var[i][j][3][t]->SetLineColor(color_sample[t]);
 	  h_var[i][j][3][t]->SetMarkerColor(color_sample[t]);
-	  if(type[t]=="ttbar"){
+	  if(type[t]=="ttbar" || type[t]=="ttbarNH"){
 	    h_var[i][j][3][t]->SetLineColor(1);
 	    h_var[i][j][3][t]->SetMarkerColor(1);
 	  }
@@ -391,8 +410,8 @@ void qqw(string sampleversion = "xs",  bool do_stack=true,bool do_log = true, bo
 	
 
       
-      sprintf(o_name,"WqqPlots/v3/v3_inclusive/%s.pdf",canvas_name);   // v2_ttWOnlytruth v2_ttbarOnlytruth
-      canv[i][j]->Print(o_name);
+      sprintf(o_name,"WqqPlots/v3/v3_ttwreco_part/%s.pdf",canvas_name);   // v2_ttWOnlytruth v2_ttbarOnlytruth
+      //canv[i][j]->Print(o_name);
   
     }
   }

@@ -9,7 +9,7 @@
 #include <map>
 
 TH1F *h_cutflow_2l[2];
-int debug=10;
+int debug=11;
 string input_name="";
 string input_option="";
 string comp_name="";
@@ -345,6 +345,8 @@ Bool_t reco_wqq::Process(Long64_t entry)
     //check option of getting c-tagger
   }
 
+  if(debug==11 && *nJets_OR>6)
+    cout <<  " Njets = "<<Njets << ",  *nJets_OR ="<<*nJets_OR <<  ", Nbjets = "<<Nbjets   << endl;
 
   // if(Njets<3 || Nbjets<1) return 0;
   if(*nJets_OR<4) return 0;
@@ -404,6 +406,9 @@ Bool_t reco_wqq::Process(Long64_t entry)
   TLorentzVector pWhadron = pjet1 + pjet2;
   if(debug==9)
     cout << " - Wmass =  "<< pWhadron.M()/1e3 << "; pmjj = "<<pmjj.M()/1e3 << ", Njets = "<<Njets <<  ", Nbjets = "<<Nbjets   << endl;
+
+  if(debug==12)
+    cout <<  " Njets = "<<Njets << ",  *nJets_OR ="<<*nJets_OR <<  ", Nbjets = "<<Nbjets   << endl;
 
   /*
  

@@ -134,6 +134,14 @@ void reco_wqq::SlaveBegin(TTree * /*tree*/)
   xs_map["410081"]= 0.0080975 * 1.2231 ;
   xs_map["410408"]= 0.016046 * 1.0 ;
 
+  xs_map["345874"]=  0.22276 * 1.0 ;
+  xs_map["345875"]=  0.05343 * 1.0 ;
+  xs_map["363356"]=  15.563  * 0.13961 ;
+  xs_map["363357"]=  6.7973 * 1.0 ;
+  xs_map["363358"]=  3.437 * 1.0 ;
+  xs_map["363359"]=  24.717 * 1.0 ;
+  xs_map["364285"]=  0.1163 * 1.0 ;
+
 
   std::cout << "input_name ="<< input_name<< ", comp_name - "<< comp_name<< ", xs = "<<xs_map[input_name] << std::endl;  
   Double_t gen_xs=1;

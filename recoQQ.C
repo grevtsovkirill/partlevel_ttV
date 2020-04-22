@@ -7,7 +7,7 @@ void recoQQ(string name="413008", string comp="xs", bool onNAF = true, bool mult
   string choose_tag="d";
   string tmp="";
   string path="";
-  string prod_version = "GFW1_v0_0320"; //
+  string prod_version = "GFW1_v1_0422"; //
   if(onNAF)
     path="/nfs/dust/atlas/group/top/ttH_ML/ttW_run2/ttWqq/Reco_files/"+prod_version+"/mc16"+choose_tag+"/";  
   else

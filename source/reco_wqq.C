@@ -124,7 +124,8 @@ void reco_wqq::SlaveBegin(TTree * /*tree*/)
   xs_map["410219"]= 0.036895 * 1.12 ;
   xs_map["410220"]= 0.036599 * 1.12 ;
   xs_map["410472"]= 76.95 * 1.1398;
-  xs_map["410470"]= 396.87 * 1.1398;
+  xs_map["410470"]= 396.87 * 1.1398;  
+  xs_map["410470_0"]= 396.87 * 1.1398; xs_map["410470_1"]= 396.87 * 1.1398; xs_map["410470_2"]= 396.87 * 1.1398; xs_map["410470_3"]= 396.87 * 1.1398;  xs_map["410470_4"]= 396.87 * 1.1398; xs_map["410470_5"]= 396.87 * 1.1398; xs_map["410470_6"]= 396.87 * 1.1398; xs_map["410470_7"]= 396.87 * 1.1398;
   xs_map["410658"]= 36.993 * 1.191;
   xs_map["410659"]= 22.175 * 1.183;
   xs_map["410644"]= 2.0268 * 1.015 ;
@@ -252,8 +253,13 @@ Bool_t reco_wqq::Process(Long64_t entry)
   weight_to_use = (36074.6*(*randomRunNumber<=311481)+43813.7*(*randomRunNumber>311481 && *randomRunNumber <=341649)+58450.1*(*randomRunNumber>341649))
     * *weight_pileup
     * *weight_jvt
+    * *weight_mc
     * totalEventsWeighted;
 
+  if(debug<21 && weight_to_use>10)
+    cout << "*weight_pileup= "<< *weight_pileup << " *weight_jvt="<< *weight_jvt << " totalEventsWeighted="<< totalEventsWeighted<< "; randomRunNumber= "<< *randomRunNumber
+	 << '\n'<< weight_to_use << endl;
+  
   weight_tot=weight_to_use ;
   //cout<< "weight_tot = "<< weight_tot<< endl;
   int cf_counter=0;

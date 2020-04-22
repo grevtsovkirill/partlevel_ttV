@@ -9,7 +9,7 @@
 #include <map>
 
 TH1F *h_cutflow_2l[2];
-int debug=11;
+int debug=20;
 string input_name="";
 string input_option="";
 string comp_name="";
@@ -77,16 +77,7 @@ TH1D *hist_jet_truth_type[10];
 
 vector<string> weight_names = {"MUR05_MUF05","MUR05_MUF1","MUR1_MUF05","MUR1_MUF1","MUR1_MUF2","MUR2_MUF1","MUR2_MUF2"};
 
-  /* sel_array[0]=(Nhtaus == 0 && Njets >= 4 );  // Region inclusive                                                                                                                                                                    */
-  /* sel_array[1]=(Nhtaus == 0 && Njets >= 4 && abs(mWPDG - pWhadron.M())/1e3<20 );  // Region 20GeV Wmass region                                                                                                                       */
-  /* sel_array[2]=(Nhtaus == 0 && Njets >= 4 && abs(mWPDG - pWhadron.M())/1e3<10 );  // Region 10GeV Wmass region                                                                                                                       */
-  /* sel_array[3]=(Nhtaus == 0 && Njets >= 4 && abs(mWPDG - pWhadron.M())/1e3<5 );  // Region 5GeV Wmass region    */
-
- 
-vector<string> region_names={"2b4j","2b4j","Wwidnow","Wwidnow","WwidnowWpt"}; //,"Wwidnow>0cjet"
-//vector<string> region_names={"0#tau_{had} 1#font[52]{b} #geq4#font[52]{j}", "0#tau_{had} #geq2#font[52]{b} #geq4#font[52]{j}","0#tau_{had} 1#font[52]{b} 3#font[52]{j}", "0#tau_{had} #geq2#font[52]{b} 3#font[52]{j}","1#tau_{had} #geq1#font[52]{b} #geq3#font[52]{j}", "0t=3j","0tg4j","otg3g0b"};
-//,
-			     //"1t 1b 4j", "1t 2b 4j","1t 1b 3j", "1t 2b 3j"};
+vector<string> region_names={">1b4j","2b4j","2bWm","1bWm","2bWmPt","1bWmPt"};
 
 void reco_wqq::Begin(TTree * /*tree*/)
 {
@@ -149,10 +140,11 @@ void reco_wqq::SlaveBegin(TTree * /*tree*/)
   gen_xs=xs_map[input_name];
   totalEventsWeighted=gen_xs/smw; //*1e3 match units of integrated luminosity to be in pb
   //Acc=1/smw;
-  
+
+
   const std::vector<TString> s_cutDescs =
-    {  "Preselections","Nleps","lepPt1>20","lepPt0>25","lepCentr","lepID","OS","4j","2b","0tau",
-       ">2nonb", "4j2b","4j2b","Wjj","Wqq","WjjPtjj"};//"w>20","w>10","w>5"
+    {  "Preselections","Nleps","lepPt1>20","lepPt0>25","lepCentr","lepID","OS","4j",">1b","0tau",
+       ">2nonb", "4j","4j2b","2bWjj",">1bWjj","2bWjjPtjj","1bWjjPtjj"};//"w>20","w>10","w>5"
   int Ncuts = s_cutDescs.size();
   h_cutflow_2l[0] = new TH1F("cf2l","cf2l",Ncuts,0,Ncuts);
   h_cutflow_2l[1] = new TH1F("cf2l_raw","cf2l_raw",Ncuts,0,Ncuts);
@@ -262,14 +254,14 @@ Bool_t reco_wqq::Process(Long64_t entry)
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
 
-  if(debug==5)
+  if(debug<5)
       cout<< "dilep_type="<<*dilep_type<<"  *nJets_OR ="<<*nJets_OR<<endl;
   //Nleps
   if(!*dilep_type) return 0;
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
 
-  if(debug==5)
+  if(debug<5)
       cout<< "lep_Pt_1="<<*lep_Pt_1<<"  *nJets_OR ="<<*nJets_OR<<endl;
 
   //lep Pt cuts
@@ -277,7 +269,7 @@ Bool_t reco_wqq::Process(Long64_t entry)
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
 
-  if(debug==5)
+  if(debug<5)
     cout<< "lep_Pt_0="<<*lep_Pt_0<<"  *nJets_OR ="<<*nJets_OR<<endl;
 
   if(*lep_Pt_0<25*1e3) return 0;  
@@ -285,14 +277,14 @@ Bool_t reco_wqq::Process(Long64_t entry)
   cf_counter++;
 
 
-  if(debug==5)
+  if(debug<5)
     cout<< "lep_Eta_0="<<*lep_Eta_0<<"  *nJets_OR ="<<*nJets_OR<<endl;
 //lep eta cuts
   if(abs(*lep_Eta_0)>2.5||abs(*lep_Eta_1)>2.5) return 0;  
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
 
-  if(debug==6)
+  if(debug<6)
     cout<< "lep_isMedium_0="<<int(*lep_isMedium_0)<< " lep_isMedium_1="<<int(*lep_isMedium_1)<<"  *nJets_OR ="<<*nJets_OR<<endl;
 
   //tight leptons
@@ -300,7 +292,7 @@ Bool_t reco_wqq::Process(Long64_t entry)
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
 
-  if(debug==7)
+  if(debug<7)
     cout<< "OS => lep_ID_0="<<*lep_ID_0<< " lep_ID_1="<<*lep_ID_1<<"  *nJets_OR ="<<*nJets_OR<<endl;
   
   //OS
@@ -322,48 +314,54 @@ Bool_t reco_wqq::Process(Long64_t entry)
   vector<TLorentzVector> jets_vec;
   vector<TLorentzVector> bjets_vec;
   vector<TLorentzVector> nonbjets_vec;
-  //if(debug==7)
+  //if(debug<7)
   //cout<< "   jets_pt[0] "<<jets_pt[0]/1000<<"  *nJets_OR ="<<*nJets_OR<<endl;
   
-  for(int j=0;j< *nJets_OR; j++){
-    if(jets_pt[j]/1000.<25){
-      lowjets++;      
-      return 0;
-    }    
-    if(fabs(jets_eta[j])>2.5) return 0;
-    Njets++;
-    TLorentzVector jj;
-    jj.SetPtEtaPhiE(jets_pt[j],jets_eta[j],jets_phi[j],jets_e[j]);
-    jets_vec.push_back(jj);
+  for(int j=0;j< int(*nJets_OR); j++){
+    if(j<6){
+      if(jets_pt[j]/1000.<25){
+	lowjets++;      
+	cout<< "   jets_pt["<<j<<"] "<<jets_pt[j]/1000<<"  *nJets_OR ="<<*nJets_OR<<endl;  
+	return 0;
+      }    
+      if(fabs(jets_eta[j])>2.5) return 0;
 
-    if(jets_btag[j]>0){
-      Nbjets++;
-      bjets_vec.push_back(jj);
+      Njets++;
+      TLorentzVector jj;
+      jj.SetPtEtaPhiE(jets_pt[j],jets_eta[j],jets_phi[j],jets_e[j]);
+      jets_vec.push_back(jj);
+
+      if(jets_btag[j]>0){
+	Nbjets++;
+	bjets_vec.push_back(jj);
+      }
+      else
+	nonbjets_vec.push_back(jj);
+      //check option of getting c-tagger
     }
-    else
-      nonbjets_vec.push_back(jj);
-    //check option of getting c-tagger
   }
 
-  if(debug==11 && *nJets_OR>6)
-    cout <<  " Njets = "<<Njets << ",  *nJets_OR ="<<*nJets_OR <<  ", Nbjets = "<<Nbjets   << endl;
 
-  // if(Njets<3 || Nbjets<1) return 0;
+  if(debug<11 && *nJets_OR>6){
+    cout <<  " Njets = "<<Njets << ",  *nJets_OR ="<<*nJets_OR <<  ", Nbjets = "<<Nbjets   << endl;
+  }
+
+
   if(*nJets_OR<4) return 0;
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
   
-  if(debug==8)
+  if(debug<8)
     cout<< "nB => *nJets_OR_DL1r_70="<<*nJets_OR_DL1r_70 << ", Nbjets = "<< Nbjets<<"  *nJets_OR ="<<*nJets_OR<<endl;
 
   //Bjets
-  if(*nJets_OR_DL1r_70!=2) return 0;
+  if(*nJets_OR_DL1r_70<1) return 0;
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
 
 
 
-  if(debug==8)
+  if(debug<8)
     cout<< "tau => ="<<*nTaus_OR_Pt25<<"  *nJets_OR ="<<*nJets_OR<<endl;
 
   // 0-taus
@@ -371,8 +369,10 @@ Bool_t reco_wqq::Process(Long64_t entry)
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
 
-  Njets = *nJets_OR;
-  //cout << " -------  search for  Wqq:   jets_vec.size() = "<< jets_vec.size()  << endl;
+  if (nonbjets_vec.size()<2) return 0;
+  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
+  cf_counter++;
+
   double bestWmass = 1000.0*1e6;
   double mWPDG = 80.399*1e3;
   int Wj1index = -1, Wj2index = -1;
@@ -387,27 +387,23 @@ Bool_t reco_wqq::Process(Long64_t entry)
       }
     }
   }
-
-  TLorentzVector pmjj = nonbjets_vec[0]+nonbjets_vec[1];
   
-  if(debug==10 && *nJets_OR_DL1r_70!=Nbjets){
+  if(debug<10 && *nJets_OR_DL1r_70!=Nbjets){
     cout<< "nB => *nJets_OR_DL1r_70="<<*nJets_OR_DL1r_70 << ", Nbjets = "<< Nbjets<<"  *nJets_OR ="<<*nJets_OR<<endl;
   }
 
 
-  // found W->qq
-  if (nonbjets_vec.size()<2) return 0;
-  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
-  cf_counter++;
-  
+
+  TLorentzVector pmjj = nonbjets_vec[0]+nonbjets_vec[1];
+
   TLorentzVector pjet1 = nonbjets_vec[Wj1index];
   TLorentzVector pjet2 = nonbjets_vec[Wj2index];
   // compute hadronic W boson
   TLorentzVector pWhadron = pjet1 + pjet2;
-  if(debug==9)
+  if(debug<9)
     cout << " - Wmass =  "<< pWhadron.M()/1e3 << "; pmjj = "<<pmjj.M()/1e3 << ", Njets = "<<Njets <<  ", Nbjets = "<<Nbjets   << endl;
 
-  if(debug==12)
+  if(debug<12)
     cout <<  " Njets = "<<Njets << ",  *nJets_OR ="<<*nJets_OR <<  ", Nbjets = "<<Nbjets   << endl;
 
   /*
@@ -454,12 +450,17 @@ Bool_t reco_wqq::Process(Long64_t entry)
   */  
   
   float max_eta=  max ( fabs( *lep_Eta_0 ), fabs( *lep_Eta_1 ) );  
+
+  Njets = *nJets_OR;
+  Nbjets = *nJets_OR_DL1r_70;
+
   sel_array[0]=( Njets >= 4 );  // Region inclusive
-  sel_array[1]=( Njets >= 4  );  // && Ncjets>0
-  sel_array[2]=(Njets >= 4 && abs(pmjj.M()-mWPDG)<1e4);  
-  sel_array[3]=(Njets >= 4 && abs(pWhadron.M()-mWPDG)<1e4);  // && Ncjets>0
-  sel_array[4]=(Njets >= 4 && abs(pmjj.M()-mWPDG)<1e4 && (pmjj.Pt()/1e3>90 ) );  //
-  
+  sel_array[1]=( Njets >= 4 && Nbjets==2  );  // && Ncjets>0
+  sel_array[2]=(Njets >= 4 && Nbjets==2 && abs(pmjj.M()-mWPDG)<1e4);  
+  sel_array[3]=(Njets >= 4 && abs(pmjj.M()-mWPDG)<1e4);  // && Ncjets>0
+  sel_array[4]=(Njets >= 4 && Nbjets==2 && abs(pmjj.M()-mWPDG)<1e4 && (pmjj.Pt()/1e3>90 ) );  //
+  sel_array[5]=(Njets >= 4 && abs(pmjj.M()-mWPDG)<1e4 && (pmjj.Pt()/1e3>90 ) );  //
+
   float met = *met_met/1000.;
   for(int i=0; i<(int)region_names.size();i++){
     if(sel_array[i]){

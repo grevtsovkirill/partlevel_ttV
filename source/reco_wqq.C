@@ -77,7 +77,7 @@ TH1D *hist_jet_truth_type[10];
 
 vector<string> weight_names = {"MUR05_MUF05","MUR05_MUF1","MUR1_MUF05","MUR1_MUF1","MUR1_MUF2","MUR2_MUF1","MUR2_MUF2"};
 
-vector<string> region_names={">1b4j","2b4j","2bWm","1bWm","2bWmPt","1bWmPt"};
+vector<string> region_names={"2b4j",">1b4j","2bWm","1bWm","2bWmPt","1bWmPt"};
 
 void reco_wqq::Begin(TTree * /*tree*/)
 {
@@ -144,7 +144,7 @@ void reco_wqq::SlaveBegin(TTree * /*tree*/)
 
   const std::vector<TString> s_cutDescs =
     {  "Preselections","Nleps","lepPt1>20","lepPt0>25","lepCentr","lepID","OS","4j",">1b","0tau",
-       ">2nonb", "4j","4j2b","2bWjj",">1bWjj","2bWjjPtjj","1bWjjPtjj"};//"w>20","w>10","w>5"
+       ">2nonb", "4j2b","4j","2bWjj",">1bWjj","2bWjjPtjj","1bWjjPtjj"};//"w>20","w>10","w>5"
   int Ncuts = s_cutDescs.size();
   h_cutflow_2l[0] = new TH1F("cf2l","cf2l",Ncuts,0,Ncuts);
   h_cutflow_2l[1] = new TH1F("cf2l_raw","cf2l_raw",Ncuts,0,Ncuts);
@@ -454,8 +454,8 @@ Bool_t reco_wqq::Process(Long64_t entry)
   Njets = *nJets_OR;
   Nbjets = *nJets_OR_DL1r_70;
 
-  sel_array[0]=( Njets >= 4 );  // Region inclusive
-  sel_array[1]=( Njets >= 4 && Nbjets==2  );  // && Ncjets>0
+  sel_array[0]=( Njets >= 4 && Nbjets==2 );  // Region inclusive
+  sel_array[1]=( Njets >= 4  );  // && Ncjets>0
   sel_array[2]=(Njets >= 4 && Nbjets==2 && abs(pmjj.M()-mWPDG)<1e4);  
   sel_array[3]=(Njets >= 4 && abs(pmjj.M()-mWPDG)<1e4);  // && Ncjets>0
   sel_array[4]=(Njets >= 4 && Nbjets==2 && abs(pmjj.M()-mWPDG)<1e4 && (pmjj.Pt()/1e3>90 ) );  //

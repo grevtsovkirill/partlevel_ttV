@@ -109,7 +109,13 @@ void qqw(string sampleversion = "xs",  bool do_stack=true,bool do_log = true, bo
   sample_map["ttWW"]= "410081"; // non-zero
   sample_map["Wtz"]= "410408";  // non-zero
 
-
+  sample_map["ttHsemilep"]= "345874";  // 
+  sample_map["ttHdilep"]= "345875";  // 
+  sample_map["ZqqZll"]= "363356";  //
+  sample_map["WqqZvv"]= "363357";  //
+  sample_map["WqqZll"]= "363358";  //
+  sample_map["WpqqWmlv"]= "363359";  //   
+  sample_map["llvvjj"]= "364285";  //   
   //reco:
   /*
     ttHsemilep 345874

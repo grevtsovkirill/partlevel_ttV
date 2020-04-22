@@ -151,8 +151,8 @@ void reco_wqq::SlaveBegin(TTree * /*tree*/)
   //Acc=1/smw;
   
   const std::vector<TString> s_cutDescs =
-    {  "Preselections","Nleps","lepPt1>20","lepPt0>25","lepCentr","tightLeps","OS","2b","4j","0tau",
-       "Whad", "4j2b","Wwind"};//"w>20","w>10","w>5"
+    {  "Preselections","Nleps","lepPt1>20","lepPt0>25","lepCentr","lepID","OS","4j","2b","0tau",
+       ">2nonb", "4j2b","4j2b","Wjj","Wqq","WjjPtjj"};//"w>20","w>10","w>5"
   int Ncuts = s_cutDescs.size();
   h_cutflow_2l[0] = new TH1F("cf2l","cf2l",Ncuts,0,Ncuts);
   h_cutflow_2l[1] = new TH1F("cf2l_raw","cf2l_raw",Ncuts,0,Ncuts);
@@ -161,9 +161,8 @@ void reco_wqq::SlaveBegin(TTree * /*tree*/)
     h_cutflow_2l[1]->GetXaxis()->SetBinLabel(bin,s_cutDescs[bin-1]);
   }
 
-
-    Float_t ht_bins[]={0,120,180,240,300,360,440,540,680,900,1500}; Int_t  ht_binnum = sizeof(ht_bins)/sizeof(Float_t) - 1;
-    Float_t ht_j_bins[]={0,90,140,180,240,300,380,460,540,650,850,1500}; Int_t  ht_j_binnum = sizeof(ht_j_bins)/sizeof(Float_t) - 1;
+  Float_t ht_bins[]={0,120,180,240,300,360,440,540,680,900,1500}; Int_t  ht_binnum = sizeof(ht_bins)/sizeof(Float_t) - 1;
+  Float_t ht_j_bins[]={0,90,140,180,240,300,380,460,540,650,850,1500}; Int_t  ht_j_binnum = sizeof(ht_j_bins)/sizeof(Float_t) - 1;
     Float_t ht_l_bins[]={0,20,50,80,110,150,200,300,400,550,800}; Int_t  ht_l_binnum = sizeof(ht_l_bins)/sizeof(Float_t) - 1;
     Float_t met_bins[]={0,20,50,80,120,180,300,500,1200}; Int_t  met_binnum = sizeof(met_bins)/sizeof(Float_t) - 1;
     Float_t lep_bins[]={0,20,25,33,45,60,80,110,160,500}; Int_t  lep_binnum = sizeof(lep_bins)/sizeof(Float_t) - 1;
@@ -345,6 +344,12 @@ Bool_t reco_wqq::Process(Long64_t entry)
       nonbjets_vec.push_back(jj);
     //check option of getting c-tagger
   }
+
+
+  // if(Njets<3 || Nbjets<1) return 0;
+  if(*nJets_OR<4) return 0;
+  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
+  cf_counter++;
   
   if(debug==8)
     cout<< "nB => *nJets_OR_DL1r_70="<<*nJets_OR_DL1r_70 << ", Nbjets = "<< Nbjets<<"  *nJets_OR ="<<*nJets_OR<<endl;
@@ -355,10 +360,6 @@ Bool_t reco_wqq::Process(Long64_t entry)
   cf_counter++;
 
 
-  // if(Njets<3 || Nbjets<1) return 0;
-  if(*nJets_OR<4) return 0;
-  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
-  cf_counter++;
 
   if(debug==8)
     cout<< "tau => ="<<*nTaus_OR_Pt25<<"  *nJets_OR ="<<*nJets_OR<<endl;
@@ -450,7 +451,6 @@ Bool_t reco_wqq::Process(Long64_t entry)
   float max_eta=  max ( fabs( *lep_Eta_0 ), fabs( *lep_Eta_1 ) );  
   sel_array[0]=( Njets >= 4 );  // Region inclusive
   sel_array[1]=( Njets >= 4  );  // && Ncjets>0
-  //sel_array[2]=( Njets >= 4 && abs(pWhadron.M()-mWPDG)<1e4);
   sel_array[2]=(Njets >= 4 && abs(pmjj.M()-mWPDG)<1e4);  
   sel_array[3]=(Njets >= 4 && abs(pWhadron.M()-mWPDG)<1e4);  // && Ncjets>0
   sel_array[4]=(Njets >= 4 && abs(pmjj.M()-mWPDG)<1e4 && (pmjj.Pt()/1e3>90 ) );  //

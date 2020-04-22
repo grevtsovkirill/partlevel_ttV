@@ -28,15 +28,15 @@ void qqw(string sampleversion = "xs",  bool do_stack=true,bool do_log = true, bo
   TH1D* h_var[10][35][20][50];
   TH1D* h_allMC[10][35][20][50];
 
-  vector<string>  nj_reg={"0"};vector<string> region_names={"2b4j"};
-  //vector<string>  nj_reg={"0","1","2","3"};//
-  //vector<string> region_names={"2b4j","2b4j>0c","2b4jww","2b4jww>0c"};
+  //vector<string>  nj_reg={"0"};vector<string> region_names={"2b4j"};
+  vector<string>  nj_reg={"0","1","2","3","4"};  vector<string> region_names={"2b4j","2b4j>0c","2b4jww","2b4jww>0c","2b4jwwJJpt"};
   //vector<string> variable={"nJets"};//,"Whmass","Whpt","DRlb0","DRlb1","DRlb2","DRlb3"};
-  vector<string> variable={"mjj","nJets","Whmass","Whpt",};//,"DRlb0","DRlb1","leps_tr_type","leps_tr_origin","jets_tr_type","jets_tr_origin"};
+  //vector<string> variable={"mjj","nJets","Whmass","Whpt",};//,"DRlb0","DRlb1","leps_tr_type","leps_tr_origin","jets_tr_type","jets_tr_origin"};
   //,"DRlb2","DRlb3"
   //vector<string> variable={"nJets","DRll01","Whmass","lep_Pt_0","lep_Pt_1","jet_Pt_4","jet_Pt_5","jet_Pt_6","Bjet_Pt_0","Bjet_Pt_1","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT_leps","HT","nBtagJets","MET","lep_Eta_0","lep_Eta_1","lep_Phi_0","lep_Phi_1","lep_dPhi","jet_Pt_1","jet_Pt_2","jet_Pt_3"}; //
   //,"DRll01"
-  //vector<string> variable={"mjj","nJets","Whmass","Whpt","lep_Pt_0","lep_Pt_1","jet_Pt_4","jet_Pt_5","jet_Pt_6","Bjet_Pt_0","Bjet_Pt_1","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT_leps","HT","nBtagJets","MET","lep_Eta_0","lep_Eta_1","lep_Phi_0","lep_Phi_1","lep_dPhi","jet_Pt_1","jet_Pt_2","jet_Pt_3"}; //
+
+  vector<string> variable={"mjj","nJets","Whmass","jjpt","lep_Pt_0","lep_Pt_1","jet_Pt_4","jet_Pt_5","jet_Pt_6","Bjet_Pt_0","Bjet_Pt_1","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT_leps","HT","nBtagJets","MET","lep_Eta_0","lep_Eta_1","lep_Phi_0","lep_Phi_1","lep_dPhi","jet_Pt_1","jet_Pt_2","jet_Pt_3","jets_tr_type","jets_tr_origin"}; //
   vector<string> variable_X={"m_{j0j1}","Number of jets","m_{Wqq}","p_T^{Wqq}",
 			     //"min#Delta R_{l_{0},b}","min#Delta R_{l_{1},b}",
 			     //"Leps TruthType","Leps Origin","Jets TruthType","Jets Origin",
@@ -50,7 +50,8 @@ void qqw(string sampleversion = "xs",  bool do_stack=true,bool do_log = true, bo
 			     "#font[52]{max} |#eta _{l}|",
 			     "#font[52]{HT}^{jets} [GeV]","#font[52]{HT}^{lep} [GeV]","#font[52]{HT} [GeV]",
 			     "Number of #font[52]{b}-jets","#font[52]{E}_{T}^{miss}","Leading lepton #eta","Subleading lepton #eta","Leading lepton #phi","Subleading lepton #phi","#Delta #phi ^{ll}",
-			     "1th jet #font[52]{p}_{T} [GeV]","2nd jet #font[52]{p}_{T} [GeV]","3rd jet #font[52]{p}_{T} [GeV]"  };  
+			     "1th jet #font[52]{p}_{T} [GeV]","2nd jet #font[52]{p}_{T} [GeV]","3rd jet #font[52]{p}_{T} [GeV]",
+			     "Jets TruthType","Jets Origin"};  
   //*
   string truthOriginLabel[] = {
 			       "NonDefined - 0","SingleElec - 1","SingleMuon - 2","SinglePhot - 3","SingleTau - 4","PhotonConv - 5","DalitzDec - 6","ElMagProc - 7",
@@ -112,8 +113,10 @@ void qqw(string sampleversion = "xs",  bool do_stack=true,bool do_log = true, bo
   //632,
   Int_t color_sample[12]={632,868,867,865,801,802,805,922,921,920,0};//625
   vector<string> type={"ttW","ttZee","ttZmumu","ttZqq","Wtz","ttWW","ttZtautau","fourTop","ttZnunu","threeTop","ttbar"}; //"ttW_aMC"
-  //vector<string> type={"ttbar"};
+  //  vector<string> type={"ttbar"};
+  //vector<string> type={"ttW","ttbar"};
   //vector<string> type={"ttW","ttW_aMC"};
+  //vector<string> type={"ttW_aMC","ttbar"};
   //vector<string> type={"ttWpartlevel","ttWreco"};
   //vector<string> type={"ttbar partlevel","ttbar reco"};
   //vector<string> type={"ttbar dilep","ttbar nonallhad"};
@@ -235,6 +238,9 @@ void qqw(string sampleversion = "xs",  bool do_stack=true,bool do_log = true, bo
 	}
 	hs->Add(h_var[i][j][0][t]);
 	sprintf(ytest,"%0.2f",yields[type[t]]);
+	if(sampleversion=="norm"){
+	      sprintf(ytest,"%0.2f", h_var[i][j][0][t]->GetMean());
+	}
 	//cout << " ============ "<< ytest<< endl;//to_string(yields[type[t]] )
 	legend[i][j]->AddEntry(h_var[i][j][0][t],(type[t]+ "  "+ ytest).c_str(),leg_type.c_str());		
 
@@ -354,8 +360,14 @@ void qqw(string sampleversion = "xs",  bool do_stack=true,bool do_log = true, bo
 	  //cout << " === " <<Nbins<< "   "<< truthOriginLabel[40]<<endl;
 	  for (int bin=1;bin<=Nbins;++bin){ 
 	    h_var[i][j][3][0]->GetXaxis()->SetBinLabel(bin,truthOriginLabel[bin-1].c_str());
+	  }	  
+	}
+	else if(variable[j]=="leps_tr_type"|| variable[j]=="lep0_tr_type" || variable[j]=="lep1_tr_type"){
+	  int Nbins = h_var[i][j][3][0]->GetNbinsX();
+	  //cout << " === " <<Nbins<< "   "<< truthOriginLabel[40]<<endl;
+	  for (int bin=1;bin<=Nbins;++bin){ 
+	    h_var[i][j][3][0]->GetXaxis()->SetBinLabel(bin,truthTypeLabel[bin-1].c_str());
 	  }
-	  
 	}
 	
 	h_var[i][j][3][0]->SetMinimum(0.68);

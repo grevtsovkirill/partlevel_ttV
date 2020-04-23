@@ -28,16 +28,20 @@ void qqw(string sampleversion = "xs",  bool do_stack=true,bool do_log = true, bo
   TH1D* h_var[10][35][20][50];
   TH1D* h_allMC[10][35][20][50];
 
-  vector<string>  nj_reg={"0"};vector<string> region_names={"2b4j"};
-  //vector<string>  nj_reg={"0","1","2","3","4"};  vector<string> region_names={"2b4j","2b4j>0c","2b4jww","2b4jww>0c","2b4jwwJJpt"};
+  //vector<string>  nj_reg={"0"};vector<string> region_names={"2b4j"};
+  vector<string>  nj_reg={"0","1","2","3","4"};  vector<string> region_names={"2b4j","2b4j>0c","2b4jww","2b4jww>0c","2b4jwwJJpt"};
+  //vector<string>  nj_reg={"raw"};vector<string> region_names={"2b4j"};
+  //vector<string>  nj_reg={"0","1","2","3","4","5"};  vector<string> region_names={"2b4j","1b4j","2b4jww","1b4jww","2b4jwwJJpt","1b4jwwJJpt"};
   //vector<string> variable={"nJets"};//,"Whmass","Whpt","DRlb0","DRlb1","DRlb2","DRlb3"};
-  vector<string> variable={"mjj","nJets","Whmass"};//,"DRlb0","DRlb1","leps_tr_type","leps_tr_origin","jets_tr_type","jets_tr_origin"};
+  //vector<string> variable={"mjj","nJets","Whmass"};//,"DRlb0","DRlb1","leps_tr_type","leps_tr_origin","jets_tr_type","jets_tr_origin"};
   //,"DRlb2","DRlb3"
   //vector<string> variable={"nJets","DRll01","Whmass","lep_Pt_0","lep_Pt_1","jet_Pt_4","jet_Pt_5","jet_Pt_6","Bjet_Pt_0","Bjet_Pt_1","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT_leps","HT","nBtagJets","MET","lep_Eta_0","lep_Eta_1","lep_Phi_0","lep_Phi_1","lep_dPhi","jet_Pt_1","jet_Pt_2","jet_Pt_3"}; //
   //,"DRll01"
 
-  //vector<string> variable={"mjj","nJets","Whmass","jjpt","lep_Pt_0","lep_Pt_1","jet_Pt_4","jet_Pt_5","jet_Pt_6","Bjet_Pt_0","Bjet_Pt_1","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT_leps","HT","nBtagJets","MET","lep_Eta_0","lep_Eta_1","lep_Phi_0","lep_Phi_1","lep_dPhi","jet_Pt_1","jet_Pt_2","jet_Pt_3","jets_tr_type","jets_tr_origin"}; //
-  vector<string> variable_X={"m_{j0j1}","Number of jets","m_{Wqq}","p_T^{Wqq}",
+  //vector<string> variable={"cf2l"};
+  vector<string> variable={"mjj","nJets","Whmass","jjpt","lep_Pt_0","lep_Pt_1","jet_Pt_4","jet_Pt_5","jet_Pt_6","Bjet_Pt_0","Bjet_Pt_1","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT_leps","HT","nBtagJets","MET","lep_Eta_0","lep_Eta_1","lep_Phi_0","lep_Phi_1","lep_dPhi","jet_Pt_1","jet_Pt_2","jet_Pt_3"}; //,"jets_tr_type","jets_tr_origin"
+  vector<string> variable_X={ //"Cutflow",
+			     "m_{j0j1}","Number of jets","m_{Wqq}","p_T^{Wqq}",
 			     //"min#Delta R_{l_{0},b}","min#Delta R_{l_{1},b}",
 			     //"Leps TruthType","Leps Origin","Jets TruthType","Jets Origin",
 			     //"L0origin","L1origin",
@@ -117,24 +121,17 @@ void qqw(string sampleversion = "xs",  bool do_stack=true,bool do_log = true, bo
   sample_map["WpqqWmlv"]= "363359";  //   
   sample_map["llvvjj"]= "364285";  //   
   //reco:
-  /*
-    ttHsemilep 345874
-    ttHdilep 345875
-    ZqqZll 363356
-    WqqZvv 363357
-    WqqZll 363358
-    WpqqWmlv 363359
-    llvvjj 364285
-   */
-  user.pfalke.363356.Sherpa.DAOD_HIGG8D1.e5525_s3126_r10201_r10210_p3983.FS_mc16d_ttWprod_v2_output.root
   //           '304014_threeTop','410080_fourTop','410081_ttww','410408_WtZ']
 
   //632,
   //  Int_t color_sample[12]={632,868,867,865,801,802,805,922,921,920,0};//625
   //vector<string> type={"ttW","ttZee","ttZmumu","ttZqq","Wtz","ttWW","ttZtautau","fourTop","ttZnunu","threeTop","ttbar"}; //"ttW_aMC"
+
   //reco:
-  Int_t color_sample[12]={632,868,867,865,0,801,802,805,922,921,920};//625
-  vector<string> type={"ttW","ttZee","ttZmumu","ttZtautau","ttbarNH"}; //"ttW_aMC"
+  Int_t color_sample[12]={632,868,867,865,801,802,805,922,921,0,920};//625
+  vector<string> type={"ttW","ttZee","ttZtautau","ttZmumu","ttHsemilep","ttHdilep","ZqqZll","llvvjj","threeTop","ttbarNH"}; //"ttW_aMC"
+  //vector<string> type={"ttW","ttbarNH"};
+  //"ttZmumu",
   //  vector<string> type={"ttbar"};
   //vector<string> type={"ttW","ttbar"};
   //vector<string> type={"ttW","ttW_aMC"};
@@ -144,7 +141,7 @@ void qqw(string sampleversion = "xs",  bool do_stack=true,bool do_log = true, bo
   //vector<string> type={"ttbar dilep","ttbar nonallhad"};
   
   string pathversion = "v3_ljgeq2"; //v2_MCTC_0 v1_truthInfo //v1_e2b_lJqq, v2_ctag_minDRlb //v1_truthInfo_newXS //reco_v0_gn1v0
-
+  string extratext = "43fb^{-1}";
   string leg_type="f";  
   string reco_part=""; //
   reco_part="reco_"; pathversion="reco_v3_matchpartlev_medium";
@@ -154,6 +151,8 @@ void qqw(string sampleversion = "xs",  bool do_stack=true,bool do_log = true, bo
   //  do_log=true;
   //file[0][0] = TFile::Open("input/Wqq/v3_ljgeq2/wqq_413008_xs.root"); 
   //file[0][1] = TFile::Open("input/Wqq/reco_v3_matchpartlev_medium/wqq_reco_413008_xs.root"); 
+  //file[0][0] = TFile::Open("input/Wqq/v3_ljgeq2/wqq_410472_xs.root"); 
+  //file[0][1] = TFile::Open("input/Wqq/reco_v3_matchpartlev_medium/wqq_reco_410470_xs.root"); 
   //file[0][0] = TFile::Open("input/Wqq/v2_MCTC_0/wqq_410472_xs.root"); 
   //file[0][1] = TFile::Open("input/Wqq/reco_v0_gn1v0/wqq_reco_410218_xs.root"); 
   //file[0][1] = TFile::Open("input/Wqq/reco_v0_gn1v0/wqq_reco_410470_xs.root");
@@ -205,7 +204,7 @@ void qqw(string sampleversion = "xs",  bool do_stack=true,bool do_log = true, bo
       pad1[i][j]->Draw();
       pad2[i][j]->Draw();
       
-      legend[i][j] = new TLegend(0.5,0.5,0.9,0.9);
+      legend[i][j] = new TLegend(0.47,0.5,0.9,0.9);
       legend[i][j]->SetNColumns(2);
       
       legend[i][j]->SetTextFont(42);legend[i][j]->SetFillColor(0);  legend[i][j]->SetBorderSize(0); legend[i][j]->SetFillStyle(0);  legend[i][j]->SetTextSize(0.05);
@@ -303,16 +302,20 @@ void qqw(string sampleversion = "xs",  bool do_stack=true,bool do_log = true, bo
 	
 	if(do_log){
 	  pad1[i][j]->SetLogy();
-	  hs->SetMaximum(hs->GetMaximum()*1e3); 
-	  hs->SetMinimum(1e-1); 
+	  //hs->SetMaximum(hs->GetMaximum()*1e3); 
+	  //hs->SetMinimum(1e-1);
+	  hs->SetMaximum(hs->GetMaximum()*1e4); 
+	  hs->SetMinimum(1); 
 	}
 	else
 	  hs->SetMaximum(hs->GetMaximum()*1.6); 
 	
-	sprintf(ytest,"TotMC %0.2f",yields["TotalMC"]);
+	sprintf(ytest,"Tot %0.2f",yields["TotalMC"]);
 	legend[i][j]->AddEntry(h_allMC[i][j][0][0], ytest ,"P");
-	sprintf(ytest," S/B = %0.2f %%",yields["ttW"]/yields[ "TotalBkg"]*100);
+	sprintf(ytest,"S/B(#sqrt{B})=%0.2f(%0.1f)%%",yields["ttW"]/yields[ "TotalBkg"]*100,yields["ttW"]/sqrt(yields[ "TotalBkg"])*100);
 	legend[i][j]->AddEntry(h_allMC[i][j][0][0],ytest ,"");
+	//sprintf(ytest,"S/#sqrt{B}=%0.1f%%",yields["ttW"]/sqrt(yields[ "TotalBkg"])*100);
+	//legend[i][j]->AddEntry(h_allMC[i][j][0][0],ytest ,"");
 	h_allMC[i][j][0][0]->Draw("E1same");
 	if (do_text){
 	  h_allMC[i][j][0][0]->SetMarkerSize(2);	
@@ -341,7 +344,7 @@ void qqw(string sampleversion = "xs",  bool do_stack=true,bool do_log = true, bo
       h_allMC[i][j][0][1]->SetMinimum(0.88);
       h_allMC[i][j][0][1]->SetMaximum(1.12);
     
-      sprintf(text1,"#sqrt{s} = 13 TeV,");
+      sprintf(text1,"#sqrt{s} = 13 TeV, %s",extratext.c_str());
       sprintf(text2,"2#font[52]{l}OS Wqq %s",region_names[i].c_str()); //
       
       ATLASLabel(0.18,0.87,atl_lable,1,0.065); 
@@ -416,9 +419,9 @@ void qqw(string sampleversion = "xs",  bool do_stack=true,bool do_log = true, bo
 	
 
       
-      sprintf(o_name,"WqqPlots/v3/v3_ttwreco_part/%s.pdf",canvas_name);   // v2_ttWOnlytruth v2_ttbarOnlytruth
+      sprintf(o_name,"WqqPlots/v3/reco_gn1v2_mcw/%s.pdf",canvas_name);   // v2_ttWOnlytruth v2_ttbarOnlytruth
       //canv[i][j]->Print(o_name);
-  
+      
     }
   }
 

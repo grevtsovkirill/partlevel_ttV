@@ -63,6 +63,9 @@ TH1D *hist_lep_truth_type_1[10];
 TH1D *hist_jet_truth_origin[10];
 TH1D *hist_jet_truth_type[10];
 
+TFile *newfile;
+TTree *outTree;
+
 
 /*
  *        0 *        4 *          MUR05_MUF05_PDF261000 *
@@ -227,6 +230,30 @@ void reco_wqq::SlaveBegin(TTree * /*tree*/)
   }
 
 
+  string ntupname="skimReco_"+input_name+"_"+comp_name+".root";
+  
+  newfile = new TFile(ntupname.c_str(),"recreate"); 
+  outTree = new TTree("outTree","outTree");
+  outTree->Branch("Njets",&Njets,"Njets/I");
+  /*
+  outTree->Branch("Nbjets",&Nbjets,"Nbjets/I");
+  outTree->Branch("HTall",&HTall,"HTall/F");
+  outTree->Branch("HTjet",&HTjet,"HTjet/F");
+  outTree->Branch("b0_pt",&b0_pt,"b0_pt/F");
+  outTree->Branch("l0_pt",&l0_pt,"l0_pt/F");
+  outTree->Branch("DRll01",&DRll01,"DRll01/F");
+  outTree->Branch("max_eta",&max_eta,"max_eta/F");
+  outTree->Branch("lep_dphi",&lep_dphi,"lep_dphi/F");
+  outTree->Branch("region",&region,"region/I");
+  outTree->Branch("weight_tot",&weight_tot,"weight_tot/D");
+  outTree->Branch("l1_pt",&l1_pt,"l1_pt/F");
+  outTree->Branch("l0_eta",&l0_eta,"l0_eta/F");
+  outTree->Branch("l1_eta",&l1_eta,"l1_eta/F");
+  outTree->Branch("min_DRl0j",&min_DRl0j,"min_DRl0j/F");
+  outTree->Branch("min_DRl1j",&min_DRl1j,"min_DRl1j/F");
+  outTree->Branch("met",&met,"met/F");
+  */
+  
   //(int)weight_names.size()
   for(int i=0; i<(int)weight_names.size();i++){
     hist_Weights[i] = new TH1D( (weight_names[i]).c_str(), (weight_names[i]+";weight;Events").c_str(), 300, -4, 4);
@@ -325,7 +352,8 @@ Bool_t reco_wqq::Process(Long64_t entry)
   //vector<int> jets_btag = {*jets_btagFlag_DL1r_FixedCutBEff_70_0,*jets_btagFlag_DL1r_FixedCutBEff_70_1,*jets_btagFlag_DL1r_FixedCutBEff_70_2,*jets_btagFlag_DL1r_FixedCutBEff_70_3,*jets_btagFlag_DL1r_FixedCutBEff_70_4,*jets_btagFlag_DL1r_FixedCutBEff_70_5};
   vector<int> jets_btag = {*jets_btagFlag_DL1r_FixedCutBEff_70_0,*jets_btagFlag_DL1r_FixedCutBEff_70_1,*jets_btagFlag_DL1r_FixedCutBEff_70_2,*jets_btagFlag_DL1r_FixedCutBEff_70_3,*jets_btagFlag_DL1r_FixedCutBEff_70_4,*jets_btagFlag_DL1r_FixedCutBEff_70_5};
 
-  int Njets=0, Nbjets=0, Ncjets=0;
+  Njets=0;
+  int  Nbjets=0, Ncjets=0;
   int lowjets=0;
   vector<TLorentzVector> jets_vec;
   vector<TLorentzVector> bjets_vec;
@@ -545,6 +573,7 @@ Bool_t reco_wqq::Process(Long64_t entry)
 
     }
   }  
+  outTree->Fill();
   return kTRUE;
 }
 
@@ -620,6 +649,8 @@ void reco_wqq::Terminate()
     //*/
 
     fOutput->Write();
+    outTree->Write();
+    outTree->AutoSave();
   }
   
 }

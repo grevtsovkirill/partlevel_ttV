@@ -27,7 +27,9 @@ public :
   int Nlep;
   Double_t weight_tot;
   Int_t       fNumberOfEvents; 
-  
+
+  int Njets = 0;
+ 
   // Readers to access the data (delete the ones you do not need).
   TTreeReaderValue<Float_t> weight_mc = {fReader, "weight_mc"};
   TTreeReaderValue<Float_t> weight_pileup = {fReader, "weight_pileup"};

@@ -9,6 +9,7 @@
 #include <map>
 
 TH1F *h_cutflow_2l[2];
+int debug =10;
 string input_name="";
 string input_option="";
 string comp_name="";
@@ -336,7 +337,7 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
   cf_counter++;
 
 
-  //lep eta cuts
+  //lep eta cust
   if(abs(lep_4v[lead_lep].Eta())>2.5||abs(lep_4v[sublead_lep].Eta())>2.5) return 0;  
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
@@ -387,13 +388,18 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
     if(jet_nGhosts_bHadron[j]>0){
       Nbjets+=1;
       bjets_vec.push_back(jj);
+
+      if(debug<10)
+	cout << "   Bjet "<< jj.Pt()/1e3 << ", jet_true_origin = "<<jet_true_origin[j] << " jet_true_type = "<< jet_true_type[j]<< endl;
       
     }
     else{
       ljets_vec.push_back(jj);
       Nnonb ++;
       sel_ljet_true_origin.push_back(jet_true_origin[j]);
-      
+
+      if(debug<10)
+	cout << "nonbjet "<< jj.Pt()/1e3 << ", jet_true_origin = "<<jet_true_origin[j] << " jet_true_type = "<< jet_true_type[j]<< endl;
       if(jet_nGhosts_cHadron[j]>0){
 	Ncjets+=1;
 	cjets_vec.push_back(jj);
@@ -421,8 +427,14 @@ Bool_t partlevel_wqq::Process(Long64_t entry)
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
 
-
-
+  if(debug<11){
+    cout << "  Njets: "<< Njets << ", jet_true_origins / types = ";
+    for(int i=0;i<Njets;i++){
+      cout << " jet" << i<<" " <<jet_true_origin[i] << " / "<< jet_true_type[i] << "; ";
+    }
+    cout <<", lep orig/type lead "<<l0_true_origin<<"/" <<l0_true_type << " sybl " <<l1_true_origin<<"/" <<l1_true_type<< '\n'<<endl;
+  }
+  
   HTall=HTjet+(lep_4v[lead_lep].Pt()+lep_4v[sublead_lep].Pt())*1000;
 
   // check pt ordering in jets

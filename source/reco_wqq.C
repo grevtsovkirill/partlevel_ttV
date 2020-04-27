@@ -240,18 +240,30 @@ void reco_wqq::SlaveBegin(TTree * /*tree*/)
   outTree->Branch("HTall",&HTall,"HTall/F");
   outTree->Branch("HTjet",&HTjet,"HTjet/F");
   outTree->Branch("b0_pt",&b0_pt,"b0_pt/F");
-  outTree->Branch("l0_pt",&l0_pt,"l0_pt/F");
-  outTree->Branch("DRll01",&DRll01,"DRll01/F");
+  outTree->Branch("drll01",&drll01,"drll01/F");
   outTree->Branch("max_eta",&max_eta,"max_eta/F");
   outTree->Branch("lep_dphi",&lep_dphi,"lep_dphi/F");
   outTree->Branch("region",&region,"region/I");
   outTree->Branch("weight_tot",&weight_tot,"weight_tot/D");
+  outTree->Branch("l0_pt",&l0_pt,"l0_pt/F");
   outTree->Branch("l1_pt",&l1_pt,"l1_pt/F");
   outTree->Branch("l0_eta",&l0_eta,"l0_eta/F");
   outTree->Branch("l1_eta",&l1_eta,"l1_eta/F");
+  outTree->Branch("l0_id",&l0_id,"l0_id/F");
+  outTree->Branch("l1_id",&l1_id,"l1_id/F");
+  outTree->Branch("dileptype",&dileptype,"dileptype/F");
   outTree->Branch("min_DRl0j",&min_DRl0j,"min_DRl0j/F");
   outTree->Branch("min_DRl1j",&min_DRl1j,"min_DRl1j/F");
   outTree->Branch("met",&met,"met/F");
+  outTree->Branch("mjj",&mjj,"mjj/F");  outTree->Branch("ptjj",&ptjj,"ptjj/F");
+  outTree->Branch("etajj",&etajj,"etajj/F");  outTree->Branch("phijj",&phijj,"phijj/F");
+  outTree->Branch("ptj0",&ptj0,"ptj0/F");outTree->Branch("etaj0",&etaj0,"etaj0/F");outTree->Branch("phij0",&phij0,"phij0/F");outTree->Branch("isbj0",&isbj0,"isbj0/F");
+  outTree->Branch("ptj1",&ptj1,"ptj1/F");outTree->Branch("etaj1",&etaj1,"etaj1/F");outTree->Branch("phij1",&phij1,"phij1/F");outTree->Branch("isbj1",&isbj1,"isbj1/F");
+  outTree->Branch("ptj2",&ptj2,"ptj2/F");outTree->Branch("etaj2",&etaj2,"etaj2/F");outTree->Branch("phij2",&phij2,"phij2/F");outTree->Branch("isbj2",&isbj2,"isbj2/F");
+  outTree->Branch("ptj3",&ptj3,"ptj3/F");outTree->Branch("etaj3",&etaj3,"etaj3/F");outTree->Branch("phij3",&phij3,"phij3/F");outTree->Branch("isbj3",&isbj3,"isbj3/F");
+  outTree->Branch("ptj4",&ptj4,"ptj4/F");outTree->Branch("etaj4",&etaj4,"etaj4/F");outTree->Branch("phij4",&phij4,"phij4/F");outTree->Branch("isbj4",&isbj4,"isbj4/F");
+  outTree->Branch("ptj5",&ptj5,"ptj5/F");outTree->Branch("etaj5",&etaj5,"etaj5/F");outTree->Branch("phij5",&phij5,"phij5/F");outTree->Branch("isbj5",&isbj5,"isbj5/F");
+
   //*/
   
   //(int)weight_names.size()
@@ -387,10 +399,14 @@ Bool_t reco_wqq::Process(Long64_t entry)
   }
 
 
-  if(debug<11 && *nJets_OR>6){
-    cout <<  " Njets = "<<Njets << ",  *nJets_OR ="<<*nJets_OR <<  ", Nbjets = "<<Nbjets   << endl;
+  if(debug<20 ){
+    if(Nbjets==0 && *nJets_OR_DL1r_70!=0){
+      cout <<  " Njets = "<<Njets << ",  *nJets_OR ="<<*nJets_OR <<  ", Nbjets = "<<Nbjets   << "; *nJets_OR_DL1r_70 = "<<*nJets_OR_DL1r_70<<endl;
+      cout <<'\n';
+    }
   }
 
+  
 
   if(*nJets_OR<4) return 0;
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
@@ -498,25 +514,54 @@ Bool_t reco_wqq::Process(Long64_t entry)
 
   Njets = *nJets_OR;
   Nbjets = *nJets_OR_DL1r_70;
-  l0_eta = *lep_Eta_0;
-  l1_eta = *lep_Eta_1;
-  l0_pt = *lep_Pt_0;
-  l1_pt = *lep_Pt_1;
+  l0_pt = *lep_Pt_0/1e3; l0_eta = *lep_Eta_0;
+  l1_pt = *lep_Pt_1/1e3; l1_eta = *lep_Eta_1;
+  dileptype = *dilep_type;
   lep_dphi = abs(*lep_Phi_0-*lep_Phi_1);
   //b0_pt = bjets_vec[0].Pt()/1e3;
   drll01 = *DRll01;
   max_eta=  max ( fabs( l0_eta ), fabs( l1_eta ) ); 
-  HTall = *HT;
-  HTjet = *HT_jets;
+  HTall = *HT/1e3;
+  HTjet = *HT_jets/1e3;
   met = *met_met;
-
+  mjj = pmjj.M()/1e3;
+  ptjj = pmjj.M()/1e3;
+  etajj = pmjj.Eta();
+  phijj = pmjj.Phi();
+  l0_id= *lep_ID_0;
+  l1_id = *lep_ID_1;
+  ptj0=jets_pt[0];    etaj0=jets_eta[0]; phij0=jets_phi[0]; isbj0 = jets_btag[0];
+  ptj1=jets_pt[1];    etaj1=jets_eta[1]; phij1=jets_phi[1]; isbj1 = jets_btag[1];
+  ptj2=jets_pt[2];    etaj2=jets_eta[2]; phij2=jets_phi[2]; isbj2 = jets_btag[2];
+  ptj3=jets_pt[3];    etaj3=jets_eta[3]; phij3=jets_phi[3]; isbj3 = jets_btag[3];
+  if(Njets == 5){
+    ptj4=jets_pt[4];    etaj4=jets_eta[4]; phij4=jets_phi[4]; isbj4 = jets_btag[4];
+  }
+  else if(Njets == 6){
+    ptj5=jets_pt[5];    etaj5=jets_eta[5]; phij5=jets_phi[5]; isbj5 = jets_btag[5];
+  }
   
+  for(int j=0;j< int(*nJets_OR); j++){
+    if(j<6){
+      
+      //cout<< "  jets_btag["<<j<<"]="<<jets_btag[j]<< ", pt= "<< jets_pt[j]<<endl;
+    }
+  }
+
   sel_array[0]=( Njets >= 4 && Nbjets==2 );  // Region inclusive
   sel_array[1]=( Njets >= 4  );  // && Ncjets>0
   sel_array[2]=(Njets >= 4 && Nbjets==2 && abs(pmjj.M()-mWPDG)<1e4);  
   sel_array[3]=(Njets >= 4 && abs(pmjj.M()-mWPDG)<1e4);  // && Ncjets>0
   sel_array[4]=(Njets >= 4 && Nbjets==2 && abs(pmjj.M()-mWPDG)<1e4 && (pmjj.Pt()/1e3>90 ) );  //
   sel_array[5]=(Njets >= 4 && abs(pmjj.M()-mWPDG)<1e4 && (pmjj.Pt()/1e3>90 ) );  //
+
+  if(sel_array[0]) region = 0;
+  else if(sel_array[1]) region = 1;
+  else if(sel_array[2]) region = 2;
+  else if(sel_array[3]) region = 3;
+  else if(sel_array[4]) region = 4;
+  else if(sel_array[5]) region = 5;
+  else region = -99;  
 
   float met = *met_met/1000.;
   for(int i=0; i<(int)region_names.size();i++){

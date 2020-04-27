@@ -34,6 +34,8 @@ public :
   float HTall=0;
   float HTjet=0;
   float b0_pt=-999;
+  float l0_id=-999;
+  float l1_id=-999;
   float l0_pt=-999;
   float l1_pt=-999;
   float l0_eta=-999;
@@ -44,6 +46,35 @@ public :
   float min_DRl1j=-9999;
   float max_eta = -99;
   float met = -99;
+  float mjj = -99;
+  float ptjj = -99;
+  float etajj = -99;
+  float phijj = -99;
+  float ptj0 = -99;
+  float etaj0 = -99;
+  float phij0 = -99;
+  float isbj0 = -99;
+  float ptj1 = -99;
+  float etaj1 = -99;
+  float phij1 = -99;
+  float isbj1 = -99;
+  float ptj2 = -99;
+  float etaj2 = -99;
+  float phij2 = -99;
+  float isbj2 = -99;
+  float ptj3 = -99;
+  float etaj3 = -99;
+  float phij3 = -99;
+  float isbj3 = -99;
+  float ptj4= -99;
+  float etaj4 = -99;
+  float phij4 = -99;
+  float isbj4 = -99;
+  float ptj5 = -99;
+  float etaj5 = -99;
+  float phij5 = -99;
+  float isbj5 = -99;
+  float dileptype = -99;
 
   // Readers to access the data (delete the ones you do not need).
   TTreeReaderValue<Float_t> weight_mc = {fReader, "weight_mc"};

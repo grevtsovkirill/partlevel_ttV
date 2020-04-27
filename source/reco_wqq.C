@@ -342,8 +342,8 @@ Bool_t reco_wqq::Process(Long64_t entry)
 
   //tight leptons
   //if(!int(*lep_isTight_0)||!int(*lep_isTight_1)) return 0;  
-  if(!int(*lep_isLoose_0)||!int(*lep_isLoose_1)) return 0;  
-  //if(!int(*lep_isMedium_0)||!int(*lep_isMedium_1)) return 0;  
+  //if(!int(*lep_isLoose_0)||!int(*lep_isLoose_1)) return 0;  
+  if(!int(*lep_isMedium_0)||!int(*lep_isMedium_1)) return 0;  
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
 
@@ -510,8 +510,6 @@ Bool_t reco_wqq::Process(Long64_t entry)
 
   */  
   
-  float max_eta=  max ( fabs( *lep_Eta_0 ), fabs( *lep_Eta_1 ) );  
-
   Njets = *nJets_OR;
   Nbjets = *nJets_OR_DL1r_70;
   l0_pt = *lep_Pt_0/1e3; l0_eta = *lep_Eta_0;

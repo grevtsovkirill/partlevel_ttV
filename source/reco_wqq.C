@@ -235,7 +235,7 @@ void reco_wqq::SlaveBegin(TTree * /*tree*/)
   newfile = new TFile(ntupname.c_str(),"recreate"); 
   outTree = new TTree("outTree","outTree");
   outTree->Branch("Njets",&Njets,"Njets/I");
-  /*
+  
   outTree->Branch("Nbjets",&Nbjets,"Nbjets/I");
   outTree->Branch("HTall",&HTall,"HTall/F");
   outTree->Branch("HTjet",&HTjet,"HTjet/F");
@@ -252,7 +252,7 @@ void reco_wqq::SlaveBegin(TTree * /*tree*/)
   outTree->Branch("min_DRl0j",&min_DRl0j,"min_DRl0j/F");
   outTree->Branch("min_DRl1j",&min_DRl1j,"min_DRl1j/F");
   outTree->Branch("met",&met,"met/F");
-  */
+  //*/
   
   //(int)weight_names.size()
   for(int i=0; i<(int)weight_names.size();i++){
@@ -353,7 +353,8 @@ Bool_t reco_wqq::Process(Long64_t entry)
   vector<int> jets_btag = {*jets_btagFlag_DL1r_FixedCutBEff_70_0,*jets_btagFlag_DL1r_FixedCutBEff_70_1,*jets_btagFlag_DL1r_FixedCutBEff_70_2,*jets_btagFlag_DL1r_FixedCutBEff_70_3,*jets_btagFlag_DL1r_FixedCutBEff_70_4,*jets_btagFlag_DL1r_FixedCutBEff_70_5};
 
   Njets=0;
-  int  Nbjets=0, Ncjets=0;
+  Nbjets=0;
+  Int_t Ncjets=0;
   int lowjets=0;
   vector<TLorentzVector> jets_vec;
   vector<TLorentzVector> bjets_vec;
@@ -497,7 +498,19 @@ Bool_t reco_wqq::Process(Long64_t entry)
 
   Njets = *nJets_OR;
   Nbjets = *nJets_OR_DL1r_70;
+  l0_eta = *lep_Eta_0;
+  l1_eta = *lep_Eta_1;
+  l0_pt = *lep_Pt_0;
+  l1_pt = *lep_Pt_1;
+  lep_dphi = abs(*lep_Phi_0-*lep_Phi_1);
+  //b0_pt = bjets_vec[0].Pt()/1e3;
+  drll01 = *DRll01;
+  max_eta=  max ( fabs( l0_eta ), fabs( l1_eta ) ); 
+  HTall = *HT;
+  HTjet = *HT_jets;
+  met = *met_met;
 
+  
   sel_array[0]=( Njets >= 4 && Nbjets==2 );  // Region inclusive
   sel_array[1]=( Njets >= 4  );  // && Ncjets>0
   sel_array[2]=(Njets >= 4 && Nbjets==2 && abs(pmjj.M()-mWPDG)<1e4);  

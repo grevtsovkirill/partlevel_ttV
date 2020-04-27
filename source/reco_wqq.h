@@ -28,8 +28,23 @@ public :
   Double_t weight_tot;
   Int_t       fNumberOfEvents; 
 
+  int region = -99;
   int Njets = 0;
- 
+  int Nbjets = 0;
+  float HTall=0;
+  float HTjet=0;
+  float b0_pt=-999;
+  float l0_pt=-999;
+  float l1_pt=-999;
+  float l0_eta=-999;
+  float l1_eta=-999;
+  float lep_dphi=-999;
+  float drll01 = -9999;
+  float min_DRl0j=-9999;
+  float min_DRl1j=-9999;
+  float max_eta = -99;
+  float met = -99;
+
   // Readers to access the data (delete the ones you do not need).
   TTreeReaderValue<Float_t> weight_mc = {fReader, "weight_mc"};
   TTreeReaderValue<Float_t> weight_pileup = {fReader, "weight_pileup"};

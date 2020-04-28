@@ -523,7 +523,7 @@ Bool_t reco_wqq::Process(Long64_t entry)
   HTjet = *HT_jets/1e3;
   met = *met_met;
   mjj = pmjj.M()/1e3;
-  ptjj = pmjj.M()/1e3;
+  ptjj = pmjj.Pt()/1e3;
   etajj = pmjj.Eta();
   phijj = pmjj.Phi();
   l0_id= *lep_ID_0;

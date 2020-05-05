@@ -351,7 +351,7 @@ Bool_t reco_wqq::Process(Long64_t entry)
     cout<< "OS => lep_ID_0="<<*lep_ID_0<< " lep_ID_1="<<*lep_ID_1<<"  *nJets_OR ="<<*nJets_OR<<endl;
   
   //OS
-  if(*lep_ID_0 * *lep_ID_1 > 0) return 0;
+  //if(*lep_ID_0 * *lep_ID_1 > 0) return 0;
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
 

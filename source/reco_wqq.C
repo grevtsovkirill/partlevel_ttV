@@ -119,6 +119,7 @@ void reco_wqq::SlaveBegin(TTree * /*tree*/)
   //*/ 
   std::map<std::string, double> xs_map;
   
+  xs_map["700000"]= 0.58922 * 1 ;
   xs_map["413008"]= 0.652 * 0.920 ;
   xs_map["410157"]= 0.52771 * 1.11 ;
   xs_map["410156"]= 0.15499 * 1.11;

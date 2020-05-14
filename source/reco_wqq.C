@@ -9,7 +9,7 @@
 #include <map>
 
 TH1F *h_cutflow_2l[2];
-int debug=20;
+int debug=21;
 string input_name="";
 string input_option="";
 string comp_name="";
@@ -239,7 +239,6 @@ void reco_wqq::SlaveBegin(TTree * /*tree*/)
   outTree->Branch("Nbjets",&Nbjets,"Nbjets/I");
   outTree->Branch("HTall",&HTall,"HTall/F");
   outTree->Branch("HTjet",&HTjet,"HTjet/F");
-  outTree->Branch("b0_pt",&b0_pt,"b0_pt/F");
   outTree->Branch("drll01",&drll01,"drll01/F");
   outTree->Branch("max_eta",&max_eta,"max_eta/F");
   outTree->Branch("lep_dphi",&lep_dphi,"lep_dphi/F");
@@ -256,8 +255,8 @@ void reco_wqq::SlaveBegin(TTree * /*tree*/)
   outTree->Branch("l0_id",&l0_id,"l0_id/F");
   outTree->Branch("l1_id",&l1_id,"l1_id/F");
   outTree->Branch("dileptype",&dileptype,"dileptype/F");
-  outTree->Branch("min_DRl0j",&min_DRl0j,"min_DRl0j/F");
-  outTree->Branch("min_DRl1j",&min_DRl1j,"min_DRl1j/F");
+  //outTree->Branch("min_DRl0j",&min_DRl0j,"min_DRl0j/F");
+  //outTree->Branch("min_DRl1j",&min_DRl1j,"min_DRl1j/F");
   outTree->Branch("met",&met,"met/F");
   outTree->Branch("metphi",&metphi,"metphi/F");
   outTree->Branch("mjj",&mjj,"mjj/F");  outTree->Branch("ptjj",&ptjj,"ptjj/F");
@@ -268,6 +267,12 @@ void reco_wqq::SlaveBegin(TTree * /*tree*/)
   outTree->Branch("ptj3",&ptj3,"ptj3/F");outTree->Branch("etaj3",&etaj3,"etaj3/F");outTree->Branch("phij3",&phij3,"phij3/F");outTree->Branch("isbj3",&isbj3,"isbj3/F");outTree->Branch("ej3",&ej3,"ej3/F");
   outTree->Branch("ptj4",&ptj4,"ptj4/F");outTree->Branch("etaj4",&etaj4,"etaj4/F");outTree->Branch("phij4",&phij4,"phij4/F");outTree->Branch("isbj4",&isbj4,"isbj4/F");outTree->Branch("ej4",&ej4,"ej4/F");
   outTree->Branch("ptj5",&ptj5,"ptj5/F");outTree->Branch("etaj5",&etaj5,"etaj5/F");outTree->Branch("phij5",&phij5,"phij5/F");outTree->Branch("isbj5",&isbj5,"isbj5/F");outTree->Branch("ej5",&ej5,"ej5/F");
+  outTree->Branch("ptj6",&ptj6,"ptj6/F");outTree->Branch("etaj6",&etaj6,"etaj6/F");outTree->Branch("phij6",&phij6,"phij6/F");outTree->Branch("isbj6",&isbj6,"isbj6/F");outTree->Branch("ej6",&ej6,"ej6/F");
+  outTree->Branch("ptj7",&ptj7,"ptj7/F");outTree->Branch("etaj7",&etaj7,"etaj7/F");outTree->Branch("phij7",&phij7,"phij7/F");outTree->Branch("isbj7",&isbj7,"isbj7/F");outTree->Branch("ej7",&ej7,"ej7/F");
+  outTree->Branch("ptj8",&ptj8,"ptj8/F");outTree->Branch("etaj8",&etaj8,"etaj8/F");outTree->Branch("phij8",&phij8,"phij8/F");outTree->Branch("isbj8",&isbj8,"isbj8/F");outTree->Branch("ej8",&ej8,"ej8/F");
+  outTree->Branch("ptj9",&ptj9,"ptj9/F");outTree->Branch("etaj9",&etaj9,"etaj9/F");outTree->Branch("phij9",&phij9,"phij9/F");outTree->Branch("isbj9",&isbj9,"isbj9/F");outTree->Branch("ej9",&ej9,"ej9/F");
+  outTree->Branch("ptj10",&ptj10,"ptj10/F");outTree->Branch("etaj10",&etaj10,"etaj10/F");outTree->Branch("phij10",&phij10,"phij10/F");outTree->Branch("isbj10",&isbj10,"isbj10/F");outTree->Branch("ej10",&ej10,"ej10/F");
+  outTree->Branch("ptj11",&ptj11,"ptj11/F");outTree->Branch("etaj11",&etaj11,"etaj11/F");outTree->Branch("phij11",&phij11,"phij11/F");outTree->Branch("isbj11",&isbj11,"isbj11/F");outTree->Branch("ej11",&ej11,"ej11/F");
 
   //*/
   
@@ -367,6 +372,7 @@ Bool_t reco_wqq::Process(Long64_t entry)
   vector<TLorentzVector> jets_vec;
   vector<TLorentzVector> bjets_vec;
   vector<TLorentzVector> nonbjets_vec;
+
   
   //for(int j=0;j< int(*nJets_OR); j++){
   for(int j=0;j< int(jets_pt.GetSize()); j++){
@@ -391,7 +397,15 @@ Bool_t reco_wqq::Process(Long64_t entry)
   
   }
 
+  if(debug<21 && (int(*nJets_OR)>10))
+    cout<< "jets_pt["<<*nJets_OR<<"] "<<jets_pt[int(*nJets_OR)-1]<< ", lowjets = "<< lowjets<<endl;
 
+  if(debug<21 && (int(*nJets_OR)!=int(jets_pt.GetSize())))
+    cout<< "int(jets_pt.GetSize() "<<int(jets_pt.GetSize())<<"  *nJets_OR ="<<*nJets_OR<<endl;
+  
+  if(debug<21 && (int(*nJets_OR_DL1r_70)!=int(bjets_vec.size())))
+    cout<< "bjets_vec.size "<<bjets_vec.size()<<"  *nJets_OR_DL1r_70 ="<<*nJets_OR_DL1r_70<<endl;
+  
   if(debug<20 ){
     if(Nbjets==0 && *nJets_OR_DL1r_70!=0){
       cout <<  " Njets = "<<Njets << ",  *nJets_OR ="<<*nJets_OR <<  ", Nbjets = "<<Nbjets   << "; *nJets_OR_DL1r_70 = "<<*nJets_OR_DL1r_70<<endl;
@@ -507,9 +521,10 @@ Bool_t reco_wqq::Process(Long64_t entry)
   Nbjets = *nJets_OR_DL1r_70;
   l0_pt = *lep_Pt_0; l0_eta = *lep_Eta_0;  l0_phi = *lep_Phi_0; l0_e = *lep_E_0;
   l1_pt = *lep_Pt_1; l1_eta = *lep_Eta_1;  l1_phi = *lep_Phi_1; l1_e = *lep_E_1;
+  l0_id= *lep_ID_0;
+  l1_id = *lep_ID_1;
   dileptype = *dilep_type;
   lep_dphi = abs(*lep_Phi_0-*lep_Phi_1);
-  //b0_pt = bjets_vec[0].Pt();
   drll01 = *DRll01;
   max_eta=  max ( fabs( l0_eta ), fabs( l1_eta ) ); 
   HTall = *HT;
@@ -520,32 +535,41 @@ Bool_t reco_wqq::Process(Long64_t entry)
   ptjj = pmjj.Pt();
   etajj = pmjj.Eta();
   phijj = pmjj.Phi();
-  l0_id= *lep_ID_0;
-  l1_id = *lep_ID_1;
   ej0=jets_e[0]; ptj0=jets_pt[0]; etaj0=jets_eta[0]; phij0=jets_phi[0]; isbj0 = jets_btagFlag_DL1r_FixedCutBEff_70[0];
   ej1=jets_e[1];  ptj1=jets_pt[1]; etaj1=jets_eta[1]; phij1=jets_phi[1]; isbj1 = jets_btagFlag_DL1r_FixedCutBEff_70[1];
   ej2=jets_e[2];  ptj2=jets_pt[2]; etaj2=jets_eta[2]; phij2=jets_phi[2]; isbj2 = jets_btagFlag_DL1r_FixedCutBEff_70[2];
   ej3=jets_e[3];  ptj3=jets_pt[3]; etaj3=jets_eta[3]; phij3=jets_phi[3]; isbj3 = jets_btagFlag_DL1r_FixedCutBEff_70[3];
   if(Njets == 5){
-      ej4=jets_e[4]; ptj4=jets_pt[4];    etaj4=jets_eta[4]; phij4=jets_phi[4]; isbj4 = jets_btagFlag_DL1r_FixedCutBEff_70[4];
+    ej4=jets_e[4]; ptj4=jets_pt[4];    etaj4=jets_eta[4]; phij4=jets_phi[4]; isbj4 = jets_btagFlag_DL1r_FixedCutBEff_70[4];
   }
   else if(Njets == 6){
-  ej5=jets_e[5];    ptj5=jets_pt[5];    etaj5=jets_eta[5]; phij5=jets_phi[5]; isbj5 = jets_btagFlag_DL1r_FixedCutBEff_70[5];
+    ej5=jets_e[5];    ptj5=jets_pt[5];    etaj5=jets_eta[5]; phij5=jets_phi[5]; isbj5 = jets_btagFlag_DL1r_FixedCutBEff_70[5];
+  }
+  else if(Njets == 7){
+    ej6=jets_e[6];    ptj6=jets_pt[6];    etaj6=jets_eta[6]; phij6=jets_phi[6]; isbj6 = jets_btagFlag_DL1r_FixedCutBEff_70[6];
+  }
+  else if(Njets == 8){
+    ej7=jets_e[7];    ptj7=jets_pt[7];    etaj7=jets_eta[7]; phij7=jets_phi[7]; isbj7 = jets_btagFlag_DL1r_FixedCutBEff_70[7];
+  }
+  else if(Njets == 9){
+    ej8=jets_e[8];    ptj8=jets_pt[8];    etaj8=jets_eta[8]; phij8=jets_phi[8]; isbj8 = jets_btagFlag_DL1r_FixedCutBEff_70[8];
+  }
+  else if(Njets == 10){
+    ej9=jets_e[9];    ptj9=jets_pt[9];    etaj9=jets_eta[9]; phij9=jets_phi[9]; isbj9 = jets_btagFlag_DL1r_FixedCutBEff_70[9];
+  }
+  else if(Njets == 11){
+    ej10=jets_e[10];    ptj10=jets_pt[10];    etaj10=jets_eta[10]; phij10=jets_phi[10]; isbj10 = jets_btagFlag_DL1r_FixedCutBEff_70[10];
+  }
+  else if(Njets == 12){
+    ej11=jets_e[11];    ptj11=jets_pt[11];    etaj11=jets_eta[11]; phij11=jets_phi[11]; isbj11 = jets_btagFlag_DL1r_FixedCutBEff_70[11];
   }
   
-  for(int j=0;j< int(*nJets_OR); j++){
-    if(j<6){
-      
-      //cout<< "  jets_btag["<<j<<"]="<<jets_btag[j]<< ", pt= "<< jets_pt[j]<<endl;
-    }
-  }
-
   sel_array[0]=( Njets >= 4 && Nbjets==2 );  // Region inclusive
   sel_array[1]=( Njets >= 4  );  // && Ncjets>0
   sel_array[2]=(Njets >= 4 && Nbjets==2 && abs(pmjj.M()-mWPDG)<1e4);  
   sel_array[3]=(Njets >= 4 && abs(pmjj.M()-mWPDG)<1e4);  // && Ncjets>0
   sel_array[4]=(Njets >= 4 && Nbjets==2 && abs(pmjj.M()-mWPDG)<1e4 && (pmjj.Pt()/1e3>90 ) );  //
-  sel_array[5]=(Njets >= 4 && abs(pmjj.M()-mWPDG)<1e4 && (pmjj.Pt()/1e3>90 ) );  //
+  sel_array[6]=(Njets >= 4 && abs(pmjj.M()-mWPDG)<1e4 && (pmjj.Pt()/1e3>90 ) );  //
 
   if(sel_array[0]) region = 0;
   else if(sel_array[1]) region = 1;

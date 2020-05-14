@@ -85,6 +85,36 @@ public :
   float etaj5 = -99;
   float phij5 = -99;
   float isbj5 = -99;
+  float ptj6 = -99;
+  float ej6 = -99;
+  float etaj6 = -99;
+  float phij6 = -99;
+  float isbj6 = -99;
+  float ptj7 = -99;
+  float ej7 = -99;
+  float etaj7 = -99;
+  float phij7 = -99;
+  float isbj7 = -99;
+  float ptj8 = -99;
+  float ej8 = -99;
+  float etaj8 = -99;
+  float phij8 = -99;
+  float isbj8 = -99;
+  float ptj9 = -99;
+  float ej9 = -99;
+  float etaj9 = -99;
+  float phij9 = -99;
+  float isbj9 = -99;
+  float ptj10 = -99;
+  float ej10 = -99;
+  float etaj10 = -99;
+  float phij10 = -99;
+  float isbj10 = -99;
+  float ptj11 = -99;
+  float ej11 = -99;
+  float etaj11 = -99;
+  float phij11 = -99;
+  float isbj11 = -99;
   float dileptype = -99;
 
   // Readers to access the data (delete the ones you do not need).

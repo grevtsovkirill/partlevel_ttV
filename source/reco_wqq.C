@@ -564,6 +564,8 @@ Bool_t reco_wqq::Process(Long64_t entry)
     ej11=jets_e[11];    ptj11=jets_pt[11];    etaj11=jets_eta[11]; phij11=jets_phi[11]; isbj11 = jets_btagFlag_DL1r_FixedCutBEff_70[11];
   }
   
+  
+
   sel_array[0]=( Njets >= 4 && Nbjets==2 );  // Region inclusive
   sel_array[1]=( Njets >= 4  );  // && Ncjets>0
   sel_array[2]=(Njets >= 4 && Nbjets==2 && abs(pmjj.M()-mWPDG)<1e4);  
@@ -573,12 +575,9 @@ Bool_t reco_wqq::Process(Long64_t entry)
 
   if(sel_array[0]) region = 0;
   else if(sel_array[1]) region = 1;
-  else if(sel_array[2]) region = 2;
-  else if(sel_array[3]) region = 3;
-  else if(sel_array[4]) region = 4;
-  else if(sel_array[5]) region = 5;
-  else region = -99;  
 
+  outTree->Fill();
+  
   float met = *met_met/1000.;
   for(int i=0; i<(int)region_names.size();i++){
     if(sel_array[i]){
@@ -624,7 +623,6 @@ Bool_t reco_wqq::Process(Long64_t entry)
 
     }
   }  
-  outTree->Fill();
   return kTRUE;
 }
 

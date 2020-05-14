@@ -7,12 +7,12 @@ void recoQQ(string name="413008", string comp="xs", bool onNAF = true, bool mult
   string choose_tag="d";
   string tmp="";
   string path="";
-  string prod_version = "GFW1_v1_0422"; //
+  string prod_version = "GFW1_v25_0514"; //GFW1_v1_0422
   if(onNAF)
     path="/nfs/dust/atlas/group/top/ttH_ML/ttW_run2/ttWqq/Reco_files/"+prod_version+"/mc16"+choose_tag+"/";  
   else
     path="/Users/grevtsov/Documents/working_files/ttH/Wtt_run2/Files/ttWqq/Reco_files/"+prod_version+"/mc16"+choose_tag+"/";
-
+ 
   cout << "path = " << path<< endl;
 
   if(!multi_file){

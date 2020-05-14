@@ -249,20 +249,25 @@ void reco_wqq::SlaveBegin(TTree * /*tree*/)
   outTree->Branch("l1_pt",&l1_pt,"l1_pt/F");
   outTree->Branch("l0_eta",&l0_eta,"l0_eta/F");
   outTree->Branch("l1_eta",&l1_eta,"l1_eta/F");
+  outTree->Branch("l0_e",&l0_e,"l0_e/F");
+  outTree->Branch("l1_e",&l1_e,"l1_e/F");
+  outTree->Branch("l0_phi",&l0_phi,"l0_phi/F");
+  outTree->Branch("l1_phi",&l1_phi,"l1_phi/F");
   outTree->Branch("l0_id",&l0_id,"l0_id/F");
   outTree->Branch("l1_id",&l1_id,"l1_id/F");
   outTree->Branch("dileptype",&dileptype,"dileptype/F");
   outTree->Branch("min_DRl0j",&min_DRl0j,"min_DRl0j/F");
   outTree->Branch("min_DRl1j",&min_DRl1j,"min_DRl1j/F");
   outTree->Branch("met",&met,"met/F");
+  outTree->Branch("metphi",&metphi,"metphi/F");
   outTree->Branch("mjj",&mjj,"mjj/F");  outTree->Branch("ptjj",&ptjj,"ptjj/F");
   outTree->Branch("etajj",&etajj,"etajj/F");  outTree->Branch("phijj",&phijj,"phijj/F");
-  outTree->Branch("ptj0",&ptj0,"ptj0/F");outTree->Branch("etaj0",&etaj0,"etaj0/F");outTree->Branch("phij0",&phij0,"phij0/F");outTree->Branch("isbj0",&isbj0,"isbj0/F");
-  outTree->Branch("ptj1",&ptj1,"ptj1/F");outTree->Branch("etaj1",&etaj1,"etaj1/F");outTree->Branch("phij1",&phij1,"phij1/F");outTree->Branch("isbj1",&isbj1,"isbj1/F");
-  outTree->Branch("ptj2",&ptj2,"ptj2/F");outTree->Branch("etaj2",&etaj2,"etaj2/F");outTree->Branch("phij2",&phij2,"phij2/F");outTree->Branch("isbj2",&isbj2,"isbj2/F");
-  outTree->Branch("ptj3",&ptj3,"ptj3/F");outTree->Branch("etaj3",&etaj3,"etaj3/F");outTree->Branch("phij3",&phij3,"phij3/F");outTree->Branch("isbj3",&isbj3,"isbj3/F");
-  outTree->Branch("ptj4",&ptj4,"ptj4/F");outTree->Branch("etaj4",&etaj4,"etaj4/F");outTree->Branch("phij4",&phij4,"phij4/F");outTree->Branch("isbj4",&isbj4,"isbj4/F");
-  outTree->Branch("ptj5",&ptj5,"ptj5/F");outTree->Branch("etaj5",&etaj5,"etaj5/F");outTree->Branch("phij5",&phij5,"phij5/F");outTree->Branch("isbj5",&isbj5,"isbj5/F");
+  outTree->Branch("ptj0",&ptj0,"ptj0/F");outTree->Branch("etaj0",&etaj0,"etaj0/F");outTree->Branch("phij0",&phij0,"phij0/F");outTree->Branch("isbj0",&isbj0,"isbj0/F");outTree->Branch("ej0",&ej0,"ej0/F");
+  outTree->Branch("ptj1",&ptj1,"ptj1/F");outTree->Branch("etaj1",&etaj1,"etaj1/F");outTree->Branch("phij1",&phij1,"phij1/F");outTree->Branch("isbj1",&isbj1,"isbj1/F");outTree->Branch("ej1",&ej1,"ej1/F");
+  outTree->Branch("ptj2",&ptj2,"ptj2/F");outTree->Branch("etaj2",&etaj2,"etaj2/F");outTree->Branch("phij2",&phij2,"phij2/F");outTree->Branch("isbj2",&isbj2,"isbj2/F");outTree->Branch("ej2",&ej2,"ej2/F");
+  outTree->Branch("ptj3",&ptj3,"ptj3/F");outTree->Branch("etaj3",&etaj3,"etaj3/F");outTree->Branch("phij3",&phij3,"phij3/F");outTree->Branch("isbj3",&isbj3,"isbj3/F");outTree->Branch("ej3",&ej3,"ej3/F");
+  outTree->Branch("ptj4",&ptj4,"ptj4/F");outTree->Branch("etaj4",&etaj4,"etaj4/F");outTree->Branch("phij4",&phij4,"phij4/F");outTree->Branch("isbj4",&isbj4,"isbj4/F");outTree->Branch("ej4",&ej4,"ej4/F");
+  outTree->Branch("ptj5",&ptj5,"ptj5/F");outTree->Branch("etaj5",&etaj5,"etaj5/F");outTree->Branch("phij5",&phij5,"phij5/F");outTree->Branch("isbj5",&isbj5,"isbj5/F");outTree->Branch("ej5",&ej5,"ej5/F");
 
   //*/
   
@@ -325,7 +330,7 @@ Bool_t reco_wqq::Process(Long64_t entry)
   if(debug<5)
     cout<< "lep_Pt_0="<<*lep_Pt_0<<"  *nJets_OR ="<<*nJets_OR<<endl;
 
-  if(*lep_Pt_0<25*1e3) return 0;  
+  if(*lep_Pt_0<20*1e3) return 0;  
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
 
@@ -350,19 +355,10 @@ Bool_t reco_wqq::Process(Long64_t entry)
   if(debug<7)
     cout<< "OS => lep_ID_0="<<*lep_ID_0<< " lep_ID_1="<<*lep_ID_1<<"  *nJets_OR ="<<*nJets_OR<<endl;
   
-  //OS
-  //if(*lep_ID_0 * *lep_ID_1 > 0) return 0;
+  if(*lep_ID_0 * *lep_ID_1 > 0) return 0;
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
 
-
-  vector<float> jets_pt = {*jets_Pt_0,*jets_Pt_1,*jets_Pt_2,*jets_Pt_3,*jets_Pt_4,*jets_Pt_5};
-  vector<float> jets_eta = {*jets_Eta_0,*jets_Eta_1,*jets_Eta_2,*jets_Eta_3,*jets_Eta_4,*jets_Eta_5};
-  vector<float> jets_phi = {*jets_Phi_0,*jets_Phi_1,*jets_Phi_2,*jets_Phi_3,*jets_Phi_4,*jets_Phi_5};
-  vector<float> jets_e = {*jets_E_0,*jets_E_1,*jets_E_2,*jets_E_3,*jets_E_4,*jets_E_5};
-
-  //vector<int> jets_btag = {*jets_btagFlag_DL1r_FixedCutBEff_70_0,*jets_btagFlag_DL1r_FixedCutBEff_70_1,*jets_btagFlag_DL1r_FixedCutBEff_70_2,*jets_btagFlag_DL1r_FixedCutBEff_70_3,*jets_btagFlag_DL1r_FixedCutBEff_70_4,*jets_btagFlag_DL1r_FixedCutBEff_70_5};
-  vector<int> jets_btag = {*jets_btagFlag_DL1r_FixedCutBEff_70_0,*jets_btagFlag_DL1r_FixedCutBEff_70_1,*jets_btagFlag_DL1r_FixedCutBEff_70_2,*jets_btagFlag_DL1r_FixedCutBEff_70_3,*jets_btagFlag_DL1r_FixedCutBEff_70_4,*jets_btagFlag_DL1r_FixedCutBEff_70_5};
 
   Njets=0;
   Nbjets=0;
@@ -371,31 +367,28 @@ Bool_t reco_wqq::Process(Long64_t entry)
   vector<TLorentzVector> jets_vec;
   vector<TLorentzVector> bjets_vec;
   vector<TLorentzVector> nonbjets_vec;
-  //if(debug<7)
-  //cout<< "   jets_pt[0] "<<jets_pt[0]/1000<<"  *nJets_OR ="<<*nJets_OR<<endl;
   
-  for(int j=0;j< int(*nJets_OR); j++){
-    if(j<6){
-      if(jets_pt[j]/1000.<25){
-	lowjets++;      
-	cout<< "   jets_pt["<<j<<"] "<<jets_pt[j]/1000<<"  *nJets_OR ="<<*nJets_OR<<endl;  
-	return 0;
-      }    
-      if(fabs(jets_eta[j])>2.5) return 0;
+  //for(int j=0;j< int(*nJets_OR); j++){
+  for(int j=0;j< int(jets_pt.GetSize()); j++){
+    if(jets_pt[j]/1000.<25){
+      lowjets++;      
+      return 0;
+    }    
+    if(fabs(jets_eta[j])>2.5) return 0;
 
-      Njets++;
-      TLorentzVector jj;
-      jj.SetPtEtaPhiE(jets_pt[j],jets_eta[j],jets_phi[j],jets_e[j]);
-      jets_vec.push_back(jj);
+    Njets++;
+    TLorentzVector jj;
+    jj.SetPtEtaPhiE(jets_pt[j],jets_eta[j],jets_phi[j],jets_e[j]);
+    jets_vec.push_back(jj);
 
-      if(jets_btag[j]>0){
-	Nbjets++;
-	bjets_vec.push_back(jj);
-      }
-      else
-	nonbjets_vec.push_back(jj);
-      //check option of getting c-tagger
+    if(jets_btagFlag_DL1r_FixedCutBEff_70[j]>0){
+      Nbjets++;
+      bjets_vec.push_back(jj);
     }
+    else
+      nonbjets_vec.push_back(jj);
+    //check option of getting c-tagger
+  
   }
 
 
@@ -512,31 +505,32 @@ Bool_t reco_wqq::Process(Long64_t entry)
   
   Njets = *nJets_OR;
   Nbjets = *nJets_OR_DL1r_70;
-  l0_pt = *lep_Pt_0/1e3; l0_eta = *lep_Eta_0;
-  l1_pt = *lep_Pt_1/1e3; l1_eta = *lep_Eta_1;
+  l0_pt = *lep_Pt_0; l0_eta = *lep_Eta_0;  l0_phi = *lep_Phi_0; l0_e = *lep_E_0;
+  l1_pt = *lep_Pt_1; l1_eta = *lep_Eta_1;  l1_phi = *lep_Phi_1; l1_e = *lep_E_1;
   dileptype = *dilep_type;
   lep_dphi = abs(*lep_Phi_0-*lep_Phi_1);
-  //b0_pt = bjets_vec[0].Pt()/1e3;
+  //b0_pt = bjets_vec[0].Pt();
   drll01 = *DRll01;
   max_eta=  max ( fabs( l0_eta ), fabs( l1_eta ) ); 
-  HTall = *HT/1e3;
-  HTjet = *HT_jets/1e3;
+  HTall = *HT;
+  HTjet = *HT_jets;
   met = *met_met;
-  mjj = pmjj.M()/1e3;
-  ptjj = pmjj.Pt()/1e3;
+  metphi = *met_phi;
+  mjj = pmjj.M();
+  ptjj = pmjj.Pt();
   etajj = pmjj.Eta();
   phijj = pmjj.Phi();
   l0_id= *lep_ID_0;
   l1_id = *lep_ID_1;
-  ptj0=jets_pt[0];    etaj0=jets_eta[0]; phij0=jets_phi[0]; isbj0 = jets_btag[0];
-  ptj1=jets_pt[1];    etaj1=jets_eta[1]; phij1=jets_phi[1]; isbj1 = jets_btag[1];
-  ptj2=jets_pt[2];    etaj2=jets_eta[2]; phij2=jets_phi[2]; isbj2 = jets_btag[2];
-  ptj3=jets_pt[3];    etaj3=jets_eta[3]; phij3=jets_phi[3]; isbj3 = jets_btag[3];
+  ej0=jets_e[0]; ptj0=jets_pt[0]; etaj0=jets_eta[0]; phij0=jets_phi[0]; isbj0 = jets_btagFlag_DL1r_FixedCutBEff_70[0];
+  ej1=jets_e[1];  ptj1=jets_pt[1]; etaj1=jets_eta[1]; phij1=jets_phi[1]; isbj1 = jets_btagFlag_DL1r_FixedCutBEff_70[1];
+  ej2=jets_e[2];  ptj2=jets_pt[2]; etaj2=jets_eta[2]; phij2=jets_phi[2]; isbj2 = jets_btagFlag_DL1r_FixedCutBEff_70[2];
+  ej3=jets_e[3];  ptj3=jets_pt[3]; etaj3=jets_eta[3]; phij3=jets_phi[3]; isbj3 = jets_btagFlag_DL1r_FixedCutBEff_70[3];
   if(Njets == 5){
-    ptj4=jets_pt[4];    etaj4=jets_eta[4]; phij4=jets_phi[4]; isbj4 = jets_btag[4];
+      ej4=jets_e[4]; ptj4=jets_pt[4];    etaj4=jets_eta[4]; phij4=jets_phi[4]; isbj4 = jets_btagFlag_DL1r_FixedCutBEff_70[4];
   }
   else if(Njets == 6){
-    ptj5=jets_pt[5];    etaj5=jets_eta[5]; phij5=jets_phi[5]; isbj5 = jets_btag[5];
+  ej5=jets_e[5];    ptj5=jets_pt[5];    etaj5=jets_eta[5]; phij5=jets_phi[5]; isbj5 = jets_btagFlag_DL1r_FixedCutBEff_70[5];
   }
   
   for(int j=0;j< int(*nJets_OR); j++){
@@ -603,29 +597,6 @@ Bool_t reco_wqq::Process(Long64_t entry)
 
       hist_mjj[i]->Fill(pmjj.M()/1e3, weight_tot);
       hist_jjpt[i]->Fill(pmjj.Pt()/1e3, weight_tot);
-
-      /*
-      hist_lep_truth_origin[i]->Fill(l0_true_origin, weight_tot);
-      hist_lep_truth_origin[i]->Fill(l1_true_origin, weight_tot);
-      hist_lep_truth_origin_0[i]->Fill(l0_true_origin, weight_tot);
-      hist_lep_truth_origin_1[i]->Fill(l1_true_origin, weight_tot);
-      
-      hist_lep_truth_type[i]->Fill(l0_true_type, weight_tot);
-      hist_lep_truth_type[i]->Fill(l1_true_type, weight_tot);
-      hist_lep_truth_type_0[i]->Fill(l0_true_type, weight_tot);
-      hist_lep_truth_type_1[i]->Fill(l1_true_type, weight_tot);
-
-
-      for(int j=0; j<Njets;j++){
-	//cout << "    jet_true_type["<<j<<"/"<<Njets<<"]/sel = " << jet_true_type[j]<< " / "<<  sel_jet_true_type[j]<< "    jet_true_origin["<<j<<"]" << jet_true_origin[j]<< ", pt="<<jets_vec[j].Pt()/1e3<<endl;
-	hist_jet_truth_origin[i]->Fill(sel_jet_true_origin[j], weight_tot);
-	hist_jet_truth_type[i]->Fill(sel_jet_true_type[j], weight_tot);
-      }
-      
-      for(int db=0; db<2;db++){
-	hist_min_DRlb[i][db]->Fill(dRlb[db], weight_tot);
-      }
-  //*/
 
     }
   }  

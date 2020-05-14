@@ -1,17 +1,16 @@
-void recoQQ(string name="413008", string comp="xs", bool onNAF = true, bool multi_file = false, int num_split =4){
+void recoQQ(string name="413008", string comp="d", bool onNAF = true, bool multi_file = false, int num_split =4){
   /*
     413008.root
   */
 
   TChain *ch=new TChain("nominal");
-  string choose_tag="d";
   string tmp="";
   string path="";
   string prod_version = "GFW1_v25_0514"; //GFW1_v1_0422
   if(onNAF)
-    path="/nfs/dust/atlas/group/top/ttH_ML/ttW_run2/ttWqq/Reco_files/"+prod_version+"/mc16"+choose_tag+"/";  
+    path="/nfs/dust/atlas/group/top/ttH_ML/ttW_run2/ttWqq/Reco_files/"+prod_version+"/mc16"+comp+"/";  
   else
-    path="/Users/grevtsov/Documents/working_files/ttH/Wtt_run2/Files/ttWqq/Reco_files/"+prod_version+"/mc16"+choose_tag+"/";
+    path="/Users/grevtsov/Documents/working_files/ttH/Wtt_run2/Files/ttWqq/Reco_files/"+prod_version+"/mc16"+comp+"/";
  
   cout << "path = " << path<< endl;
 

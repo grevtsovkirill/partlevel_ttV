@@ -275,7 +275,11 @@ void reco_wqq::SlaveBegin(TTree * /*tree*/)
   outTree->Branch("ptj10",&ptj10,"ptj10/F");outTree->Branch("etaj10",&etaj10,"etaj10/F");outTree->Branch("phij10",&phij10,"phij10/F");outTree->Branch("isbj10",&isbj10,"isbj10/F");outTree->Branch("ej10",&ej10,"ej10/F");
   outTree->Branch("ptj11",&ptj11,"ptj11/F");outTree->Branch("etaj11",&etaj11,"etaj11/F");outTree->Branch("phij11",&phij11,"phij11/F");outTree->Branch("isbj11",&isbj11,"isbj11/F");outTree->Branch("ej11",&ej11,"ej11/F");
 
-  //*/
+
+  //outTree->Branch("truth_m",&m_truth_m,"truth_m");
+  outTree->Branch("truth_m",&truth_m);
+  
+//*/
   
   //(int)weight_names.size()
   for(int i=0; i<(int)weight_names.size();i++){
@@ -296,6 +300,7 @@ Bool_t reco_wqq::Process(Long64_t entry)
 
   // increase the total number of entries
   ++fNumberOfEvents;
+  
 
   //weight definitions
   Double_t weight_to_use=1;
@@ -565,8 +570,18 @@ Bool_t reco_wqq::Process(Long64_t entry)
     ej11=jets_e[11];    ptj11=jets_pt[11];    etaj11=jets_eta[11]; phij11=jets_phi[11]; isbj11 = jets_btagFlag_DL1r_FixedCutBEff_70[11];
   }
   
-  
+  //truth_m.resize(m_truth_m.GetSize(), -999);
+  truth_m.clear();  
+  for(int j=0;j< int(m_truth_m.GetSize()); j++){ 
+     truth_m.emplace_back(m_truth_m[j]); 
+   } 
 
+  for(int j=0;j< int(m_truth_m.GetSize()); j++){ 
+    if(m_truth_m[j]!=truth_m[j])
+      cout <<m_truth_m[j] <<" "<< truth_m[j]<< endl; 
+   } 
+
+  
   sel_array[0]=( Njets >= 4 && Nbjets==2 );  // Region inclusive
   sel_array[1]=( Njets >= 4  );  // && Ncjets>0
   sel_array[2]=(Njets >= 4 && Nbjets==2 && abs(pmjj.M()-mWPDG)<1e4);  

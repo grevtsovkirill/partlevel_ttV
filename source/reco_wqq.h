@@ -10,9 +10,11 @@
 #include <TTreeReaderArray.h>
 
 // Headers needed by this particular selector
+
+#ifdef __CINT__
 #include <vector>
-
-
+#pragma link C++ class std::vector<float>+;  
+#endif
 
 class reco_wqq : public TSelector {
 public :
@@ -117,6 +119,8 @@ public :
   float isbj11 = -99;
   float dileptype = -99;
 
+  std::vector<float> truth_m ;
+  
   // Readers to access the data (delete the ones you do not need).
   TTreeReaderValue<Float_t> weight_mc = {fReader, "weight_mc"};
   TTreeReaderValue<Float_t> weight_pileup = {fReader, "weight_pileup"};

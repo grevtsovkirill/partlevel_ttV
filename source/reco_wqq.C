@@ -276,8 +276,16 @@ void reco_wqq::SlaveBegin(TTree * /*tree*/)
   outTree->Branch("ptj11",&ptj11,"ptj11/F");outTree->Branch("etaj11",&etaj11,"etaj11/F");outTree->Branch("phij11",&phij11,"phij11/F");outTree->Branch("isbj11",&isbj11,"isbj11/F");outTree->Branch("ej11",&ej11,"ej11/F");
 
 
-  //outTree->Branch("truth_m",&m_truth_m,"truth_m");
   outTree->Branch("truth_m",&truth_m);
+  outTree->Branch("truth_pt",&truth_pt);
+  outTree->Branch("truth_eta",&truth_eta);
+  outTree->Branch("truth_phi",&truth_phi);
+  outTree->Branch("truth_e",&truth_e);
+  outTree->Branch("truth_pdgId",&truth_pdgId);
+  outTree->Branch("truth_status",&truth_status);
+  outTree->Branch("truth_barcode",&truth_barcode);
+  outTree->Branch("truth_parents",&truth_parents);
+  outTree->Branch("truth_children",&truth_children);
   
 //*/
   
@@ -570,10 +578,35 @@ Bool_t reco_wqq::Process(Long64_t entry)
     ej11=jets_e[11];    ptj11=jets_pt[11];    etaj11=jets_eta[11]; phij11=jets_phi[11]; isbj11 = jets_btagFlag_DL1r_FixedCutBEff_70[11];
   }
   
-  //truth_m.resize(m_truth_m.GetSize(), -999);
   truth_m.clear();  
+  truth_pt.clear();
+  truth_eta.clear();
+  truth_phi.clear();
+  truth_e.clear();
+  truth_pdgId.clear();
+  truth_status.clear();
+  truth_barcode.clear();
+  truth_parents.clear();
+  truth_children.clear();
+
   for(int j=0;j< int(m_truth_m.GetSize()); j++){ 
      truth_m.emplace_back(m_truth_m[j]); 
+     truth_pt.emplace_back(m_truth_pt[j]); 
+     truth_eta.emplace_back(m_truth_eta[j]); 
+     truth_phi.emplace_back(m_truth_phi[j]); 
+     truth_e.emplace_back(m_truth_e[j]); 
+     truth_pdgId.emplace_back(m_truth_pdgId[j]); 
+     truth_status.emplace_back(m_truth_status[j]); 
+     truth_barcode.emplace_back(m_truth_barcode[j]);
+     truth_parents.emplace_back(m_truth_parents[j]);
+     truth_children.emplace_back(m_truth_children[j]);
+     /* for(int i=0;i< int(m_truth_parents[j].size()); i++){ */
+     /*   cout <<"j("<<j<<")i("<<i <<") "<< m_truth_parents[j][i]<< endl;   */
+     /* } */
+     /* for(int k=0;k< int(m_truth_children[j].size()); k++){ */
+     /*   cout <<"j("<<j<<")k("<<k <<") "<< m_truth_children[j][k]<< endl;   */
+     /* } */
+       
    } 
 
   for(int j=0;j< int(m_truth_m.GetSize()); j++){ 

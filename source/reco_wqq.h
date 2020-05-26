@@ -14,6 +14,8 @@
 #ifdef __CINT__
 #include <vector>
 #pragma link C++ class std::vector<float>+;  
+#pragma link C++ class std::vector<int>+;  
+#pragma link C++ class std::vector<vector<int>>+;  
 #endif
 
 class reco_wqq : public TSelector {
@@ -120,7 +122,16 @@ public :
   float dileptype = -99;
 
   std::vector<float> truth_m ;
-  
+  std::vector<float> truth_pt ;
+  std::vector<float> truth_eta ;
+  std::vector<float> truth_phi ;
+  std::vector<float> truth_e ;
+  std::vector<int> truth_pdgId ;
+  std::vector<int> truth_status ;
+  std::vector<int> truth_barcode ;
+  std::vector<vector<int>> truth_parents ;
+  std::vector<vector<int>> truth_children ;
+
   // Readers to access the data (delete the ones you do not need).
   TTreeReaderValue<Float_t> weight_mc = {fReader, "weight_mc"};
   TTreeReaderValue<Float_t> weight_pileup = {fReader, "weight_pileup"};

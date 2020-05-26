@@ -470,10 +470,14 @@ Bool_t reco_wqq::Process(Long64_t entry)
     }
   }
   
-  if(debug<10 && *nJets_OR_DL1r_70!=Nbjets){
+  if(*nJets_OR_DL1r_70!=Nbjets){
     cout<< "nB => *nJets_OR_DL1r_70="<<*nJets_OR_DL1r_70 << ", Nbjets = "<< Nbjets<<"  *nJets_OR ="<<*nJets_OR<<endl;
   }
 
+  if(*nJets_OR!=Njets){
+    cout<< "nj (gn1) => *nJets_OR="<<*nJets_OR << ", Njets = "<< Njets<<endl;
+  }
+    
 
 
   TLorentzVector pmjj = nonbjets_vec[0]+nonbjets_vec[1];
@@ -553,28 +557,45 @@ Bool_t reco_wqq::Process(Long64_t entry)
   ej1=jets_e[1];  ptj1=jets_pt[1]; etaj1=jets_eta[1]; phij1=jets_phi[1]; isbj1 = jets_btagFlag_DL1r_FixedCutBEff_70[1];
   ej2=jets_e[2];  ptj2=jets_pt[2]; etaj2=jets_eta[2]; phij2=jets_phi[2]; isbj2 = jets_btagFlag_DL1r_FixedCutBEff_70[2];
   ej3=jets_e[3];  ptj3=jets_pt[3]; etaj3=jets_eta[3]; phij3=jets_phi[3]; isbj3 = jets_btagFlag_DL1r_FixedCutBEff_70[3];
-  if(Njets == 5){
+
+  ej4=-99;ptj4=-99;etaj4=-99;phij4=-99;isbj4=-99;
+  ej5=-99;ptj5=-99;etaj5=-99;phij5=-99;isbj5=-99;
+  ej6=-99;ptj6=-99;etaj6=-99;phij6=-99;isbj6=-99;
+  ej7=-99;ptj7=-99;etaj7=-99;phij7=-99;isbj7=-99;
+  ej8=-99;ptj8=-99;etaj8=-99;phij8=-99;isbj8=-99;
+  ej9=-99;ptj9=-99;etaj9=-99;phij9=-99;isbj9=-99;
+  ej10=-99;ptj10=-99;etaj10=-99;phij10=-99;isbj10=-99;
+  ej11=-99;ptj11=-99;etaj11=-99;phij11=-99;isbj11=-99;
+
+  if(Njets >= 5){
     ej4=jets_e[4]; ptj4=jets_pt[4];    etaj4=jets_eta[4]; phij4=jets_phi[4]; isbj4 = jets_btagFlag_DL1r_FixedCutBEff_70[4];
   }
-  else if(Njets == 6){
+
+  if(Njets >= 6){
     ej5=jets_e[5];    ptj5=jets_pt[5];    etaj5=jets_eta[5]; phij5=jets_phi[5]; isbj5 = jets_btagFlag_DL1r_FixedCutBEff_70[5];
   }
-  else if(Njets == 7){
+
+  if(Njets >= 7){
     ej6=jets_e[6];    ptj6=jets_pt[6];    etaj6=jets_eta[6]; phij6=jets_phi[6]; isbj6 = jets_btagFlag_DL1r_FixedCutBEff_70[6];
   }
-  else if(Njets == 8){
+
+  if(Njets >= 8){
     ej7=jets_e[7];    ptj7=jets_pt[7];    etaj7=jets_eta[7]; phij7=jets_phi[7]; isbj7 = jets_btagFlag_DL1r_FixedCutBEff_70[7];
   }
-  else if(Njets == 9){
+
+  if(Njets >= 9){
     ej8=jets_e[8];    ptj8=jets_pt[8];    etaj8=jets_eta[8]; phij8=jets_phi[8]; isbj8 = jets_btagFlag_DL1r_FixedCutBEff_70[8];
   }
-  else if(Njets == 10){
+
+  if(Njets >= 10){
     ej9=jets_e[9];    ptj9=jets_pt[9];    etaj9=jets_eta[9]; phij9=jets_phi[9]; isbj9 = jets_btagFlag_DL1r_FixedCutBEff_70[9];
   }
-  else if(Njets == 11){
+
+  if(Njets >= 11){
     ej10=jets_e[10];    ptj10=jets_pt[10];    etaj10=jets_eta[10]; phij10=jets_phi[10]; isbj10 = jets_btagFlag_DL1r_FixedCutBEff_70[10];
   }
-  else if(Njets == 12){
+
+  if(Njets >= 12){
     ej11=jets_e[11];    ptj11=jets_pt[11];    etaj11=jets_eta[11]; phij11=jets_phi[11]; isbj11 = jets_btagFlag_DL1r_FixedCutBEff_70[11];
   }
   
@@ -589,6 +610,7 @@ Bool_t reco_wqq::Process(Long64_t entry)
   truth_parents.clear();
   truth_children.clear();
 
+  /*
   for(int j=0;j< int(m_truth_m.GetSize()); j++){ 
      truth_m.emplace_back(m_truth_m[j]); 
      truth_pt.emplace_back(m_truth_pt[j]); 
@@ -600,21 +622,18 @@ Bool_t reco_wqq::Process(Long64_t entry)
      truth_barcode.emplace_back(m_truth_barcode[j]);
      truth_parents.emplace_back(m_truth_parents[j]);
      truth_children.emplace_back(m_truth_children[j]);
-     /* for(int i=0;i< int(m_truth_parents[j].size()); i++){ */
-     /*   cout <<"j("<<j<<")i("<<i <<") "<< m_truth_parents[j][i]<< endl;   */
-     /* } */
-     /* for(int k=0;k< int(m_truth_children[j].size()); k++){ */
-     /*   cout <<"j("<<j<<")k("<<k <<") "<< m_truth_children[j][k]<< endl;   */
-     /* } */
-       
+     //for(int i=0;i< int(m_truth_parents[j].size()); i++)
+     //cout <<"j("<<j<<")i("<<i <<") "<< m_truth_parents[j][i]<< endl;     
+     //for(int k=0;k< int(m_truth_children[j].size()); k++)
+       //cout <<"j("<<j<<")k("<<k <<") "<< m_truth_children[j][k]<< endl;           
    } 
 
   for(int j=0;j< int(m_truth_m.GetSize()); j++){ 
     if(m_truth_m[j]!=truth_m[j])
       cout <<m_truth_m[j] <<" "<< truth_m[j]<< endl; 
-   } 
+      } 
+  //*/
 
-  
   sel_array[0]=( Njets >= 4 && Nbjets==2 );  // Region inclusive
   sel_array[1]=( Njets >= 4  );  // && Ncjets>0
   sel_array[2]=(Njets >= 4 && Nbjets==2 && abs(pmjj.M()-mWPDG)<1e4);  

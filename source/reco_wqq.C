@@ -331,10 +331,8 @@ Bool_t reco_wqq::Process(Long64_t entry)
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
 
-  if(debug<5)
-      cout<< "dilep_type="<<*dilep_type<<"  *nJets_OR ="<<*nJets_OR<<endl;
   //Nleps
-  if(!*dilep_type) return 0;
+  if(*dilep_type==0) return 0;
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
 
@@ -361,19 +359,32 @@ Bool_t reco_wqq::Process(Long64_t entry)
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
 
-  if(debug<6)
-    cout<< "lep_isMedium_0="<<int(*lep_isMedium_0)<< " lep_isMedium_1="<<int(*lep_isMedium_1)<<"  *nJets_OR ="<<*nJets_OR<<endl;
+  //if(debug<6)
+  //
+    // bool is_l01_tight = (
+  //(abs(*lep_ID_0)==13 && *lep_isMedium_0 && *lep_isolationFCLoose_0 && *lep_promptLeptonVeto_TagWeight_0<-0.5)
+  //  || (abs(*lep_ID_0)==11 && *lep_isolationFCLoose_0 && *lep_isTightLH_0 && *lep_chargeIDBDTResult_0>0.7 && *lep_ambiguityType_0 == 0 && *lep_promptLeptonVeto_TagWeight_0<-0.7))
+  // &&((abs(*lep_ID_1)==13 && *lep_isMedium_1 && *lep_isolationFCLoose_1 && *lep_promptLeptonVeto_TagWeight_1<-0.5) || (abs(*lep_ID_1)==11 && *lep_isolationFCLoose_1 && *lep_isTightLH_1 && *lep_chargeIDBDTResult_1>0.7 && *lep_ambiguityType_1 == 0 && *lep_promptLeptonVeto_TagWeight_1<-0.7));
+  if (!int(*lep_isolationFCLoose_0) || !int(*lep_isolationFCLoose_1)) return 0;
+  if ( ( abs(*lep_ID_0)==13 && !int(*lep_isMedium_0)) || ( abs(*lep_ID_0)==11 && !int(*lep_isMediumLH_0) ) ) return 0;
+  if ( ( abs(*lep_ID_1)==13 && !int(*lep_isMedium_1)) || ( abs(*lep_ID_1)==11 && !int(*lep_isMediumLH_1) ) ) return 0;
 
+  if(debug<7){
+    cout<< " lep_ID_0="<<*lep_ID_0<< "; lep_isMedium_0="<<int(*lep_isMedium_0)<< " lep_isMediumLH_0="<<int(*lep_isMediumLH_0)<<endl;
+    cout<< " lep_ID_1="<<*lep_ID_1<< "; lep_isMedium_1="<<int(*lep_isMedium_1)<< " lep_isMediumLH_1="<<int(*lep_isMediumLH_1)<<'\n'<<"  *dilep_type ="<<*dilep_type<<endl;
+  }
   //tight leptons
   //if(!int(*lep_isTight_0)||!int(*lep_isTight_1)) return 0;  
   //if(!int(*lep_isLoose_0)||!int(*lep_isLoose_1)) return 0;  
-  if(!int(*lep_isMedium_0)||!int(*lep_isMedium_1)) return 0;  
+  //if(!int(*lep_isMedium_0)) return 0;  
+  // if(!int(*lep_isMedium_1)) return 0;  
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
 
   if(debug<7)
     cout<< "OS => lep_ID_0="<<*lep_ID_0<< " lep_ID_1="<<*lep_ID_1<<"  *nJets_OR ="<<*nJets_OR<<endl;
   
+
   if(*lep_ID_0 * *lep_ID_1 > 0) return 0;
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;

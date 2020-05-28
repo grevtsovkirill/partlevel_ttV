@@ -52,6 +52,10 @@ TH1D *hist_Whpt[10];
 TH1D *hist_jjpt[10];
 TH1D *hist_mjj[10];
 
+TH1D *hist_dlrc[10];
+TH1D *hist_dlrcb[10];
+TH1D *hist_dlrcnb[10];
+
 TH1D *hist_lep_truth_origin[10];
 TH1D *hist_lep_truth_origin_0[10];
 TH1D *hist_lep_truth_origin_1[10];
@@ -213,6 +217,10 @@ void reco_wqq::SlaveBegin(TTree * /*tree*/)
     hist_jjpt[i] = new TH1D(("jjpt_"+to_string(i)).c_str(), ("p_T^{jj} "+region_names[i]+";p_T^{jj};Events").c_str(),60,0,300 ); //w_binnum, w_bins
     hist_mjj[i] = new TH1D(("mjj_"+to_string(i)).c_str(), ("m_{jj} "+region_names[i]+";m_{jj};Events").c_str(), 50, 50, 150); //420, 50, 410
 
+    hist_dlrc[i] = new TH1D(("dlrc_"+to_string(i)).c_str(), ("DL1r_{c} "+region_names[i]+";DL1r_{c};Events").c_str(), 75, -10, 15); //420, 50, 410
+    hist_dlrcb[i] = new TH1D(("dlrcb_"+to_string(i)).c_str(), ("DL1r_{c} b "+region_names[i]+";DL1r_{c} b;Events").c_str(), 75, -10, 15); //420, 50, 410
+    hist_dlrcnb[i] = new TH1D(("dlrcnb_"+to_string(i)).c_str(), ("DL1r_{c} nb "+region_names[i]+";DL1r_{c} nb;Events").c_str(), 75, -10, 15); //420, 50, 410
+    
     hist_lep_truth_origin[i] = new TH1D(("leps_tr_origin_"+to_string(i)).c_str(), ("Origins 2lOS"+region_names[i]+";Origin;Events").c_str(), origin_bins, 0, origin_bins);
     hist_lep_truth_origin_0[i] = new TH1D(("lep0_tr_origin_"+to_string(i)).c_str(), ("L0 Origin 2lOS"+region_names[i]+";l0 Origin;Events").c_str(), origin_bins, 0, origin_bins);
     hist_lep_truth_origin_1[i] = new TH1D(("lep1_tr_origin_"+to_string(i)).c_str(), ("L1 Origin 2lOS"+region_names[i]+";l1 Origin;Events").c_str(), origin_bins, 0, origin_bins);
@@ -398,7 +406,22 @@ Bool_t reco_wqq::Process(Long64_t entry)
   vector<TLorentzVector> bjets_vec;
   vector<TLorentzVector> nonbjets_vec;
 
-  
+  //ATL-PHYS-PUB-2020-009 (cds.cern.ch/record/2718610)
+  // DL1r = ln (pb/[fc*pc+(1−fc)*pu])
+  ///eos/atlas/atlascerngroupdisk/asg-calib/xAODBTaggingEfficiency/13TeV/2020-21-13TeV-MC16-CDI-2020-03-11_v3.root
+  // 70% threshold: 3.245
+  float fc=0.018;
+  float dl1r=-999;
+  float dl1rc=-999;
+
+  float dl1r_denum=0;
+  float dl1rc_denum=0;
+
+  float fb=0.28;
+  float wp70t=3.245;
+  vector<float> c_scores;
+  vector<float> bc_scores;
+  vector<float> nbc_scores;
   //for(int j=0;j< int(*nJets_OR); j++){
   for(int j=0;j< int(jets_pt.GetSize()); j++){
     if(jets_pt[j]/1000.<25){
@@ -407,6 +430,15 @@ Bool_t reco_wqq::Process(Long64_t entry)
     }    
     if(fabs(jets_eta[j])>2.5) return 0;
 
+    dl1r_denum=fc*jets_score_DL1r_pc[j] + (1-fc)*jets_score_DL1r_pu[j];   
+    if(dl1r_denum!=0)
+      dl1r = log(jets_score_DL1r_pb[j]/ dl1r_denum );
+
+    dl1rc_denum=fb*jets_score_DL1r_pb[j] + (1-fb)*jets_score_DL1r_pu[j];   
+    if(dl1rc_denum!=0)
+      dl1rc = log(jets_score_DL1r_pc[j]/ dl1rc_denum );
+
+    c_scores.push_back(dl1rc);
     Njets++;
     TLorentzVector jj;
     jj.SetPtEtaPhiE(jets_pt[j],jets_eta[j],jets_phi[j],jets_e[j]);
@@ -415,11 +447,24 @@ Bool_t reco_wqq::Process(Long64_t entry)
     if(jets_btagFlag_DL1r_FixedCutBEff_70[j]>0){
       Nbjets++;
       bjets_vec.push_back(jj);
+      bc_scores.push_back(dl1rc);
     }
-    else
+    else{
       nonbjets_vec.push_back(jj);
+      nbc_scores.push_back(dl1rc);
+    }
     //check option of getting c-tagger
-  
+
+
+
+    if(debug<22 ){
+      if(dl1r>wp70t && jets_btagFlag_DL1r_FixedCutBEff_70[j]==0){
+	cout << " tag mis match"<< endl;
+      }
+      //cout << "jets_score_DL1r["<<j<<"] = "<<jets_score_DL1r[j] << ", dl1r="<< dl1r<<", ratio = "<<dl1r/jets_score_DL1r[j]<< endl;
+    }
+    //https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/BTaggingBenchmarksRelease21
+    dl1rc=-999;
   }
 
   if(debug<21 && (int(*nJets_OR)>10))
@@ -700,6 +745,12 @@ Bool_t reco_wqq::Process(Long64_t entry)
       hist_mjj[i]->Fill(pmjj.M()/1e3, weight_tot);
       hist_jjpt[i]->Fill(pmjj.Pt()/1e3, weight_tot);
 
+      for(int k=0; k<c_scores.size();k++)
+	hist_dlrc[i]->Fill(c_scores[k], weight_tot);
+      for(int k=0; k<bc_scores.size();k++)
+	hist_dlrcb[i]->Fill(bc_scores[k], weight_tot);
+      for(int k=0; k<nbc_scores.size();k++)
+	hist_dlrcnb[i]->Fill(nbc_scores[k], weight_tot);
     }
   }  
   return kTRUE;
@@ -762,6 +813,9 @@ void reco_wqq::Terminate()
       hist_jet_truth_origin[i]->Write();
       hist_jet_truth_type[i]->Write();
       
+      hist_dlrc[i]->Write();
+      hist_dlrcb[i]->Write();
+      hist_dlrcnb[i]->Write();
       //hist_min_DRlb
       for(int db=0; db<2;db++){
 	hist_min_DRlb[i][db]->Write();

@@ -1010,7 +1010,11 @@ public :
   TTreeReaderArray<float> jets_eta = {fReader, "jets_eta"};
   TTreeReaderArray<float> jets_e = {fReader, "jets_e"};
   TTreeReaderArray<char>  jets_btagFlag_DL1r_FixedCutBEff_70= {fReader, "jets_btagFlag_DL1r_FixedCutBEff_70"};
+  TTreeReaderArray<float> jets_score_DL1r = {fReader, "jets_score_DL1r"};
   TTreeReaderArray<float> jets_score_DL1r_pu = {fReader, "jets_score_DL1r_pu"};
+  TTreeReaderArray<float> jets_score_DL1r_pc = {fReader, "jets_score_DL1r_pc"};
+  TTreeReaderArray<float> jets_score_DL1r_pb = {fReader, "jets_score_DL1r_pb"};
+
   //TTreeReaderArray<float>  = {fReader, ""};
   TTreeReaderValue<Int_t> higgsDecayMode = {fReader, "higgsDecayMode"};
   TTreeReaderArray<float> m_truth_m = {fReader, "m_truth_m"};

@@ -54,6 +54,9 @@ TH1D *hist_mjj[10];
 
 TH1D *hist_dlrc[10];
 TH1D *hist_dlrcb[10];
+TH1D *hist_dlrcl[10];
+TH1D *hist_dlrcc[10];
+TH1D *hist_dlrct[10];
 TH1D *hist_dlrcnb[10];
 
 TH1D *hist_lep_truth_origin[10];
@@ -219,6 +222,9 @@ void reco_wqq::SlaveBegin(TTree * /*tree*/)
 
     hist_dlrc[i] = new TH1D(("dlrc_"+to_string(i)).c_str(), ("DL1r_{c} "+region_names[i]+";DL1r_{c};Events").c_str(), 75, -10, 15); //420, 50, 410
     hist_dlrcb[i] = new TH1D(("dlrcb_"+to_string(i)).c_str(), ("DL1r_{c} b "+region_names[i]+";DL1r_{c} b;Events").c_str(), 75, -10, 15); //420, 50, 410
+    hist_dlrcl[i] = new TH1D(("dlrcl_"+to_string(i)).c_str(), ("DL1r_{c} l "+region_names[i]+";DL1r_{c} l;Events").c_str(), 75, -10, 15); //420, 50, 410
+    hist_dlrcc[i] = new TH1D(("dlrcc_"+to_string(i)).c_str(), ("DL1r_{c} c "+region_names[i]+";DL1r_{c} c;Events").c_str(), 75, -10, 15); //420, 50, 410
+    hist_dlrct[i] = new TH1D(("dlrct_"+to_string(i)).c_str(), ("DL1r_{c} t "+region_names[i]+";DL1r_{c} t;Events").c_str(), 75, -10, 15); //420, 50, 410
     hist_dlrcnb[i] = new TH1D(("dlrcnb_"+to_string(i)).c_str(), ("DL1r_{c} nb "+region_names[i]+";DL1r_{c} nb;Events").c_str(), 75, -10, 15); //420, 50, 410
     
     hist_lep_truth_origin[i] = new TH1D(("leps_tr_origin_"+to_string(i)).c_str(), ("Origins 2lOS"+region_names[i]+";Origin;Events").c_str(), origin_bins, 0, origin_bins);
@@ -420,8 +426,14 @@ Bool_t reco_wqq::Process(Long64_t entry)
   float fb=0.28;
   float wp70t=3.245;
   vector<float> c_scores;
-  vector<float> bc_scores;
   vector<float> nbc_scores;
+  vector<float> bc_scores;
+  vector<float> lc_scores;
+  vector<float> cc_scores;
+  vector<float> tc_scores;
+  //5 (B), 4 (D/c), 15 (tau), 0 (no label = light?), -99 (jet failed pT cut)
+  //jets_HadronConeExclTruthLabelID
+  
   //for(int j=0;j< int(*nJets_OR); j++){
   for(int j=0;j< int(jets_pt.GetSize()); j++){
     if(jets_pt[j]/1000.<25){
@@ -447,11 +459,20 @@ Bool_t reco_wqq::Process(Long64_t entry)
     if(jets_btagFlag_DL1r_FixedCutBEff_70[j]>0){
       Nbjets++;
       bjets_vec.push_back(jj);
-      bc_scores.push_back(dl1rc);
     }
     else{
       nonbjets_vec.push_back(jj);
       nbc_scores.push_back(dl1rc);
+
+      if(jets_HadronConeExclTruthLabelID[j]==5)
+	bc_scores.push_back(dl1rc);
+      if(jets_HadronConeExclTruthLabelID[j]==0)
+	lc_scores.push_back(dl1rc);
+      if(jets_HadronConeExclTruthLabelID[j]==4)
+	cc_scores.push_back(dl1rc);
+      if(jets_HadronConeExclTruthLabelID[j]==15)
+	tc_scores.push_back(dl1rc);
+
     }
     //check option of getting c-tagger
 
@@ -745,12 +766,19 @@ Bool_t reco_wqq::Process(Long64_t entry)
       hist_mjj[i]->Fill(pmjj.M()/1e3, weight_tot);
       hist_jjpt[i]->Fill(pmjj.Pt()/1e3, weight_tot);
 
-      for(int k=0; k<c_scores.size();k++)
+      for(int k=0; k<int(c_scores.size());k++)
 	hist_dlrc[i]->Fill(c_scores[k], weight_tot);
-      for(int k=0; k<bc_scores.size();k++)
-	hist_dlrcb[i]->Fill(bc_scores[k], weight_tot);
-      for(int k=0; k<nbc_scores.size();k++)
+      for(int k=0; k<int(nbc_scores.size());k++)
 	hist_dlrcnb[i]->Fill(nbc_scores[k], weight_tot);
+      for(int k=0; k<int(bc_scores.size());k++)
+	hist_dlrcb[i]->Fill(bc_scores[k], weight_tot);
+      for(int k=0; k<int(lc_scores.size());k++)
+	hist_dlrcl[i]->Fill(lc_scores[k], weight_tot);
+      for(int k=0; k<int(cc_scores.size());k++)
+	hist_dlrcc[i]->Fill(cc_scores[k], weight_tot);
+      for(int k=0; k<int(tc_scores.size());k++)
+	hist_dlrct[i]->Fill(tc_scores[k], weight_tot);
+
     }
   }  
   return kTRUE;
@@ -814,8 +842,12 @@ void reco_wqq::Terminate()
       hist_jet_truth_type[i]->Write();
       
       hist_dlrc[i]->Write();
-      hist_dlrcb[i]->Write();
       hist_dlrcnb[i]->Write();
+      hist_dlrcb[i]->Write();
+      hist_dlrcl[i]->Write();
+      hist_dlrcc[i]->Write();
+      hist_dlrct[i]->Write();
+
       //hist_min_DRlb
       for(int db=0; db<2;db++){
 	hist_min_DRlb[i][db]->Write();

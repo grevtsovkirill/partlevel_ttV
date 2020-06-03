@@ -1015,6 +1015,9 @@ public :
   TTreeReaderArray<float> jets_score_DL1r_pc = {fReader, "jets_score_DL1r_pc"};
   TTreeReaderArray<float> jets_score_DL1r_pb = {fReader, "jets_score_DL1r_pb"};
 
+  TTreeReaderArray<int> jets_HadronConeExclTruthLabelID = {fReader, "jets_HadronConeExclTruthLabelID"};
+  
+  
   //TTreeReaderArray<float>  = {fReader, ""};
   TTreeReaderValue<Int_t> higgsDecayMode = {fReader, "higgsDecayMode"};
   TTreeReaderArray<float> m_truth_m = {fReader, "m_truth_m"};

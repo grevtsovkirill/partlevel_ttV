@@ -1,4 +1,4 @@
-void recoQQ(string name="413008", string comp="d", bool onNAF = true, bool multi_file = false, int num_split =4){
+void recoQQ(string name="700000", string comp="d", bool onNAF = true, bool multi_file = false, int num_split =4){
   /*
     413008.root
   */
@@ -6,7 +6,7 @@ void recoQQ(string name="413008", string comp="d", bool onNAF = true, bool multi
   TChain *ch=new TChain("nominal");
   string tmp="";
   string path="";
-  string prod_version = "GFW1_v25_0514"; //GFW1_v1_0422
+  string prod_version = "GFW1_v3_0601"; //GFW1_v1_0422 GFW1_v25_0514
   if(onNAF)
     path="/nfs/dust/atlas/group/top/ttH_ML/ttW_run2/ttWqq/Reco_files/"+prod_version+"/mc16"+comp+"/";  
   else

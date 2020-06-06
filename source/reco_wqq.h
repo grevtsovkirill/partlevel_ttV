@@ -132,6 +132,8 @@ public :
   std::vector<vector<int>> truth_parents ;
   std::vector<vector<int>> truth_children ;
 
+  std::vector<float> truthflav ;
+  
   // Readers to access the data (delete the ones you do not need).
   TTreeReaderValue<Float_t> weight_mc = {fReader, "weight_mc"};
   TTreeReaderValue<Float_t> weight_pileup = {fReader, "weight_pileup"};

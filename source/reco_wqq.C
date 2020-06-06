@@ -329,6 +329,10 @@ void reco_wqq::SlaveBegin(TTree * /*tree*/)
   cnewfile = new TFile(cntupname.c_str(),"recreate"); 
   ftagTree = new TTree("ftagTree","ftagTree");
   ftagTree->Branch("truthflav",&truthflav);
+  ftagTree->Branch("j_pt",&j_pt);
+  ftagTree->Branch("score_DL1r_pu",&score_DL1r_pu);
+  ftagTree->Branch("score_DL1r_pc",&score_DL1r_pc);
+  ftagTree->Branch("score_DL1r_pb",&score_DL1r_pb);
   ftagTree->Branch("weight_tot",&weight_tot,"weight_tot/D");
 
   //(int)weight_names.size()
@@ -517,10 +521,18 @@ Bool_t reco_wqq::Process(Long64_t entry)
   for(unsigned int i=0; i<dl1r_scores.size();i++)
     if(abs(dl1r_scores[i]-jets_score_DL1r[i])>0.001)
       cout << " tmpdl= "<<dl1r_scores[i]<<", jets_score_DL1r="<< jets_score_DL1r[i] <<endl;
-  
+
+  score_DL1r_pu.clear();
+  score_DL1r_pc.clear();
+  score_DL1r_pb.clear();
+  j_pt.clear();
   truthflav.clear();
-  for(unsigned int j=0;j< jets_pt.GetSize(); j++){ 
-     truthflav.emplace_back(jets_HadronConeExclTruthLabelID[j]); 
+  for(unsigned int j=0;j< jets_pt.GetSize(); j++){
+    j_pt.emplace_back(jets_pt[j]); 
+    score_DL1r_pu.emplace_back(jets_score_DL1r_pu[j]); 
+    score_DL1r_pc.emplace_back(jets_score_DL1r_pc[j]); 
+    score_DL1r_pb.emplace_back(jets_score_DL1r_pb[j]); 
+    truthflav.emplace_back(jets_HadronConeExclTruthLabelID[j]); 
   }
   ftagTree->Fill();
 

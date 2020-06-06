@@ -72,22 +72,45 @@ TH1D *hist_jet_truth_type[10];
 
 TFile *newfile;
 TTree *outTree;
-
-
-/*
- *        0 *        4 *          MUR05_MUF05_PDF261000 *
- *        0 *        5 *           MUR05_MUF1_PDF261000 *
- *        0 *        6 *           MUR1_MUF05_PDF261000 *
- *        0 *        7 *            MUR1_MUF1_PDF261000 *
- *        0 *        8 *            MUR1_MUF2_PDF261000 *
- *        0 *        9 *            MUR2_MUF1_PDF261000 *
- *        0 *       10 *            MUR2_MUF2_PDF261000 *
-
-*/
-
+TFile *cnewfile;
+TTree *ftagTree;
 vector<string> weight_names = {"MUR05_MUF05","MUR05_MUF1","MUR1_MUF05","MUR1_MUF1","MUR1_MUF2","MUR2_MUF1","MUR2_MUF2"};
-
 vector<string> region_names={"2b4j",">1b4j","2bWm","1bWm","2bWmPt","1bWmPt"};
+
+
+float GetDL1(float pB,float pC,float pL, double fraction){
+  float dl1=TMath::Log(pB/( fraction*pC + (1-fraction)*pL ));
+  return dl1;
+}
+
+int CountJets(vector<float> DL1c ,vector<float> DL1b, float cut, float bWP70 = 3.245){
+  int njets = 0;
+  for(unsigned int i = 0 ; i < DL1c.size() ; ++i){
+    if(DL1c[i]>=cut && DL1b[i]<bWP70)
+      ++njets;
+  }
+  return njets;
+}
+
+float GetDistFlav(float tagger,float DL1b,int truthflav, std::vector<int> jet_targets, float bWP70 = 3.245){
+  float tagger_corr=0;
+  if(DL1b>bWP70)
+    return false;
+  bool goodFlav=false;
+  for( int jet_target : jet_targets){
+    
+    if(fabs(truthflav) == jet_target)
+      goodFlav=true;
+    else if(abs(truthflav) < 4 && jet_target <0 )
+      goodFlav=true;
+  }
+  if( goodFlav)
+    tagger_corr=tagger;
+
+  return tagger_corr;    
+  
+}
+
 
 void reco_wqq::Begin(TTree * /*tree*/)
 {
@@ -245,8 +268,7 @@ void reco_wqq::SlaveBegin(TTree * /*tree*/)
   }
 
 
-  string ntupname="skimReco_"+input_name+"_"+comp_name+".root";
-  
+  string ntupname="skimReco_"+input_name+"_"+comp_name+".root";  
   newfile = new TFile(ntupname.c_str(),"recreate"); 
   outTree = new TTree("outTree","outTree");
   outTree->Branch("Njets",&Njets,"Njets/I");
@@ -303,6 +325,12 @@ void reco_wqq::SlaveBegin(TTree * /*tree*/)
   
 //*/
   
+  string cntupname="ctag_"+input_name+"_"+comp_name+".root";  
+  cnewfile = new TFile(cntupname.c_str(),"recreate"); 
+  ftagTree = new TTree("ftagTree","ftagTree");
+  ftagTree->Branch("truthflav",&truthflav);
+  ftagTree->Branch("weight_tot",&weight_tot,"weight_tot/D");
+
   //(int)weight_names.size()
   for(int i=0; i<(int)weight_names.size();i++){
     hist_Weights[i] = new TH1D( (weight_names[i]).c_str(), (weight_names[i]+";weight;Events").c_str(), 300, -4, 4);
@@ -412,28 +440,6 @@ Bool_t reco_wqq::Process(Long64_t entry)
   vector<TLorentzVector> bjets_vec;
   vector<TLorentzVector> nonbjets_vec;
 
-  //ATL-PHYS-PUB-2020-009 (cds.cern.ch/record/2718610)
-  // DL1r = ln (pb/[fc*pc+(1−fc)*pu])
-  ///eos/atlas/atlascerngroupdisk/asg-calib/xAODBTaggingEfficiency/13TeV/2020-21-13TeV-MC16-CDI-2020-03-11_v3.root
-  // 70% threshold: 3.245
-  float fc=0.018;
-  float dl1r=-999;
-  float dl1rc=-999;
-
-  float dl1r_denum=0;
-  float dl1rc_denum=0;
-
-  float fb=0.28;
-  float wp70t=3.245;
-  vector<float> c_scores;
-  vector<float> nbc_scores;
-  vector<float> bc_scores;
-  vector<float> lc_scores;
-  vector<float> cc_scores;
-  vector<float> tc_scores;
-  //5 (B), 4 (D/c), 15 (tau), 0 (no label = light?), -99 (jet failed pT cut)
-  //jets_HadronConeExclTruthLabelID
-  
   //for(int j=0;j< int(*nJets_OR); j++){
   for(int j=0;j< int(jets_pt.GetSize()); j++){
     if(jets_pt[j]/1000.<25){
@@ -442,15 +448,6 @@ Bool_t reco_wqq::Process(Long64_t entry)
     }    
     if(fabs(jets_eta[j])>2.5) return 0;
 
-    dl1r_denum=fc*jets_score_DL1r_pc[j] + (1-fc)*jets_score_DL1r_pu[j];   
-    if(dl1r_denum!=0)
-      dl1r = log(jets_score_DL1r_pb[j]/ dl1r_denum );
-
-    dl1rc_denum=fb*jets_score_DL1r_pb[j] + (1-fb)*jets_score_DL1r_pu[j];   
-    if(dl1rc_denum!=0)
-      dl1rc = log(jets_score_DL1r_pc[j]/ dl1rc_denum );
-
-    c_scores.push_back(dl1rc);
     Njets++;
     TLorentzVector jj;
     jj.SetPtEtaPhiE(jets_pt[j],jets_eta[j],jets_phi[j],jets_e[j]);
@@ -462,8 +459,50 @@ Bool_t reco_wqq::Process(Long64_t entry)
     }
     else{
       nonbjets_vec.push_back(jj);
-      nbc_scores.push_back(dl1rc);
 
+    }
+  }
+
+  
+  
+
+  if(*nJets_OR<4) return 0;
+  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
+  cf_counter++;
+  
+  //Bjets
+  if(*nJets_OR_DL1r_70<1) return 0;
+  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
+  cf_counter++;
+
+
+  // 0-taus
+  if (*nTaus_OR_Pt25) return 0;
+  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
+  cf_counter++;
+
+  //ATL-PHYS-PUB-2020-009 (cds.cern.ch/record/2718610)
+  // DL1r = ln (pb/[fc*pc+(1−fc)*pu])
+  ///eos/atlas/atlascerngroupdisk/asg-calib/xAODBTaggingEfficiency/13TeV/2020-21-13TeV-MC16-CDI-2020-03-11_v3.root
+  // 70% threshold: 3.245
+  float fc=0.018;
+  float fb=0.28;
+  float wp70t=3.245;
+  vector<float> dl1r_scores;
+  vector<float> c_scores;
+  vector<float> nbc_scores;
+  vector<float> bc_scores;
+  vector<float> lc_scores;
+  vector<float> cc_scores;
+  vector<float> tc_scores;
+    
+  for(int j=0;j< int(jets_pt.GetSize()); j++){
+    dl1r_scores.push_back(GetDL1(jets_score_DL1r_pb[j],jets_score_DL1r_pc[j],jets_score_DL1r_pu[j],fc));
+    c_scores.push_back(GetDL1(jets_score_DL1r_pc[j],jets_score_DL1r_pb[j],jets_score_DL1r_pu[j],fb));
+  //5 (B), 4 (D/c), 15 (tau), 0 (no label = light?), -99 (jet failed pT cut)
+  //jets_HadronConeExclTruthLabelID
+      /*
+      nbc_scores.push_back(dl1rc);      
       if(jets_HadronConeExclTruthLabelID[j]==5)
 	bc_scores.push_back(dl1rc);
       if(jets_HadronConeExclTruthLabelID[j]==0)
@@ -472,61 +511,18 @@ Bool_t reco_wqq::Process(Long64_t entry)
 	cc_scores.push_back(dl1rc);
       if(jets_HadronConeExclTruthLabelID[j]==15)
 	tc_scores.push_back(dl1rc);
-
-    }
-    //check option of getting c-tagger
-
-
-
-    if(debug<22 ){
-      if(dl1r>wp70t && jets_btagFlag_DL1r_FixedCutBEff_70[j]==0){
-	cout << " tag mis match"<< endl;
-      }
-      //cout << "jets_score_DL1r["<<j<<"] = "<<jets_score_DL1r[j] << ", dl1r="<< dl1r<<", ratio = "<<dl1r/jets_score_DL1r[j]<< endl;
-    }
-    //https://twiki.cern.ch/twiki/bin/viewauth/AtlasProtected/BTaggingBenchmarksRelease21
-    dl1rc=-999;
+      */
   }
 
-  if(debug<21 && (int(*nJets_OR)>10))
-    cout<< "jets_pt["<<*nJets_OR<<"] "<<jets_pt[int(*nJets_OR)-1]<< ", lowjets = "<< lowjets<<endl;
-
-  if(debug<21 && (int(*nJets_OR)!=int(jets_pt.GetSize())))
-    cout<< "int(jets_pt.GetSize() "<<int(jets_pt.GetSize())<<"  *nJets_OR ="<<*nJets_OR<<endl;
+  for(unsigned int i=0; i<dl1r_scores.size();i++)
+    if(abs(dl1r_scores[i]-jets_score_DL1r[i])>0.001)
+      cout << " tmpdl= "<<dl1r_scores[i]<<", jets_score_DL1r="<< jets_score_DL1r[i] <<endl;
   
-  if(debug<21 && (int(*nJets_OR_DL1r_70)!=int(bjets_vec.size())))
-    cout<< "bjets_vec.size "<<bjets_vec.size()<<"  *nJets_OR_DL1r_70 ="<<*nJets_OR_DL1r_70<<endl;
-  
-  if(debug<20 ){
-    if(Nbjets==0 && *nJets_OR_DL1r_70!=0){
-      cout <<  " Njets = "<<Njets << ",  *nJets_OR ="<<*nJets_OR <<  ", Nbjets = "<<Nbjets   << "; *nJets_OR_DL1r_70 = "<<*nJets_OR_DL1r_70<<endl;
-      cout <<'\n';
-    }
+  truthflav.clear();
+  for(unsigned int j=0;j< jets_pt.GetSize(); j++){ 
+     truthflav.emplace_back(jets_HadronConeExclTruthLabelID[j]); 
   }
-
-  
-
-  if(*nJets_OR<4) return 0;
-  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
-  cf_counter++;
-  
-  if(debug<8)
-    cout<< "nB => *nJets_OR_DL1r_70="<<*nJets_OR_DL1r_70 << ", Nbjets = "<< Nbjets<<"  *nJets_OR ="<<*nJets_OR<<endl;
-
-  //Bjets
-  if(*nJets_OR_DL1r_70<1) return 0;
-  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
-  cf_counter++;
-
-
-
-  if(debug<8)
-    cout<< "tau => ="<<*nTaus_OR_Pt25<<"  *nJets_OR ="<<*nJets_OR<<endl;
-
-  // 0-taus
-  if (*nTaus_OR_Pt25) return 0;
-  h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
-  cf_counter++;
+  ftagTree->Fill();
 
   if (nonbjets_vec.size()<2) return 0;
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
@@ -545,14 +541,6 @@ Bool_t reco_wqq::Process(Long64_t entry)
 	Wj1index = i;	Wj2index = j;	found_w=true;	
       }
     }
-  }
-  
-  if(*nJets_OR_DL1r_70!=Nbjets){
-    cout<< "nB => *nJets_OR_DL1r_70="<<*nJets_OR_DL1r_70 << ", Nbjets = "<< Nbjets<<"  *nJets_OR ="<<*nJets_OR<<endl;
-  }
-
-  if(*nJets_OR!=Njets){
-    cout<< "nj (gn1) => *nJets_OR="<<*nJets_OR << ", Njets = "<< Njets<<endl;
   }
     
 
@@ -687,7 +675,7 @@ Bool_t reco_wqq::Process(Long64_t entry)
   truth_parents.clear();
   truth_children.clear();
 
-  //*
+  /*
   for(int j=0;j< int(m_truth_m.GetSize()); j++){ 
      truth_m.emplace_back(m_truth_m[j]); 
      truth_pt.emplace_back(m_truth_pt[j]); 
@@ -865,6 +853,9 @@ void reco_wqq::Terminate()
     fOutput->Write();
     outTree->Write();
     outTree->AutoSave();
-  }
+
+    ftagTree->Write();
+    ftagTree->AutoSave();
+}
   
 }

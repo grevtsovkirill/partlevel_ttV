@@ -1,29 +1,19 @@
-from ROOT import *
-import ROOT
-import array
-
+import uproot
+import pandas as pd
+import numpy as np
 from  definitions import *
-
-
-ROOT.gInterpreter.Declare(getDL1function+countJets)
-
 
 def main():
     ntupleLoc = 'Files/'
 
     bkgFiles = ["ctag_410470_d"]
-    bkgFilesToUse=ROOT.vector("string")()
+    dbkg = pd.DataFrame()
     for infile in bkgFiles:
         fn = ntupleLoc+infile+'.root'
-        inFile=ROOT.TFile(fn,'r')
-        if inFile.IsZombie() or not inFile.Get("ftagTree"):
-            bkgFiles.remove(infile)
-            inFile.Close()
-            continue
-        bkgFilesToUse.push_back(fn)
-
-    dbkg = RDataFrame("ftagTree", bkgFilesToUse)
-    print("Signal and BG dataframes loaded...")
+        inFile = uproot.open(fn)["ftagTree"]
+        dbkg = dbkg.append(inFile.pandas.df())
+    
+    print("BG dataframes loaded:", dbkg[:15])
 
 if __name__== "__main__":
     main()

@@ -20,7 +20,10 @@ def main():
             bkgFiles.remove(infile)
             inFile.Close()
             continue
-        bkgFilesToUse.push_back(infile)
+        bkgFilesToUse.push_back(fn)
+
+    dbkg = RDataFrame("ftagTree", bkgFilesToUse)
+    print("Signal and BG dataframes loaded...")
 
 if __name__== "__main__":
     main()

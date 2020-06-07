@@ -17,8 +17,8 @@ int CountJets(vector<float> DL1c ,vector<float> DL1b, float cut, float bWP70 = 3
 
 float GetDistFlav(float tagger,float DL1b,int truthflav, std::vector<int> jet_targets, float bWP70 = 3.245){
   float tagger_corr=0;
-  if(DL1b>bWP70)
-    return false;
+  //if(DL1b>bWP70)
+  //  return false;
   bool goodFlav=false;
   for( int jet_target : jet_targets){
     
@@ -34,8 +34,16 @@ float GetDistFlav(float tagger,float DL1b,int truthflav, std::vector<int> jet_ta
   
 }
 
-//float getCut(){
-//}
+float getCut(TH1 *histCharm, float effWP = 0.2){
+  float cut = 0;  
+  for (int ibin=0; ibin<histCharm->GetNbinsX();ibin++){
+    if (histCharm->Integral(ibin+1,-1)/histCharm->Integral() <= effWP){
+      cut=histCharm->GetBinLowEdge(ibin+1);
+      break;
+    }
+  }
+  return cut;
+}
 
 
 void ctag(){
@@ -65,6 +73,16 @@ void ctag(){
   float fc=0.018;
   float fb=0.28;
   float wp70t=3.245;
+  TH1D *hist_dlrc[10][10];
+  
+  vector<float> fbs = {0.02,0.03};
+  vector<int> flav = {0,4,5};
+  vector<string> typeflav = {"l","c","b"};
+  for(int i=0; i<(int)fbs.size();i++){
+    for(int k=0; k<(int)flav.size();k++){
+      hist_dlrc[i][k] = new TH1D(("dlrc_"+typeflav[k]+"_"+to_string(i)).c_str(), ("DL1r_{c} "+typeflav[k]+" "+to_string(fbs[i])+";DL1r_{c};Events").c_str(), 75, -10, 15);
+    }
+  }
   
   for(int i=0; i<t1->GetEntries(); i++){
     t1->GetEntry(i);
@@ -75,11 +93,21 @@ void ctag(){
     float vdl1r_b=0,vdl1r_c=0, vdl1r_c_jets=0;
     for (int j = 0; j < j_pt->size (); j++){
       vdl1r_b = GetDL1(score_DL1r_pb->at(j),score_DL1r_pc->at(j),score_DL1r_pu->at(j),fc);
-      dl1r_b.push_back(vdl1r_b);
-      vdl1r_c = GetDL1(score_DL1r_pc->at(j),score_DL1r_pb->at(j),score_DL1r_pu->at(j),fb);
-      dl1r_c.push_back(vdl1r_c);
-      vdl1r_c_jets = GetDistFlav(vdl1r_c,vdl1r_b,truthflav->at(j),{4,44});
+      dl1r_b.push_back(vdl1r_b);      
+      //dl1r_c.push_back(vdl1r_c);
+      if(vdl1r_b<wp70t){  
+	//vdl1r_c_jets = GetDistFlav(vdl1r_c,vdl1r_b,truthflav->at(j),{4,44});
+	vdl1r_c = GetDL1(score_DL1r_pc->at(j),score_DL1r_pb->at(j),score_DL1r_pu->at(j),fb);
+
+	for(int k=0; k<(int)flav.size();k++){ 
+	  if (truthflav->at(j)==flav[k]){	  
+	    hist_dlrc[0][k]->Fill(vdl1r_c,weight_tot);
+	  }
+	}
+      }
     }
   }
 
+  hist_dlrc[0][1]->Draw();
+  hist_dlrc[0][1]->Draw("histsame");
 }

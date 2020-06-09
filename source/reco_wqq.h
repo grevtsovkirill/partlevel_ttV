@@ -56,9 +56,11 @@ public :
   float met = -99;
   float metphi = -99;
   float mjj = -99;
+  float mjjctag = -99;
   float ptjj = -99;
   float etajj = -99;
   float phijj = -99;
+
   float ptj0 = -99;
   float etaj0 = -99;
   float ej0 = -99;
@@ -146,6 +148,21 @@ public :
   float drl0j11 = -99;
   float drl1j11 = -99;
 
+  float ptb0 = -99;
+  float etab0 = -99;
+  float eb0 = -99;
+  float phib0 = -99;
+  float ptb1 = -99;
+  float etab1 = -99;
+  float eb1 = -99;
+  float phib1 = -99;
+  float drl0b0 = -99;
+  float drl1b0 = -99;
+  float drl0b1 = -99;
+  float drl1b1 = -99;
+  float drb0b1 = -99;
+
+  
   std::vector<float> truth_m ;
   std::vector<float> truth_pt ;
   std::vector<float> truth_eta ;

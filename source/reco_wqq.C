@@ -296,7 +296,7 @@ void reco_wqq::SlaveBegin(TTree * /*tree*/)
   //outTree->Branch("min_DRl1j",&min_DRl1j,"min_DRl1j/F");
   outTree->Branch("met",&met,"met/F");
   outTree->Branch("metphi",&metphi,"metphi/F");
-  outTree->Branch("mjj",&mjj,"mjj/F");  outTree->Branch("ptjj",&ptjj,"ptjj/F");
+  outTree->Branch("mjj",&mjj,"mjj/F");  outTree->Branch("mjjctag",&mjjctag,"mjjctag/F");  outTree->Branch("ptjj",&ptjj,"ptjj/F");
   outTree->Branch("etajj",&etajj,"etajj/F");  outTree->Branch("phijj",&phijj,"phijj/F");
   outTree->Branch("ptj0",&ptj0,"ptj0/F");outTree->Branch("etaj0",&etaj0,"etaj0/F");outTree->Branch("phij0",&phij0,"phij0/F");outTree->Branch("isbj0",&isbj0,"isbj0/F");outTree->Branch("ej0",&ej0,"ej0/F");outTree->Branch("drl0j0",&drl0j0,"drl0j0/F");outTree->Branch("drl1j0",&drl1j0,"drlj0/F");
   outTree->Branch("ptj1",&ptj1,"ptj1/F");outTree->Branch("etaj1",&etaj1,"etaj1/F");outTree->Branch("phij1",&phij1,"phij1/F");outTree->Branch("isbj1",&isbj1,"isbj1/F");outTree->Branch("ej1",&ej1,"ej1/F");outTree->Branch("drl0j1",&drl0j1,"drl0j1/F");outTree->Branch("drl1j1",&drl1j1,"drlj1/F");
@@ -442,11 +442,31 @@ Bool_t reco_wqq::Process(Long64_t entry)
   Nbjets=0;
   Int_t Ncjets=0;
   int lowjets=0;
+
+
+    //ATL-PHYS-PUB-2020-009 (cds.cern.ch/record/2718610)
+  // DL1r = ln (pb/[fc*pc+(1−fc)*pu])
+  ///eos/atlas/atlascerngroupdisk/asg-calib/xAODBTaggingEfficiency/13TeV/2020-21-13TeV-MC16-CDI-2020-03-11_v3.root
+  // 70% threshold: 3.245
+  float fc=0.018;
+  float wp70t=3.245;
+  vector<float> dl1r_scores;
+  vector<float> c_scores;
+  vector<float> nbc_scores;
+  vector<float> bc_scores;
+  vector<float> lc_scores;
+  vector<float> cc_scores;
+  vector<float> tc_scores;
+
+  float fb=0.1;
+  float wp70ceff_cut = -0.17;
+
   vector<float> jets_drl0;
   vector<float> jets_drl1;
   vector<TLorentzVector> jets_vec;
   vector<TLorentzVector> bjets_vec;
   vector<TLorentzVector> nonbjets_vec;
+  vector<float> nonbjets_vec_ctag;
 
   //for(int j=0;j< int(*nJets_OR); j++){
   for(int j=0;j< int(jets_pt.GetSize()); j++){
@@ -455,6 +475,9 @@ Bool_t reco_wqq::Process(Long64_t entry)
       return 0;
     }    
     if(fabs(jets_eta[j])>2.5) return 0;
+
+    dl1r_scores.push_back(GetDL1(jets_score_DL1r_pb[j],jets_score_DL1r_pc[j],jets_score_DL1r_pu[j],fc));
+    c_scores.push_back(GetDL1(jets_score_DL1r_pc[j],jets_score_DL1r_pb[j],jets_score_DL1r_pu[j],fb));
 
     Njets++;
     TLorentzVector jj;
@@ -467,11 +490,14 @@ Bool_t reco_wqq::Process(Long64_t entry)
 
     if(jets_btagFlag_DL1r_FixedCutBEff_70[j]>0){
       Nbjets++;
-      bjets_vec.push_back(jj);
+      bjets_vec.push_back(jj);      
     }
     else{
       nonbjets_vec.push_back(jj);
-
+      if(GetDL1(jets_score_DL1r_pc[j],jets_score_DL1r_pb[j],jets_score_DL1r_pu[j],fb) > wp70ceff_cut)
+	nonbjets_vec_ctag.push_back(1);
+      else
+	nonbjets_vec_ctag.push_back(0);
     }
   }
 
@@ -493,38 +519,6 @@ Bool_t reco_wqq::Process(Long64_t entry)
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
 
-  //ATL-PHYS-PUB-2020-009 (cds.cern.ch/record/2718610)
-  // DL1r = ln (pb/[fc*pc+(1−fc)*pu])
-  ///eos/atlas/atlascerngroupdisk/asg-calib/xAODBTaggingEfficiency/13TeV/2020-21-13TeV-MC16-CDI-2020-03-11_v3.root
-  // 70% threshold: 3.245
-  float fc=0.018;
-  float fb=0.28;
-  float wp70t=3.245;
-  vector<float> dl1r_scores;
-  vector<float> c_scores;
-  vector<float> nbc_scores;
-  vector<float> bc_scores;
-  vector<float> lc_scores;
-  vector<float> cc_scores;
-  vector<float> tc_scores;
-    
-  for(int j=0;j< int(jets_pt.GetSize()); j++){
-    dl1r_scores.push_back(GetDL1(jets_score_DL1r_pb[j],jets_score_DL1r_pc[j],jets_score_DL1r_pu[j],fc));
-    c_scores.push_back(GetDL1(jets_score_DL1r_pc[j],jets_score_DL1r_pb[j],jets_score_DL1r_pu[j],fb));
-  //5 (B), 4 (D/c), 15 (tau), 0 (no label = light?), -99 (jet failed pT cut)
-  //jets_HadronConeExclTruthLabelID
-      /*
-      nbc_scores.push_back(dl1rc);      
-      if(jets_HadronConeExclTruthLabelID[j]==5)
-	bc_scores.push_back(dl1rc);
-      if(jets_HadronConeExclTruthLabelID[j]==0)
-	lc_scores.push_back(dl1rc);
-      if(jets_HadronConeExclTruthLabelID[j]==4)
-	cc_scores.push_back(dl1rc);
-      if(jets_HadronConeExclTruthLabelID[j]==15)
-	tc_scores.push_back(dl1rc);
-      */
-  }
 
   for(unsigned int i=0; i<dl1r_scores.size();i++)
     if(abs(dl1r_scores[i]-jets_score_DL1r[i])>0.001)
@@ -549,35 +543,31 @@ Bool_t reco_wqq::Process(Long64_t entry)
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
 
-  double bestWmass = 1000.0*1e6;
-  double mWPDG = 80.399*1e3;
-  int Wj1index = -1, Wj2index = -1;
-  bool found_w=false;
-  double wmass=999;
-  for (unsigned int i = 0; i < (nonbjets_vec.size() - 1); ++i) {
-    for (unsigned int j = i + 1; j < nonbjets_vec.size(); ++j) {
-      wmass = (nonbjets_vec[i] + nonbjets_vec[j]).M();      
-      if (fabs(wmass - mWPDG) < fabs(bestWmass - mWPDG)) {
-	bestWmass = wmass;
-	Wj1index = i;	Wj2index = j;	found_w=true;	
-      }
-    }
-  }
+  /* double bestWmass = 1000.0*1e6; */
+
+  /* int Wj1index = -1, Wj2index = -1; */
+  /* bool found_w=false; */
+  /* double wmass=999; */
+  /* for (unsigned int i = 0; i < (nonbjets_vec.size() - 1); ++i) { */
+  /*   for (unsigned int j = i + 1; j < nonbjets_vec.size(); ++j) { */
+  /*     wmass = (nonbjets_vec[i] + nonbjets_vec[j]).M();       */
+  /*     if (fabs(wmass - mWPDG) < fabs(bestWmass - mWPDG)) { */
+  /* 	bestWmass = wmass; */
+  /* 	Wj1index = i;	Wj2index = j;	found_w=true;	 */
+  /*     } */
+  /*   } */
+  /* } */
     
 
 
-  TLorentzVector pmjj = nonbjets_vec[0]+nonbjets_vec[1];
 
-  TLorentzVector pjet1 = nonbjets_vec[Wj1index];
-  TLorentzVector pjet2 = nonbjets_vec[Wj2index];
+  //TLorentzVector pjet1 = nonbjets_vec[Wj1index];
+  //TLorentzVector pjet2 = nonbjets_vec[Wj2index];
   // compute hadronic W boson
-  TLorentzVector pWhadron = pjet1 + pjet2;
-  if(debug<9)
-    cout << " - Wmass =  "<< pWhadron.M()/1e3 << "; pmjj = "<<pmjj.M()/1e3 << ", Njets = "<<Njets <<  ", Nbjets = "<<Nbjets   << endl;
-
-  if(debug<12)
-    cout <<  " Njets = "<<Njets << ",  *nJets_OR ="<<*nJets_OR <<  ", Nbjets = "<<Nbjets   << endl;
-
+  //TLorentzVector pWhadron = pjet1 + pjet2;
+  double mWPDG = 80.399*1e3;
+  TLorentzVector pmjj = nonbjets_vec[0]+nonbjets_vec[1];
+  mjjctag = nonbjets_vec_ctag[0]+nonbjets_vec_ctag[1];
   
   Njets = *nJets_OR;
   Nbjets = *nJets_OR_DL1r_70;
@@ -727,8 +717,8 @@ Bool_t reco_wqq::Process(Long64_t entry)
       hist_lep_Phi_0[i]->Fill(*lep_Phi_0, weight_tot);
       hist_lep_Phi_1[i]->Fill(*lep_Phi_1, weight_tot);
       hist_lep_dPhi[i]->Fill(abs(*lep_Phi_0-*lep_Phi_1), weight_tot);
-      hist_Whmass[i]->Fill(pWhadron.M()/1e3, weight_tot);
-      hist_Whpt[i]->Fill(pWhadron.Pt()/1e3, weight_tot);
+      //hist_Whmass[i]->Fill(pWhadron.M()/1e3, weight_tot);
+      //hist_Whpt[i]->Fill(pWhadron.Pt()/1e3, weight_tot);
 
       hist_mjj[i]->Fill(pmjj.M()/1e3, weight_tot);
       hist_jjpt[i]->Fill(pmjj.Pt()/1e3, weight_tot);

@@ -121,6 +121,31 @@ public :
   float isbj11 = -99;
   float dileptype = -99;
 
+  float drl0j0 = -99;
+  float drl1j0 = -99;
+  float drl0j1 = -99;
+  float drl1j1 = -99;
+  float drl0j2 = -99;
+  float drl1j2 = -99;
+  float drl0j3 = -99;
+  float drl1j3 = -99;
+  float drl0j4 = -99;
+  float drl1j4 = -99;
+  float drl0j5 = -99;
+  float drl1j5 = -99;
+  float drl0j6 = -99;
+  float drl1j6 = -99;
+  float drl0j7 = -99;
+  float drl1j7 = -99;
+  float drl0j8 = -99;
+  float drl1j8 = -99;
+  float drl0j9 = -99;
+  float drl1j9 = -99;
+  float drl0j10 = -99;
+  float drl1j10 = -99;
+  float drl0j11 = -99;
+  float drl1j11 = -99;
+
   std::vector<float> truth_m ;
   std::vector<float> truth_pt ;
   std::vector<float> truth_eta ;

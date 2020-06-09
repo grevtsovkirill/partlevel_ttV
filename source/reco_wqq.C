@@ -298,18 +298,18 @@ void reco_wqq::SlaveBegin(TTree * /*tree*/)
   outTree->Branch("metphi",&metphi,"metphi/F");
   outTree->Branch("mjj",&mjj,"mjj/F");  outTree->Branch("ptjj",&ptjj,"ptjj/F");
   outTree->Branch("etajj",&etajj,"etajj/F");  outTree->Branch("phijj",&phijj,"phijj/F");
-  outTree->Branch("ptj0",&ptj0,"ptj0/F");outTree->Branch("etaj0",&etaj0,"etaj0/F");outTree->Branch("phij0",&phij0,"phij0/F");outTree->Branch("isbj0",&isbj0,"isbj0/F");outTree->Branch("ej0",&ej0,"ej0/F");
-  outTree->Branch("ptj1",&ptj1,"ptj1/F");outTree->Branch("etaj1",&etaj1,"etaj1/F");outTree->Branch("phij1",&phij1,"phij1/F");outTree->Branch("isbj1",&isbj1,"isbj1/F");outTree->Branch("ej1",&ej1,"ej1/F");
-  outTree->Branch("ptj2",&ptj2,"ptj2/F");outTree->Branch("etaj2",&etaj2,"etaj2/F");outTree->Branch("phij2",&phij2,"phij2/F");outTree->Branch("isbj2",&isbj2,"isbj2/F");outTree->Branch("ej2",&ej2,"ej2/F");
-  outTree->Branch("ptj3",&ptj3,"ptj3/F");outTree->Branch("etaj3",&etaj3,"etaj3/F");outTree->Branch("phij3",&phij3,"phij3/F");outTree->Branch("isbj3",&isbj3,"isbj3/F");outTree->Branch("ej3",&ej3,"ej3/F");
-  outTree->Branch("ptj4",&ptj4,"ptj4/F");outTree->Branch("etaj4",&etaj4,"etaj4/F");outTree->Branch("phij4",&phij4,"phij4/F");outTree->Branch("isbj4",&isbj4,"isbj4/F");outTree->Branch("ej4",&ej4,"ej4/F");
-  outTree->Branch("ptj5",&ptj5,"ptj5/F");outTree->Branch("etaj5",&etaj5,"etaj5/F");outTree->Branch("phij5",&phij5,"phij5/F");outTree->Branch("isbj5",&isbj5,"isbj5/F");outTree->Branch("ej5",&ej5,"ej5/F");
-  outTree->Branch("ptj6",&ptj6,"ptj6/F");outTree->Branch("etaj6",&etaj6,"etaj6/F");outTree->Branch("phij6",&phij6,"phij6/F");outTree->Branch("isbj6",&isbj6,"isbj6/F");outTree->Branch("ej6",&ej6,"ej6/F");
-  outTree->Branch("ptj7",&ptj7,"ptj7/F");outTree->Branch("etaj7",&etaj7,"etaj7/F");outTree->Branch("phij7",&phij7,"phij7/F");outTree->Branch("isbj7",&isbj7,"isbj7/F");outTree->Branch("ej7",&ej7,"ej7/F");
-  outTree->Branch("ptj8",&ptj8,"ptj8/F");outTree->Branch("etaj8",&etaj8,"etaj8/F");outTree->Branch("phij8",&phij8,"phij8/F");outTree->Branch("isbj8",&isbj8,"isbj8/F");outTree->Branch("ej8",&ej8,"ej8/F");
-  outTree->Branch("ptj9",&ptj9,"ptj9/F");outTree->Branch("etaj9",&etaj9,"etaj9/F");outTree->Branch("phij9",&phij9,"phij9/F");outTree->Branch("isbj9",&isbj9,"isbj9/F");outTree->Branch("ej9",&ej9,"ej9/F");
-  outTree->Branch("ptj10",&ptj10,"ptj10/F");outTree->Branch("etaj10",&etaj10,"etaj10/F");outTree->Branch("phij10",&phij10,"phij10/F");outTree->Branch("isbj10",&isbj10,"isbj10/F");outTree->Branch("ej10",&ej10,"ej10/F");
-  outTree->Branch("ptj11",&ptj11,"ptj11/F");outTree->Branch("etaj11",&etaj11,"etaj11/F");outTree->Branch("phij11",&phij11,"phij11/F");outTree->Branch("isbj11",&isbj11,"isbj11/F");outTree->Branch("ej11",&ej11,"ej11/F");
+  outTree->Branch("ptj0",&ptj0,"ptj0/F");outTree->Branch("etaj0",&etaj0,"etaj0/F");outTree->Branch("phij0",&phij0,"phij0/F");outTree->Branch("isbj0",&isbj0,"isbj0/F");outTree->Branch("ej0",&ej0,"ej0/F");outTree->Branch("drl0j0",&drl0j0,"drl0j0/F");outTree->Branch("drl1j0",&drl1j0,"drlj0/F");
+  outTree->Branch("ptj1",&ptj1,"ptj1/F");outTree->Branch("etaj1",&etaj1,"etaj1/F");outTree->Branch("phij1",&phij1,"phij1/F");outTree->Branch("isbj1",&isbj1,"isbj1/F");outTree->Branch("ej1",&ej1,"ej1/F");outTree->Branch("drl0j1",&drl0j1,"drl0j1/F");outTree->Branch("drl1j1",&drl1j1,"drlj1/F");
+  outTree->Branch("ptj2",&ptj2,"ptj2/F");outTree->Branch("etaj2",&etaj2,"etaj2/F");outTree->Branch("phij2",&phij2,"phij2/F");outTree->Branch("isbj2",&isbj2,"isbj2/F");outTree->Branch("ej2",&ej2,"ej2/F");outTree->Branch("drl0j2",&drl0j2,"drl0j2/F");outTree->Branch("drl1j2",&drl1j2,"drlj2/F");
+  outTree->Branch("ptj3",&ptj3,"ptj3/F");outTree->Branch("etaj3",&etaj3,"etaj3/F");outTree->Branch("phij3",&phij3,"phij3/F");outTree->Branch("isbj3",&isbj3,"isbj3/F");outTree->Branch("ej3",&ej3,"ej3/F");outTree->Branch("drl0j3",&drl0j3,"drl0j3/F");outTree->Branch("drl1j3",&drl1j3,"drlj3/F");
+  outTree->Branch("ptj4",&ptj4,"ptj4/F");outTree->Branch("etaj4",&etaj4,"etaj4/F");outTree->Branch("phij4",&phij4,"phij4/F");outTree->Branch("isbj4",&isbj4,"isbj4/F");outTree->Branch("ej4",&ej4,"ej4/F");outTree->Branch("drl0j4",&drl0j4,"drl0j4/F");outTree->Branch("drl1j4",&drl1j4,"drlj4/F");
+  outTree->Branch("ptj5",&ptj5,"ptj5/F");outTree->Branch("etaj5",&etaj5,"etaj5/F");outTree->Branch("phij5",&phij5,"phij5/F");outTree->Branch("isbj5",&isbj5,"isbj5/F");outTree->Branch("ej5",&ej5,"ej5/F");outTree->Branch("drl0j5",&drl0j5,"drl0j5/F");outTree->Branch("drl1j5",&drl1j5,"drlj5/F");
+  outTree->Branch("ptj6",&ptj6,"ptj6/F");outTree->Branch("etaj6",&etaj6,"etaj6/F");outTree->Branch("phij6",&phij6,"phij6/F");outTree->Branch("isbj6",&isbj6,"isbj6/F");outTree->Branch("ej6",&ej6,"ej6/F");outTree->Branch("drl0j6",&drl0j6,"drl0j6/F");outTree->Branch("drl1j6",&drl1j6,"drlj6/F");
+  outTree->Branch("ptj7",&ptj7,"ptj7/F");outTree->Branch("etaj7",&etaj7,"etaj7/F");outTree->Branch("phij7",&phij7,"phij7/F");outTree->Branch("isbj7",&isbj7,"isbj7/F");outTree->Branch("ej7",&ej7,"ej7/F");outTree->Branch("drl0j7",&drl0j7,"drl0j7/F");outTree->Branch("drl1j7",&drl1j7,"drlj7/F");
+  outTree->Branch("ptj8",&ptj8,"ptj8/F");outTree->Branch("etaj8",&etaj8,"etaj8/F");outTree->Branch("phij8",&phij8,"phij8/F");outTree->Branch("isbj8",&isbj8,"isbj8/F");outTree->Branch("ej8",&ej8,"ej8/F");outTree->Branch("drl0j8",&drl0j8,"drl0j8/F");outTree->Branch("drl1j8",&drl1j8,"drlj8/F");
+  outTree->Branch("ptj9",&ptj9,"ptj9/F");outTree->Branch("etaj9",&etaj9,"etaj9/F");outTree->Branch("phij9",&phij9,"phij9/F");outTree->Branch("isbj9",&isbj9,"isbj9/F");outTree->Branch("ej9",&ej9,"ej9/F");outTree->Branch("drl0j9",&drl0j9,"drl0j9/F");outTree->Branch("drl1j9",&drl1j9,"drlj9/F");
+  outTree->Branch("ptj10",&ptj10,"ptj10/F");outTree->Branch("etaj10",&etaj10,"etaj10/F");outTree->Branch("phij10",&phij10,"phij10/F");outTree->Branch("isbj10",&isbj10,"isbj10/F");outTree->Branch("ej10",&ej10,"ej10/F");outTree->Branch("drl0j10",&drl0j10,"drl0j10/F");outTree->Branch("drl1j10",&drl1j10,"drlj10/F");
+  outTree->Branch("ptj11",&ptj11,"ptj11/F");outTree->Branch("etaj11",&etaj11,"etaj11/F");outTree->Branch("phij11",&phij11,"phij11/F");outTree->Branch("isbj11",&isbj11,"isbj11/F");outTree->Branch("ej11",&ej11,"ej11/F"); outTree->Branch("drl0j11",&drl0j11,"drl0j11/F");outTree->Branch("drl1j11",&drl1j11,"drlj11/F");
 
 
   outTree->Branch("truth_m",&truth_m);
@@ -435,11 +435,15 @@ Bool_t reco_wqq::Process(Long64_t entry)
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
   cf_counter++;
 
-
+  TLorentzVector l0,l1;
+  l0.SetPtEtaPhiE(*lep_Pt_0,*lep_Eta_0,*lep_Phi_0,*lep_E_0);
+  l1.SetPtEtaPhiE(*lep_Pt_1,*lep_Eta_1,*lep_Phi_1,*lep_E_1);
   Njets=0;
   Nbjets=0;
   Int_t Ncjets=0;
   int lowjets=0;
+  vector<float> jets_drl0;
+  vector<float> jets_drl1;
   vector<TLorentzVector> jets_vec;
   vector<TLorentzVector> bjets_vec;
   vector<TLorentzVector> nonbjets_vec;
@@ -456,6 +460,10 @@ Bool_t reco_wqq::Process(Long64_t entry)
     TLorentzVector jj;
     jj.SetPtEtaPhiE(jets_pt[j],jets_eta[j],jets_phi[j],jets_e[j]);
     jets_vec.push_back(jj);
+  // l-jet
+    jets_drl0.push_back( l0.DeltaR( jj ) );
+    jets_drl1.push_back( l1.DeltaR( jj ) );
+  
 
     if(jets_btagFlag_DL1r_FixedCutBEff_70[j]>0){
       Nbjets++;
@@ -534,7 +542,8 @@ Bool_t reco_wqq::Process(Long64_t entry)
     score_DL1r_pb.emplace_back(jets_score_DL1r_pb[j]); 
     truthflav.emplace_back(jets_HadronConeExclTruthLabelID[j]); 
   }
-  ftagTree->Fill();
+  
+  //ftagTree->Fill();
 
   if (nonbjets_vec.size()<2) return 0;
   h_cutflow_2l[0]->Fill(cf_counter,weight_tot);  h_cutflow_2l[1]->Fill(cf_counter,1);
@@ -579,12 +588,6 @@ Bool_t reco_wqq::Process(Long64_t entry)
   //if (deltaR!=DRll01)   cout << DRll01 << ", dR "<< deltaR<< endl;
     //float  DR_LJ_0_tmp  = sqrt(pow((ntup.m_jet_eta->at(index_jets) - ntup.lep_Eta_0), 2.0) + pow((acos(cos(ntup.m_jet_phi->at(index_jets) - ntup.lep_Phi_0))), 2.0));
   
-  // l-jet
-  vector<float> dRl0j;  vector<float> dRl1j;
-  for(int i=0; i<Njets;i++){
-    dRl0j.push_back( lep_4v[lead_lep].DeltaR( jets_vec[i] ) );
-    dRl1j.push_back( lep_4v[sublead_lep].DeltaR( jets_vec[i] ) );
-  }
   
   float min_DRl0j=-9999, min_DRl1j=-9999;
   min_DRl0j= *min_element(dRl0j.begin(),dRl0j.end());
@@ -630,50 +633,50 @@ Bool_t reco_wqq::Process(Long64_t entry)
   ptjj = pmjj.Pt();
   etajj = pmjj.Eta();
   phijj = pmjj.Phi();
-  ej0=jets_e[0]; ptj0=jets_pt[0]; etaj0=jets_eta[0]; phij0=jets_phi[0]; isbj0 = jets_btagFlag_DL1r_FixedCutBEff_70[0];
-  ej1=jets_e[1];  ptj1=jets_pt[1]; etaj1=jets_eta[1]; phij1=jets_phi[1]; isbj1 = jets_btagFlag_DL1r_FixedCutBEff_70[1];
-  ej2=jets_e[2];  ptj2=jets_pt[2]; etaj2=jets_eta[2]; phij2=jets_phi[2]; isbj2 = jets_btagFlag_DL1r_FixedCutBEff_70[2];
-  ej3=jets_e[3];  ptj3=jets_pt[3]; etaj3=jets_eta[3]; phij3=jets_phi[3]; isbj3 = jets_btagFlag_DL1r_FixedCutBEff_70[3];
+  ej0=jets_e[0]; ptj0=jets_pt[0]; etaj0=jets_eta[0]; phij0=jets_phi[0]; isbj0 = jets_btagFlag_DL1r_FixedCutBEff_70[0]; drl0j0=jets_drl0[0];drl1j0=jets_drl1[0];
+  ej1=jets_e[1];  ptj1=jets_pt[1]; etaj1=jets_eta[1]; phij1=jets_phi[1]; isbj1 = jets_btagFlag_DL1r_FixedCutBEff_70[1]; drl0j1=jets_drl0[1];drl1j1=jets_drl1[1];
+  ej2=jets_e[2];  ptj2=jets_pt[2]; etaj2=jets_eta[2]; phij2=jets_phi[2]; isbj2 = jets_btagFlag_DL1r_FixedCutBEff_70[2]; drl0j2=jets_drl0[2];drl1j2=jets_drl1[2];
+  ej3=jets_e[3];  ptj3=jets_pt[3]; etaj3=jets_eta[3]; phij3=jets_phi[3]; isbj3 = jets_btagFlag_DL1r_FixedCutBEff_70[3]; drl0j3=jets_drl0[3];drl1j3=jets_drl1[3];
 
-  ej4=-99;ptj4=-99;etaj4=-99;phij4=-99;isbj4=-99;
-  ej5=-99;ptj5=-99;etaj5=-99;phij5=-99;isbj5=-99;
-  ej6=-99;ptj6=-99;etaj6=-99;phij6=-99;isbj6=-99;
-  ej7=-99;ptj7=-99;etaj7=-99;phij7=-99;isbj7=-99;
-  ej8=-99;ptj8=-99;etaj8=-99;phij8=-99;isbj8=-99;
-  ej9=-99;ptj9=-99;etaj9=-99;phij9=-99;isbj9=-99;
-  ej10=-99;ptj10=-99;etaj10=-99;phij10=-99;isbj10=-99;
-  ej11=-99;ptj11=-99;etaj11=-99;phij11=-99;isbj11=-99;
+  ej4=-99;ptj4=-99;etaj4=-99;phij4=-99;isbj4=-99; drl0j4=-99;drl1j4=-99; 
+  ej5=-99;ptj5=-99;etaj5=-99;phij5=-99;isbj5=-99; drl0j5=-99;drl1j5=-99;
+  ej6=-99;ptj6=-99;etaj6=-99;phij6=-99;isbj6=-99; drl0j6=-99;drl1j6=-99;
+  ej7=-99;ptj7=-99;etaj7=-99;phij7=-99;isbj7=-99; drl0j7=-99;drl1j7=-99;
+  ej8=-99;ptj8=-99;etaj8=-99;phij8=-99;isbj8=-99; drl0j8=-99;drl1j8=-99;
+  ej9=-99;ptj9=-99;etaj9=-99;phij9=-99;isbj9=-99; drl0j9=-99;drl1j9=-99;
+  ej10=-99;ptj10=-99;etaj10=-99;phij10=-99;isbj10=-99; drl0j10=-99;drl1j10=-99;
+  ej11=-99;ptj11=-99;etaj11=-99;phij11=-99;isbj11=-99; drl0j11=-99;drl1j11=-99;
 
   if(Njets >= 5){
-    ej4=jets_e[4]; ptj4=jets_pt[4];    etaj4=jets_eta[4]; phij4=jets_phi[4]; isbj4 = jets_btagFlag_DL1r_FixedCutBEff_70[4];
+    ej4=jets_e[4]; ptj4=jets_pt[4];    etaj4=jets_eta[4]; phij4=jets_phi[4]; isbj4 = jets_btagFlag_DL1r_FixedCutBEff_70[4]; drl0j4=jets_drl0[4];drl1j4=jets_drl1[4];  
   }
 
   if(Njets >= 6){
-    ej5=jets_e[5];    ptj5=jets_pt[5];    etaj5=jets_eta[5]; phij5=jets_phi[5]; isbj5 = jets_btagFlag_DL1r_FixedCutBEff_70[5];
+    ej5=jets_e[5];    ptj5=jets_pt[5];    etaj5=jets_eta[5]; phij5=jets_phi[5]; isbj5 = jets_btagFlag_DL1r_FixedCutBEff_70[5]; drl0j5=jets_drl0[5];drl1j5=jets_drl1[5];  
   }
 
   if(Njets >= 7){
-    ej6=jets_e[6];    ptj6=jets_pt[6];    etaj6=jets_eta[6]; phij6=jets_phi[6]; isbj6 = jets_btagFlag_DL1r_FixedCutBEff_70[6];
+    ej6=jets_e[6];    ptj6=jets_pt[6];    etaj6=jets_eta[6]; phij6=jets_phi[6]; isbj6 = jets_btagFlag_DL1r_FixedCutBEff_70[6]; drl0j6=jets_drl0[6];drl1j6=jets_drl1[6];  
   }
 
   if(Njets >= 8){
-    ej7=jets_e[7];    ptj7=jets_pt[7];    etaj7=jets_eta[7]; phij7=jets_phi[7]; isbj7 = jets_btagFlag_DL1r_FixedCutBEff_70[7];
+    ej7=jets_e[7];    ptj7=jets_pt[7];    etaj7=jets_eta[7]; phij7=jets_phi[7]; isbj7 = jets_btagFlag_DL1r_FixedCutBEff_70[7]; drl0j7=jets_drl0[7];drl1j7=jets_drl1[7];  
   }
 
   if(Njets >= 9){
-    ej8=jets_e[8];    ptj8=jets_pt[8];    etaj8=jets_eta[8]; phij8=jets_phi[8]; isbj8 = jets_btagFlag_DL1r_FixedCutBEff_70[8];
+    ej8=jets_e[8];    ptj8=jets_pt[8];    etaj8=jets_eta[8]; phij8=jets_phi[8]; isbj8 = jets_btagFlag_DL1r_FixedCutBEff_70[8]; drl0j8=jets_drl0[8];drl1j8=jets_drl1[8];  
   }
 
   if(Njets >= 10){
-    ej9=jets_e[9];    ptj9=jets_pt[9];    etaj9=jets_eta[9]; phij9=jets_phi[9]; isbj9 = jets_btagFlag_DL1r_FixedCutBEff_70[9];
+    ej9=jets_e[9];    ptj9=jets_pt[9];    etaj9=jets_eta[9]; phij9=jets_phi[9]; isbj9 = jets_btagFlag_DL1r_FixedCutBEff_70[9]; drl0j9=jets_drl0[9];drl1j9=jets_drl1[9];  
   }
 
   if(Njets >= 11){
-    ej10=jets_e[10];    ptj10=jets_pt[10];    etaj10=jets_eta[10]; phij10=jets_phi[10]; isbj10 = jets_btagFlag_DL1r_FixedCutBEff_70[10];
+    ej10=jets_e[10];    ptj10=jets_pt[10];    etaj10=jets_eta[10]; phij10=jets_phi[10]; isbj10 = jets_btagFlag_DL1r_FixedCutBEff_70[10]; drl0j10=jets_drl0[10];drl1j10=jets_drl1[10];  
   }
 
   if(Njets >= 12){
-    ej11=jets_e[11];    ptj11=jets_pt[11];    etaj11=jets_eta[11]; phij11=jets_phi[11]; isbj11 = jets_btagFlag_DL1r_FixedCutBEff_70[11];
+    ej11=jets_e[11];    ptj11=jets_pt[11];    etaj11=jets_eta[11]; phij11=jets_phi[11]; isbj11 = jets_btagFlag_DL1r_FixedCutBEff_70[11]; drl0j11=jets_drl0[11];drl1j11=jets_drl1[11];  
   }
   
   truth_m.clear();  

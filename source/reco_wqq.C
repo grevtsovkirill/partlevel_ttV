@@ -578,42 +578,6 @@ Bool_t reco_wqq::Process(Long64_t entry)
   if(debug<12)
     cout <<  " Njets = "<<Njets << ",  *nJets_OR ="<<*nJets_OR <<  ", Nbjets = "<<Nbjets   << endl;
 
-  /*
- 
-
-  // DeltaRs
-  float DRll01=-9999;
-  //DRll01= sqrt( pow( (lep_4v[lead_lep].Eta()-lep_4v[sublead_lep].Eta()) ,2) + pow ( ( acos( cos( lep_4v[lead_lep].Phi()-lep_4v[sublead_lep].Phi() )  ) ) ,2) );
-  DRll01=lep_4v[lead_lep].DeltaR( lep_4v[sublead_lep] ); // provide SAME results as "by hand"!!!
-  //if (deltaR!=DRll01)   cout << DRll01 << ", dR "<< deltaR<< endl;
-    //float  DR_LJ_0_tmp  = sqrt(pow((ntup.m_jet_eta->at(index_jets) - ntup.lep_Eta_0), 2.0) + pow((acos(cos(ntup.m_jet_phi->at(index_jets) - ntup.lep_Phi_0))), 2.0));
-  
-  
-  float min_DRl0j=-9999, min_DRl1j=-9999;
-  min_DRl0j= *min_element(dRl0j.begin(),dRl0j.end());
-  min_DRl1j= *min_element(dRl1j.begin(),dRl1j.end());
-
-  int Ntaus = 0; //in case we will process taus
-  int Nhtaus = 0;
-  for(unsigned int t=0;t<tau_pt.GetSize(); t++){
-    if(tau_pt[t]/1000.<25) return 0;
-
-    if(fabs(tau_eta[t])>2.5) return 0;
-  
-    Ntaus+=1;
-    if(tau_isHadronic[t]!=0) Nhtaus+=1;
-  }
-  vector<float> dRl0b;  vector<float> dRl1b;
-  for(int i=0; i<Nbjets;i++){
-    dRl0b.push_back( lep_4v[lead_lep].DeltaR( bjets_vec[i] ) );
-    dRl1b.push_back( lep_4v[sublead_lep].DeltaR( bjets_vec[i] ) );
-  }
-   
-  Double_t dRlb[2];
-  dRlb[0]= *min_element(dRl0b.begin(),dRl0b.end());
-  dRlb[1]= *min_element(dRl1b.begin(),dRl1b.end());
-
-  */  
   
   Njets = *nJets_OR;
   Nbjets = *nJets_OR_DL1r_70;

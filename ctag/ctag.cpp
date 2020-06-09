@@ -173,7 +173,6 @@ void ctag(){
     latex2.DrawLatex(0.18, 0.7, text3);
     legend[i]->Draw("same");
 
-    //cout << "fbs= "<< fbs[i]<<" ;cut_val="<<cut_val << " br = "<<br<< ", lr ="<<lr <<endl;
     br =-99;lr=-99;
 
     sprintf(o_name,"Plots/ctag_%0.0f/ttbar_dl1r_fb_%0.2f.pdf",target_c_efficiency*100,fbs[i]);

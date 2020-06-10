@@ -534,7 +534,7 @@ Bool_t reco_wqq::Process(Long64_t entry)
     score_DL1r_pu.emplace_back(jets_score_DL1r_pu[j]); 
     score_DL1r_pc.emplace_back(jets_score_DL1r_pc[j]); 
     score_DL1r_pb.emplace_back(jets_score_DL1r_pb[j]); 
-    truthflav.emplace_back(jets_HadronConeExclTruthLabelID[j]); 
+    //truthflav.emplace_back(jets_HadronConeExclTruthLabelID[j]); 
   }
   
   //ftagTree->Fill();

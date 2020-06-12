@@ -299,10 +299,14 @@ void reco_wqq::SlaveBegin(TTree * /*tree*/)
   outTree->Branch("mjj",&mjj,"mjj/F");  outTree->Branch("mjjctag",&mjjctag,"mjjctag/F");  outTree->Branch("ptjj",&ptjj,"ptjj/F");
   outTree->Branch("etajj",&etajj,"etajj/F");  outTree->Branch("phijj",&phijj,"phijj/F");
   
-  outTree->Branch("ptb0",&ptb0,"ptb0/F");outTree->Branch("etab0",&etab0,"etab0/F");outTree->Branch("phib0",&phib0,"phib0/F"); outTree->Branch("eb0",&eb0,"eb0/F");outTree->Branch("drl0b0",&drl0b0,"drl0b0/F");outTree->Branch("drl1b0",&drl1b0,"drlb0/F");
-  outTree->Branch("ptb1",&ptb1,"ptb1/F");outTree->Branch("etab1",&etab1,"etab1/F");outTree->Branch("phib1",&phib1,"phib1/F");outTree->Branch("eb1",&eb1,"eb1/F");outTree->Branch("drl0b1",&drl0b1,"drl0b1/F");outTree->Branch("drl1b1",&drl1b1,"drlb1/F");
+  outTree->Branch("ptb0",&ptb0,"ptb0/F");outTree->Branch("etab0",&etab0,"etab0/F");outTree->Branch("phib0",&phib0,"phib0/F"); outTree->Branch("eb0",&eb0,"eb0/F");outTree->Branch("drl0b0",&drl0b0,"drl0b0/F");outTree->Branch("drl1b0",&drl1b0,"drl1b0/F");
+  outTree->Branch("ptb1",&ptb1,"ptb1/F");outTree->Branch("etab1",&etab1,"etab1/F");outTree->Branch("phib1",&phib1,"phib1/F");outTree->Branch("eb1",&eb1,"eb1/F");outTree->Branch("drl0b1",&drl0b1,"drl0b1/F");outTree->Branch("drl1b1",&drl1b1,"drl1b1/F");
   outTree->Branch("drb0b1",&drb0b1,"drb0b1/F");
+  outTree->Branch("ptlj0",&ptlj0,"ptlj0/F");outTree->Branch("etalj0",&etalj0,"etalj0/F");outTree->Branch("philj0",&philj0,"philj0/F"); outTree->Branch("elj0",&elj0,"elj0/F");outTree->Branch("drl0lj0",&drl0lj0,"drl0lj0/F");outTree->Branch("drl1lj0",&drl1lj0,"drl1lj0/F");
+  outTree->Branch("ptlj1",&ptlj1,"ptlj1/F");outTree->Branch("etalj1",&etalj1,"etalj1/F");outTree->Branch("philj1",&philj1,"philj1/F");outTree->Branch("elj1",&elj1,"elj1/F");outTree->Branch("drl0lj1",&drl0lj1,"drl0lj1/F");outTree->Branch("drl1lj1",&drl1lj1,"drl1lj1/F");
 
+  outTree->Branch("drb0lj0",&drb0lj0,"drb0lj0/F"); outTree->Branch("drb0lj1",&drb0lj1,"drb0lj1/F");
+  outTree->Branch("drb1lj0",&drb1lj0,"drb1lj0/F"); outTree->Branch("drb1lj1",&drb1lj1,"drb1lj1/F");
   /*
   outTree->Branch("ptj0",&ptj0,"ptj0/F");outTree->Branch("etaj0",&etaj0,"etaj0/F");outTree->Branch("phij0",&phij0,"phij0/F");outTree->Branch("isbj0",&isbj0,"isbj0/F");outTree->Branch("ej0",&ej0,"ej0/F");outTree->Branch("drl0j0",&drl0j0,"drl0j0/F");outTree->Branch("drl1j0",&drl1j0,"drlj0/F");
   outTree->Branch("ptj1",&ptj1,"ptj1/F");outTree->Branch("etaj1",&etaj1,"etaj1/F");outTree->Branch("phij1",&phij1,"phij1/F");outTree->Branch("isbj1",&isbj1,"isbj1/F");outTree->Branch("ej1",&ej1,"ej1/F");outTree->Branch("drl0j1",&drl0j1,"drl0j1/F");outTree->Branch("drl1j1",&drl1j1,"drlj1/F");
@@ -471,6 +475,8 @@ Bool_t reco_wqq::Process(Long64_t entry)
   vector<float> jets_drl1;
   vector<float> bjets_drl0;
   vector<float> bjets_drl1;
+  vector<float> ljjets_drl0;
+  vector<float> ljjets_drl1;
   vector<TLorentzVector> jets_vec;
   vector<TLorentzVector> bjets_vec;
   vector<TLorentzVector> nonbjets_vec;
@@ -504,6 +510,9 @@ Bool_t reco_wqq::Process(Long64_t entry)
     }
     else{
       nonbjets_vec.push_back(jj);
+      ljjets_drl0.push_back( l0.DeltaR( jj ) );
+      ljjets_drl1.push_back( l1.DeltaR( jj ) );
+
       if(GetDL1(jets_score_DL1r_pc[j],jets_score_DL1r_pb[j],jets_score_DL1r_pu[j],fb) > wp70ceff_cut)
 	nonbjets_vec_ctag.push_back(1);
       else
@@ -604,6 +613,14 @@ Bool_t reco_wqq::Process(Long64_t entry)
     ptb1=bjets_vec[1].Pt(); etab1=bjets_vec[1].Eta(); phib1=bjets_vec[1].Phi(); eb1=bjets_vec[1].E();
     drl0b1=bjets_drl0[1]; drl1b1=bjets_drl1[1];
     drb0b1 =  bjets_vec[0].DeltaR( bjets_vec[1] );
+
+    ptlj0=nonbjets_vec[0].Pt(); etalj0=nonbjets_vec[0].Eta(); philj0=nonbjets_vec[0].Phi(); elj0=nonbjets_vec[0].E();
+    drl0lj0=ljjets_drl0[0]; drl1lj0=ljjets_drl1[0];
+    ptlj1=nonbjets_vec[1].Pt(); etalj1=nonbjets_vec[1].Eta(); philj1=nonbjets_vec[1].Phi(); elj1=nonbjets_vec[1].E();
+    drl0lj1=ljjets_drl0[1]; drl1lj1=ljjets_drl1[1];
+
+    drb0lj0 = bjets_vec[0].DeltaR(nonbjets_vec[0]); drb0lj1 = bjets_vec[0].DeltaR(nonbjets_vec[1]);
+    drb1lj0 = bjets_vec[1].DeltaR(nonbjets_vec[0]); drb1lj1 = bjets_vec[1].DeltaR(nonbjets_vec[1]);
     outTree->Fill();
   }
   /*

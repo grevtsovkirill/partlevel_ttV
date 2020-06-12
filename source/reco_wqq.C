@@ -309,8 +309,11 @@ void reco_wqq::SlaveBegin(TTree * /*tree*/)
   outTree->Branch("ptb0",&ptb0,"ptb0/F");outTree->Branch("etab0",&etab0,"etab0/F");outTree->Branch("phib0",&phib0,"phib0/F"); outTree->Branch("eb0",&eb0,"eb0/F");outTree->Branch("drl0b0",&drl0b0,"drl0b0/F");outTree->Branch("drl1b0",&drl1b0,"drl1b0/F");
   outTree->Branch("ptb1",&ptb1,"ptb1/F");outTree->Branch("etab1",&etab1,"etab1/F");outTree->Branch("phib1",&phib1,"phib1/F");outTree->Branch("eb1",&eb1,"eb1/F");outTree->Branch("drl0b1",&drl0b1,"drl0b1/F");outTree->Branch("drl1b1",&drl1b1,"drl1b1/F");
   outTree->Branch("drb0b1",&drb0b1,"drb0b1/F");
-  outTree->Branch("ptlj0",&ptlj0,"ptlj0/F");outTree->Branch("etalj0",&etalj0,"etalj0/F");outTree->Branch("philj0",&philj0,"philj0/F"); outTree->Branch("elj0",&elj0,"elj0/F");outTree->Branch("drl0lj0",&drl0lj0,"drl0lj0/F");outTree->Branch("drl1lj0",&drl1lj0,"drl1lj0/F");
-  outTree->Branch("ptlj1",&ptlj1,"ptlj1/F");outTree->Branch("etalj1",&etalj1,"etalj1/F");outTree->Branch("philj1",&philj1,"philj1/F");outTree->Branch("elj1",&elj1,"elj1/F");outTree->Branch("drl0lj1",&drl0lj1,"drl0lj1/F");outTree->Branch("drl1lj1",&drl1lj1,"drl1lj1/F");
+  outTree->Branch("ptlj0",&ptlj0,"ptlj0/F"); outTree->Branch("etalj0",&etalj0,"etalj0/F"); outTree->Branch("philj0",&philj0,"philj0/F"); outTree->Branch("elj0",&elj0,"elj0/F");
+  outTree->Branch("drl0lj0",&drl0lj0,"drl0lj0/F");outTree->Branch("drl1lj0",&drl1lj0,"drl1lj0/F");
+  outTree->Branch("ctaglj0",&ctaglj0,"ctaglj0/F");  outTree->Branch("ctaglj1",&ctaglj1,"ctaglj1/F");
+  outTree->Branch("ptlj1",&ptlj1,"ptlj1/F");outTree->Branch("etalj1",&etalj1,"etalj1/F");outTree->Branch("philj1",&philj1,"philj1/F");outTree->Branch("elj1",&elj1,"elj1/F");
+  outTree->Branch("drl0lj1",&drl0lj1,"drl0lj1/F");outTree->Branch("drl1lj1",&drl1lj1,"drl1lj1/F");
 
   outTree->Branch("drb0lj0",&drb0lj0,"drb0lj0/F"); outTree->Branch("drb0lj1",&drb0lj1,"drb0lj1/F");
   outTree->Branch("drb1lj0",&drb1lj0,"drb1lj0/F"); outTree->Branch("drb1lj1",&drb1lj1,"drb1lj1/F");
@@ -476,7 +479,7 @@ Bool_t reco_wqq::Process(Long64_t entry)
   vector<float> tc_scores;
 
   float fb=0.1;
-  float wp70ceff_cut = -0.17;
+  float wp30ceff_cut = 1.67;
 
   vector<float> jets_drl0;
   vector<float> jets_drl1;
@@ -488,7 +491,9 @@ Bool_t reco_wqq::Process(Long64_t entry)
   vector<TLorentzVector> bjets_vec;
   vector<TLorentzVector> nonbjets_vec;
   vector<float> nonbjets_vec_ctag;
+  vector<float> nonbjets_vec_ctagscore;
 
+  float tmp_cscore=0;
   //for(int j=0;j< int(*nJets_OR); j++){
   for(int j=0;j< int(jets_pt.GetSize()); j++){
     if(jets_pt[j]/1000.<25){
@@ -520,10 +525,14 @@ Bool_t reco_wqq::Process(Long64_t entry)
       ljjets_drl0.push_back( l0.DeltaR( jj ) );
       ljjets_drl1.push_back( l1.DeltaR( jj ) );
 
-      if(GetDL1(jets_score_DL1r_pc[j],jets_score_DL1r_pb[j],jets_score_DL1r_pu[j],fb) > wp70ceff_cut)
+      tmp_cscore = GetDL1(jets_score_DL1r_pc[j],jets_score_DL1r_pb[j],jets_score_DL1r_pu[j],fb);
+      nonbjets_vec_ctagscore.push_back(tmp_cscore);
+      if(tmp_cscore > wp30ceff_cut)
 	nonbjets_vec_ctag.push_back(1);
       else
 	nonbjets_vec_ctag.push_back(0);
+
+      tmp_cscore = 0;
     }
   }
 
@@ -633,7 +642,8 @@ Bool_t reco_wqq::Process(Long64_t entry)
     drl0lj0=ljjets_drl0[0]; drl1lj0=ljjets_drl1[0];
     ptlj1=nonbjets_vec[1].Pt(); etalj1=nonbjets_vec[1].Eta(); philj1=nonbjets_vec[1].Phi(); elj1=nonbjets_vec[1].E();
     drl0lj1=ljjets_drl0[1]; drl1lj1=ljjets_drl1[1];
-
+    ctaglj0 = nonbjets_vec_ctagscore[0];  ctaglj1 = nonbjets_vec_ctagscore[1];
+    
     drb0lj0 = bjets_vec[0].DeltaR(nonbjets_vec[0]); drb0lj1 = bjets_vec[0].DeltaR(nonbjets_vec[1]);
     drb1lj0 = bjets_vec[1].DeltaR(nonbjets_vec[0]); drb1lj1 = bjets_vec[1].DeltaR(nonbjets_vec[1]);
     outTree->Fill();

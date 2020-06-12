@@ -79,10 +79,12 @@ public :
   float etalj0 = -99;
   float elj0 = -99;
   float philj0 = -99;
+  float ctaglj0 = -99;
   float ptlj1 = -99;
   float etalj1 = -99;
   float elj1 = -99;
   float philj1 = -99;
+  float ctaglj1 = -99;
   float drl0lj0 = -99;
   float drl1lj0 = -99;
   float drl0lj1 = -99;

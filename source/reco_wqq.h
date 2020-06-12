@@ -35,9 +35,9 @@ public :
   int region = -99;
   int Njets = 0;
   int Nbjets = 0;
+  float dileptype = -99;
   float HTall=0;
   float HTjet=0;
-  float b0_pt=-999;
   float l0_id=-999;
   float l1_id=-999;
   float l0_pt=-999;
@@ -61,6 +61,22 @@ public :
   float etajj = -99;
   float phijj = -99;
 
+  float ptb0 = -99;
+  float etab0 = -99;
+  float eb0 = -99;
+  float phib0 = -99;
+  float ptb1 = -99;
+  float etab1 = -99;
+  float eb1 = -99;
+  float phib1 = -99;
+  float drl0b0 = -99;
+  float drl1b0 = -99;
+  float drl0b1 = -99;
+  float drl1b1 = -99;
+  float drb0b1 = -99;
+
+
+  /*
   float ptj0 = -99;
   float etaj0 = -99;
   float ej0 = -99;
@@ -121,7 +137,6 @@ public :
   float etaj11 = -99;
   float phij11 = -99;
   float isbj11 = -99;
-  float dileptype = -99;
 
   float drl0j0 = -99;
   float drl1j0 = -99;
@@ -147,21 +162,8 @@ public :
   float drl1j10 = -99;
   float drl0j11 = -99;
   float drl1j11 = -99;
-
-  float ptb0 = -99;
-  float etab0 = -99;
-  float eb0 = -99;
-  float phib0 = -99;
-  float ptb1 = -99;
-  float etab1 = -99;
-  float eb1 = -99;
-  float phib1 = -99;
-  float drl0b0 = -99;
-  float drl1b0 = -99;
-  float drl0b1 = -99;
-  float drl1b1 = -99;
-  float drb0b1 = -99;
-
+  //*/
+  
   
   std::vector<float> truth_m ;
   std::vector<float> truth_pt ;

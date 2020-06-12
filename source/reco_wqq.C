@@ -298,6 +298,12 @@ void reco_wqq::SlaveBegin(TTree * /*tree*/)
   outTree->Branch("metphi",&metphi,"metphi/F");
   outTree->Branch("mjj",&mjj,"mjj/F");  outTree->Branch("mjjctag",&mjjctag,"mjjctag/F");  outTree->Branch("ptjj",&ptjj,"ptjj/F");
   outTree->Branch("etajj",&etajj,"etajj/F");  outTree->Branch("phijj",&phijj,"phijj/F");
+  
+  outTree->Branch("ptb0",&ptb0,"ptb0/F");outTree->Branch("etab0",&etab0,"etab0/F");outTree->Branch("phib0",&phib0,"phib0/F"); outTree->Branch("eb0",&eb0,"eb0/F");outTree->Branch("drl0b0",&drl0b0,"drl0b0/F");outTree->Branch("drl1b0",&drl1b0,"drlb0/F");
+  outTree->Branch("ptb1",&ptb1,"ptb1/F");outTree->Branch("etab1",&etab1,"etab1/F");outTree->Branch("phib1",&phib1,"phib1/F");outTree->Branch("eb1",&eb1,"eb1/F");outTree->Branch("drl0b1",&drl0b1,"drl0b1/F");outTree->Branch("drl1b1",&drl1b1,"drlb1/F");
+  outTree->Branch("drb0b1",&drb0b1,"drb0b1/F");
+
+  /*
   outTree->Branch("ptj0",&ptj0,"ptj0/F");outTree->Branch("etaj0",&etaj0,"etaj0/F");outTree->Branch("phij0",&phij0,"phij0/F");outTree->Branch("isbj0",&isbj0,"isbj0/F");outTree->Branch("ej0",&ej0,"ej0/F");outTree->Branch("drl0j0",&drl0j0,"drl0j0/F");outTree->Branch("drl1j0",&drl1j0,"drlj0/F");
   outTree->Branch("ptj1",&ptj1,"ptj1/F");outTree->Branch("etaj1",&etaj1,"etaj1/F");outTree->Branch("phij1",&phij1,"phij1/F");outTree->Branch("isbj1",&isbj1,"isbj1/F");outTree->Branch("ej1",&ej1,"ej1/F");outTree->Branch("drl0j1",&drl0j1,"drl0j1/F");outTree->Branch("drl1j1",&drl1j1,"drlj1/F");
   outTree->Branch("ptj2",&ptj2,"ptj2/F");outTree->Branch("etaj2",&etaj2,"etaj2/F");outTree->Branch("phij2",&phij2,"phij2/F");outTree->Branch("isbj2",&isbj2,"isbj2/F");outTree->Branch("ej2",&ej2,"ej2/F");outTree->Branch("drl0j2",&drl0j2,"drl0j2/F");outTree->Branch("drl1j2",&drl1j2,"drlj2/F");
@@ -463,6 +469,8 @@ Bool_t reco_wqq::Process(Long64_t entry)
 
   vector<float> jets_drl0;
   vector<float> jets_drl1;
+  vector<float> bjets_drl0;
+  vector<float> bjets_drl1;
   vector<TLorentzVector> jets_vec;
   vector<TLorentzVector> bjets_vec;
   vector<TLorentzVector> nonbjets_vec;
@@ -491,6 +499,8 @@ Bool_t reco_wqq::Process(Long64_t entry)
     if(jets_btagFlag_DL1r_FixedCutBEff_70[j]>0){
       Nbjets++;
       bjets_vec.push_back(jj);      
+      bjets_drl0.push_back( l0.DeltaR( jj ) );
+      bjets_drl1.push_back( l1.DeltaR( jj ) );
     }
     else{
       nonbjets_vec.push_back(jj);
@@ -587,6 +597,16 @@ Bool_t reco_wqq::Process(Long64_t entry)
   ptjj = pmjj.Pt();
   etajj = pmjj.Eta();
   phijj = pmjj.Phi();
+
+  if(Njets >= 4 && Nbjets==2){
+    ptb0=bjets_vec[0].Pt(); etab0=bjets_vec[0].Eta(); phib0=bjets_vec[0].Phi(); eb0=bjets_vec[0].E();
+    drl0b0=bjets_drl0[0]; drl1b0=bjets_drl1[0];
+    ptb1=bjets_vec[1].Pt(); etab1=bjets_vec[1].Eta(); phib1=bjets_vec[1].Phi(); eb1=bjets_vec[1].E();
+    drl0b1=bjets_drl0[1]; drl1b1=bjets_drl1[1];
+    drb0b1 =  bjets_vec[0].DeltaR( bjets_vec[1] );
+    outTree->Fill();
+  }
+  /*
   ej0=jets_e[0]; ptj0=jets_pt[0]; etaj0=jets_eta[0]; phij0=jets_phi[0]; isbj0 = jets_btagFlag_DL1r_FixedCutBEff_70[0]; drl0j0=jets_drl0[0];drl1j0=jets_drl1[0];
   ej1=jets_e[1];  ptj1=jets_pt[1]; etaj1=jets_eta[1]; phij1=jets_phi[1]; isbj1 = jets_btagFlag_DL1r_FixedCutBEff_70[1]; drl0j1=jets_drl0[1];drl1j1=jets_drl1[1];
   ej2=jets_e[2];  ptj2=jets_pt[2]; etaj2=jets_eta[2]; phij2=jets_phi[2]; isbj2 = jets_btagFlag_DL1r_FixedCutBEff_70[2]; drl0j2=jets_drl0[2];drl1j2=jets_drl1[2];
@@ -633,6 +653,8 @@ Bool_t reco_wqq::Process(Long64_t entry)
     ej11=jets_e[11];    ptj11=jets_pt[11];    etaj11=jets_eta[11]; phij11=jets_phi[11]; isbj11 = jets_btagFlag_DL1r_FixedCutBEff_70[11]; drl0j11=jets_drl0[11];drl1j11=jets_drl1[11];  
   }
   
+  //*/
+  
   truth_m.clear();  
   truth_pt.clear();
   truth_eta.clear();
@@ -675,10 +697,8 @@ Bool_t reco_wqq::Process(Long64_t entry)
   sel_array[4]=(Njets >= 4 && Nbjets==2 && abs(pmjj.M()-mWPDG)<1e4 && (pmjj.Pt()/1e3>90 ) );  //
   sel_array[6]=(Njets >= 4 && abs(pmjj.M()-mWPDG)<1e4 && (pmjj.Pt()/1e3>90 ) );  //
 
-  if(sel_array[0]) region = 0;
-  else if(sel_array[1]) region = 1;
-
-  outTree->Fill();
+  //if(sel_array[0]) region = 0;
+  //else if(sel_array[1]) region = 1;
   
   float met = *met_met/1000.;
   for(int i=0; i<(int)region_names.size();i++){

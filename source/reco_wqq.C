@@ -51,6 +51,9 @@ TH1D *hist_Whpt[10];
 
 TH1D *hist_jjpt[10];
 TH1D *hist_mjj[10];
+TH1D *hist_mj0j1[10];
+TH1D *hist_mj0j2[10];
+TH1D *hist_mj1j2[10];
 
 TH1D *hist_dlrc[10];
 TH1D *hist_dlrcb[10];
@@ -242,6 +245,10 @@ void reco_wqq::SlaveBegin(TTree * /*tree*/)
 
     hist_jjpt[i] = new TH1D(("jjpt_"+to_string(i)).c_str(), ("p_T^{jj} "+region_names[i]+";p_T^{jj};Events").c_str(),60,0,300 ); //w_binnum, w_bins
     hist_mjj[i] = new TH1D(("mjj_"+to_string(i)).c_str(), ("m_{jj} "+region_names[i]+";m_{jj};Events").c_str(), 50, 50, 150); //420, 50, 410
+
+    hist_mj0j1[i] = new TH1D(("mj0j1_"+to_string(i)).c_str(), ("m_{j0j1} "+region_names[i]+";m_{j0j1};Events").c_str(), 50, 50, 150); //420, 50, 410
+    hist_mj0j2[i] = new TH1D(("mj0j2_"+to_string(i)).c_str(), ("m_{j0j2} "+region_names[i]+";m_{j0j2};Events").c_str(), 50, 50, 150); //420, 50, 410
+    hist_mj1j2[i] = new TH1D(("mj1j2_"+to_string(i)).c_str(), ("m_{j1j2} "+region_names[i]+";m_{j1j2};Events").c_str(), 50, 50, 150); //420, 50, 410
 
     hist_dlrc[i] = new TH1D(("dlrc_"+to_string(i)).c_str(), ("DL1r_{c} "+region_names[i]+";DL1r_{c};Events").c_str(), 75, -10, 15); //420, 50, 410
     hist_dlrcb[i] = new TH1D(("dlrcb_"+to_string(i)).c_str(), ("DL1r_{c} b "+region_names[i]+";DL1r_{c} b;Events").c_str(), 75, -10, 15); //420, 50, 410
@@ -586,6 +593,14 @@ Bool_t reco_wqq::Process(Long64_t entry)
   //TLorentzVector pWhadron = pjet1 + pjet2;
   double mWPDG = 80.399*1e3;
   TLorentzVector pmjj = nonbjets_vec[0]+nonbjets_vec[1];
+
+  TLorentzVector vj0j1 = nonbjets_vec[0]+nonbjets_vec[1];
+  TLorentzVector vj0j2;  TLorentzVector vj1j2;
+  if(nonbjets_vec.size()>2){
+    vj0j2 = nonbjets_vec[0]+nonbjets_vec[2];
+    vj1j2 = nonbjets_vec[1]+nonbjets_vec[2];
+  }
+  
   mjjctag = nonbjets_vec_ctag[0]+nonbjets_vec_ctag[1];
   
   Njets = *nJets_OR;
@@ -759,7 +774,12 @@ Bool_t reco_wqq::Process(Long64_t entry)
 
       hist_mjj[i]->Fill(pmjj.M()/1e3, weight_tot);
       hist_jjpt[i]->Fill(pmjj.Pt()/1e3, weight_tot);
-
+      hist_mj0j1[i]->Fill(vj0j1.M()/1e3, weight_tot);
+      if(nonbjets_vec.size()>2){
+	hist_mj0j2[i]->Fill(vj0j2.M()/1e3, weight_tot);
+	hist_mj1j2[i]->Fill(vj1j2.M()/1e3, weight_tot);
+      }
+      
       for(int k=0; k<int(c_scores.size());k++)
 	hist_dlrc[i]->Fill(c_scores[k], weight_tot);
       for(int k=0; k<int(nbc_scores.size());k++)
@@ -824,6 +844,11 @@ void reco_wqq::Terminate()
       hist_Whpt[i]->Write();
       hist_jjpt[i]->Write();
       hist_mjj[i]->Write();
+
+      hist_mj0j1[i]->Write();
+      hist_mj0j2[i]->Write();
+      hist_mj1j2[i]->Write();
+
       hist_lep_truth_origin[i]->Write();
       hist_lep_truth_origin_0[i]->Write();
       hist_lep_truth_origin_1[i]->Write();

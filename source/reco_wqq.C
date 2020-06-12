@@ -55,6 +55,10 @@ TH1D *hist_mj0j1[10];
 TH1D *hist_mj0j2[10];
 TH1D *hist_mj1j2[10];
 
+TH1D *hist_mj0j3[10];
+TH1D *hist_mj1j3[10];
+TH1D *hist_mj2j3[10];
+
 TH1D *hist_dlrc[10];
 TH1D *hist_dlrcb[10];
 TH1D *hist_dlrcl[10];
@@ -249,6 +253,11 @@ void reco_wqq::SlaveBegin(TTree * /*tree*/)
     hist_mj0j1[i] = new TH1D(("mj0j1_"+to_string(i)).c_str(), ("m_{j0j1} "+region_names[i]+";m_{j0j1};Events").c_str(), 50, 50, 150); //420, 50, 410
     hist_mj0j2[i] = new TH1D(("mj0j2_"+to_string(i)).c_str(), ("m_{j0j2} "+region_names[i]+";m_{j0j2};Events").c_str(), 50, 50, 150); //420, 50, 410
     hist_mj1j2[i] = new TH1D(("mj1j2_"+to_string(i)).c_str(), ("m_{j1j2} "+region_names[i]+";m_{j1j2};Events").c_str(), 50, 50, 150); //420, 50, 410
+
+        hist_mj0j3[i] = new TH1D(("mj0j3_"+to_string(i)).c_str(), ("m_{j0j3} "+region_names[i]+";m_{j0j3};Events").c_str(), 50, 50, 150); //420, 50, 410
+	hist_mj1j3[i] = new TH1D(("mj1j3_"+to_string(i)).c_str(), ("m_{j1j3} "+region_names[i]+";m_{j1j3};Events").c_str(), 50, 50, 150); //420, 50, 410
+	hist_mj2j3[i] = new TH1D(("mj2j3_"+to_string(i)).c_str(), ("m_{j2j3} "+region_names[i]+";m_{j2j3};Events").c_str(), 50, 50, 150); //420, 50, 410	
+	
 
     hist_dlrc[i] = new TH1D(("dlrc_"+to_string(i)).c_str(), ("DL1r_{c} "+region_names[i]+";DL1r_{c};Events").c_str(), 75, -10, 15); //420, 50, 410
     hist_dlrcb[i] = new TH1D(("dlrcb_"+to_string(i)).c_str(), ("DL1r_{c} b "+region_names[i]+";DL1r_{c} b;Events").c_str(), 75, -10, 15); //420, 50, 410
@@ -605,9 +614,15 @@ Bool_t reco_wqq::Process(Long64_t entry)
 
   TLorentzVector vj0j1 = nonbjets_vec[0]+nonbjets_vec[1];
   TLorentzVector vj0j2;  TLorentzVector vj1j2;
+  TLorentzVector vj0j3;  TLorentzVector vj1j3; TLorentzVector vj2j3;
   if(nonbjets_vec.size()>2){
     vj0j2 = nonbjets_vec[0]+nonbjets_vec[2];
     vj1j2 = nonbjets_vec[1]+nonbjets_vec[2];
+    if(nonbjets_vec.size()>3){
+      vj0j3 = nonbjets_vec[0]+nonbjets_vec[3];
+      vj1j3 = nonbjets_vec[1]+nonbjets_vec[3];
+      vj2j3 = nonbjets_vec[2]+nonbjets_vec[3];
+    }
   }
   
   mjjctag = nonbjets_vec_ctag[0]+nonbjets_vec_ctag[1];
@@ -788,6 +803,11 @@ Bool_t reco_wqq::Process(Long64_t entry)
       if(nonbjets_vec.size()>2){
 	hist_mj0j2[i]->Fill(vj0j2.M()/1e3, weight_tot);
 	hist_mj1j2[i]->Fill(vj1j2.M()/1e3, weight_tot);
+	if(nonbjets_vec.size()>3){
+	  hist_mj0j3[i]->Fill(vj0j3.M()/1e3, weight_tot);
+	  hist_mj1j3[i]->Fill(vj1j3.M()/1e3, weight_tot);
+	  hist_mj2j3[i]->Fill(vj2j3.M()/1e3, weight_tot);
+	}
       }
        
       for(int k=0; k<int(c_scores.size());k++)
@@ -858,6 +878,10 @@ void reco_wqq::Terminate()
       hist_mj0j1[i]->Write();
       hist_mj0j2[i]->Write();
       hist_mj1j2[i]->Write();
+
+      hist_mj0j3[i]->Write();
+      hist_mj1j3[i]->Write();
+      hist_mj2j3[i]->Write();
 
       hist_lep_truth_origin[i]->Write();
       hist_lep_truth_origin_0[i]->Write();

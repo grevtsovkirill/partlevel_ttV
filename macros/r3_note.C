@@ -28,8 +28,8 @@ void r3_note(bool norm_xs_plots=false)
 
   vector<string> region_names={"0#tau_{had} 1#font[52]{b} #geq4#font[52]{j}", "0#tau_{had} #geq2#font[52]{b} #geq4#font[52]{j}","0#tau_{had} 1#font[52]{b} 3#font[52]{j}", "0#tau_{had} #geq2#font[52]{b} 3#font[52]{j}","1#tau_{had} #geq1#font[52]{b} #geq3#font[52]{j}"};//, "0t=3j","0tg4j","otg3g0b"};
 
-  //vector<string>  nj_reg={"0"};//
-  vector<string>  nj_reg={"0","1","2","3","4"};//,"5","6","7"};
+  vector<string>  nj_reg={"0"};//
+  //vector<string>  nj_reg={"0","1","2","3","4"};//,"5","6","7"};
   //vector<string> variable={"nJets","DRll01","lep_Pt_0"};
   vector<string> variable={"nJets","DRll01","lep_Pt_0","lep_Pt_1",
 			   "jet_Pt_4","jet_Pt_5","jet_Pt_6",
@@ -161,7 +161,7 @@ void r3_note(bool norm_xs_plots=false)
 	if (!norm_xs_plots) norm_hist = h_var[i][j][0][t]->GetSumOfWeights();
 	else{
 	  norm_hist = 1;
-	  if (t==2 || t >=5 ) norm_hist = 100;
+	  if (t==2 || t >=5 ) norm_hist = 1;
 	}
 	
 	h_var[i][j][0][t]->Scale(1/norm_hist);
@@ -380,7 +380,7 @@ void r3_note(bool norm_xs_plots=false)
       //sprintf(o_name,"Uncertainty/Plot_s228_pdfalpha_%s/%s.pdf",norm_name,canvas_name);
       //sprintf(o_name,"Plots_gen_rivet_12_%s/%s.pdf",norm_name,canvas_name);
       sprintf(o_name,"P2020/v1scale/r3_v1_%s/%s.pdf",norm_name,canvas_name);
-      canv[i][j]->Print(o_name);
+      //canv[i][j]->Print(o_name);
 
       //*/
     }//j loop: variable

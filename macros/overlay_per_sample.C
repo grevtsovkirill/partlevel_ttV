@@ -38,8 +38,10 @@ void overlay_per_sample(string sampleversion = "norm",  bool do_stack=false,bool
   //,"DRll01"
   //vector<string> variable={"nJets","Whmass","Whpt","lep_Pt_0","lep_Pt_1","jet_Pt_4","jet_Pt_5","jet_Pt_6","Bjet_Pt_0","Bjet_Pt_1","min_DRl0j","min_DRl1j","maxEta_ll","HT_jets","HT_leps","HT","nBtagJets","MET","lep_Eta_0","lep_Eta_1","lep_Phi_0","lep_Phi_1","lep_dPhi","jet_Pt_1","jet_Pt_2","jet_Pt_3"}; //
   //vector<string> variable={"qcd_pt","nqcd_pt"};
-  vector<string> variable={"mjj","Whmass"};
-  vector<string> variable_X={"m_{j0j1}","m_{Wqq}",
+  //vector<string> variable={"mj0j1","mj0j2","mj1j2"};
+  vector<string> variable={"mj0j1","mj0j2","mj1j2","mj0j3","mj1j3","mj2j3"};
+  vector<string> variable_X={"m_{j0j1}","m_{j0j2}","m_{j1j2}",
+			     "m_{j0j3}","m_{j1j3}","m_{j2j3}",
 			     "Jet p_T", "Non QCD",
 			     "Number of jets","Number of #font[52]{b}-jets",
 			     "m_{Wqq}","p_T^{Wqq}",
@@ -98,11 +100,12 @@ void overlay_per_sample(string sampleversion = "norm",  bool do_stack=false,bool
   //           '304014_threeTop','410080_fourTop','410081_ttww','410408_WtZ']
 
   //632,
-  Int_t color_sample[12]={632,868,867,865,801,802,805,922,921,920,0};//625
+  //Int_t color_sample[12]={632,868,867,865,801,802,805,922,921,920,0};//625
+  Int_t color_sample[12]={1,632,868,801,867,922,865,802,805,921,920};//625
   //vector<string> type={"ttW","ttZee","ttZmumu","ttZqq","Wtz","ttWW","ttZtautau","fourTop","ttZnunu","threeTop","ttbar"}; //"ttW_aMC"
   //vector<string> type={"ttbar"};
   //vector<string> type={"ttW_aMC"};
-  vector<string> type={"ttW"};
+  //vector<string> type={"ttW"};
   //vector<string> type={"ttW","ttW_aMC"};
   //vector<string> type={"ttWpartlevel","ttWreco"};
   //vector<string> type={"ttbar partlevel","ttbar reco"};
@@ -113,7 +116,12 @@ void overlay_per_sample(string sampleversion = "norm",  bool do_stack=false,bool
   string leg_type="f";  
   string reco_part=""; //"reco_";
   //=false;
-  
+  //vector<string> type={"ttW","ttW","ttW"};
+  vector<string> type={"ttbar"};
+  file[0][0] = TFile::Open("../../../../../Wtt_run2/Training/Files/v10/wqq_reco_410470_d.root"); 
+  //file[0][0] = TFile::Open("../../../../../Wtt_run2/Training/Files/v10/wqq_reco_700000_e.root"); 
+  file[0][1] = TFile::Open("../../../../../Wtt_run2/Training/Files/v10/wqq_reco_700000_d.root"); 
+  file[0][2] = TFile::Open("../../../../../Wtt_run2/Training/Files/v10/wqq_reco_700000_a.root"); 
   //if (sampleversion != "norm")
   //  do_log=true;
   //file[0][0] = TFile::Open("input/Wqq/v2_MCTC_0/wqq_410472_xs.root"); 
@@ -126,24 +134,32 @@ void overlay_per_sample(string sampleversion = "norm",  bool do_stack=false,bool
   Double_t norm_hist=0;
   for(int t=0;t<type.size();t++){
     //region
-    file[0][t] = TFile::Open(("input/Wqq/"+pathversion+"/wqq_"+reco_part+sample_map[type[t]]+"_xs.root").c_str()); //+sampleversion+
+    //file[0][t] = TFile::Open(("input/Wqq/"+pathversion+"/wqq_"+reco_part+sample_map[type[t]]+"_xs.root").c_str()); //+sampleversion+
     for(int i=0;i<nj_reg.size();i++){
       //variable
       for(int j=0;j<variable.size();j++){
 	sprintf(sf_name,"%s_%s",variable[j].c_str(),nj_reg[i].c_str());
 	cout << "h_var["<<i<<"]["<<j<<"][0]["<<t<<"] sf_name " << sf_name<< " , variable in histo - "<< variable[j]<< endl;
-	h_var[i][j][0][t] = (TH1D *)file[0][t]->Get(sf_name);			  
+	h_var[i][j][0][t] = (TH1D *)file[0][t]->Get(sf_name);
+	if(t==0)
+	  h_var[i][j][0][4] = (TH1D*) h_var[i][j][0][0]->Clone(sf_name);
+	else
+	  h_var[i][j][0][4]->Add(h_var[i][j][0][t]);
+	    
 	//h_var[i][j][0][t]->Rebin(2);
 	norm_hist = h_var[i][j][0][t]->GetSumOfWeights();
  	//h_var[i][j][0][t]->Scale(xs[t]);
 	if (sampleversion == "norm") h_var[i][j][0][t]->Scale(1/norm_hist);
+	
      }
     }    
   }
 
+  
 
   for(int i=0;i<nj_reg.size();i++){
     int t=0;
+    //for(int =0;i<nj_reg.size();i++){
     int j=0;
       std::map<string,float> yields;
       yields["TotalMC"] = 0.;
@@ -181,7 +197,7 @@ void overlay_per_sample(string sampleversion = "norm",  bool do_stack=false,bool
       yields[type[t]] = (h_var[i][j][0][t]->GetBinContent(0) + h_var[i][j][0][t]->Integral() +  h_var[i][j][0][t]->GetBinContent(h_var[i][j][0][t]->GetNbinsX() + 1)) ;
       if (type[t] != "ttW")yields["TotalBkg"] += yields[type[t]];
       yields["TotalMC"] += yields[type[t]];
-      cout << type[t] << "\t" << yields[type[t]] << "\t"  << endl;
+      //cout << type[0] << "\t" << yields[type[0]] << "\t"  << endl;
 				
       sprintf(sf_name,"total_%s_%s_%s",variable[j].c_str(),nj_reg[i].c_str(),type[t].c_str());   
 	
@@ -190,42 +206,46 @@ void overlay_per_sample(string sampleversion = "norm",  bool do_stack=false,bool
       else
 	h_var[i][j][0][t]->SetYTitle("Events");  
       leg_type="LP";
-      h_var[i][j][0][t]->GetXaxis()->SetLabelOffset(0.015);
-      h_var[i][j][0][t]->SetXTitle((variable_X[j]).c_str());
-      h_var[i][j+1][0][t]->SetXTitle((variable_X[j]).c_str());
-      h_var[i][j][0][t]->GetYaxis()->SetTitleSize(0.06); 
-      h_var[i][j][0][t]->GetYaxis()->SetTitleOffset(0.7); 
-      h_var[i][j][0][t]->SetMaximum(h_var[i][j][0][t]->GetMaximum()*1.6); //1.6
+      legend[i][j]->AddEntry(h_var[i][j][0][t],(type[0]+"     ").c_str(),"");		//Mean
+      //legend[i][j]->AddEntry(h_var[i][j][0][t],(variable[j]+ "  "+ ytest).c_str(),leg_type.c_str());		
       
-      
-      //h_var[i][j][0][t]->SetAxisRange(0,100,"X"); 
-      h_var[i][j][0][t]->Draw("E1");
-      h_var[i][j][0][t]->Draw("histsame");
-      
-      
-      h_var[i][j+1][0][t]->SetLineColor(color_sample[t+j]);
-      h_var[i][j+1][0][t]->SetMarkerColor(color_sample[t+j]);
-      h_var[i][j+1][0][t]->SetMarkerStyle(20+t);
-      h_var[i][j+1][0][t]->SetLineWidth(2);
-      //h_var[i][j+1][0][t]->SetAxisRange(0,100,"X"); 
-
-      h_var[i][j+1][0][t]->Draw("E1histsame");
+      for(int k=0;k<variable.size();k++){
+	if(k==0){
+	  h_var[i][j][0][t]->GetXaxis()->SetLabelOffset(0.015);
+	  //h_var[i][j][0][t]->SetXTitle((variable_X[j]).c_str());
+	  h_var[i][j][0][t]->SetXTitle("m_{jj}");
+	  //h_var[i][j+1][0][t]->SetXTitle((variable_X[j]).c_str());
+	  h_var[i][j][0][t]->GetYaxis()->SetTitleSize(0.06); 
+	  h_var[i][j][0][t]->GetYaxis()->SetTitleOffset(0.7); 
+	  h_var[i][j][0][t]->SetMaximum(h_var[i][j][0][t]->GetMaximum()*1.6); //1.6
+	  
+	  
+	  //h_var[i][j][0][t]->SetAxisRange(0,100,"X"); 
+	  h_var[i][j][0][t]->Draw("E1");
+	  h_var[i][j][0][t]->Draw("histsame");
+	}
+	h_var[i][j+k][0][t]->SetLineColor(color_sample[j+k]);
+	h_var[i][j+k][0][t]->SetMarkerColor(color_sample[j+k]);
+	h_var[i][j+k][0][t]->SetMarkerStyle(20+k);
+	h_var[i][j+k][0][t]->SetLineWidth(2);
+	//h_var[i][j+1][0][t]->SetAxisRange(0,100,"X"); 
+	
+	h_var[i][j+k][0][t]->Draw("E1histsame");
       //sprintf(ytest,"%0.2f",yields[type[t]]);
       //h_var[i][j][0][t]->SetAxisRange(0,100,"X"); 
       //h_var[i][j+1][0][t]->SetAxisRange(0,100,"X"); 
-      
-      sprintf(ytest,"%0.2f", h_var[i][j][0][t]->GetMean());
-      legend[i][j]->AddEntry(h_var[i][j][0][t],(type[t]+"    Mean ").c_str(),"");		
-      legend[i][j]->AddEntry(h_var[i][j][0][t],(variable[j]+ "  "+ ytest).c_str(),leg_type.c_str());		
-      sprintf(ytest,"%0.2f", h_var[i][j+1][0][t]->GetMean());
-      legend[i][j]->AddEntry(h_var[i][j+1][0][t],(variable[j+1]+ "  "+ ytest).c_str(),leg_type.c_str());		
+	
+	sprintf(ytest,"%0.2f", h_var[i][j+k][0][t]->GetMean());
+	//legend[i][j]->AddEntry(h_var[i][j+k][0][t],(variable[j+1]+ "  "+ ytest).c_str(),leg_type.c_str());
+	legend[i][j]->AddEntry(h_var[i][j+k][0][t],(variable[j+k]).c_str(),leg_type.c_str());
+      }
 
       //
       sprintf(sf_name,"ratio_%s_%s_%s",variable[j].c_str(),nj_reg[i].c_str(),type[t].c_str());   
       h_var[i][j][3][t] = (TH1D*) h_var[i][j][0][t]->Clone(sf_name);
       h_var[i][j][4][t] = (TH1D*) h_var[i][j][0][t]->Clone(sf_name);
-      h_var[i][j][3][t]->Divide(h_var[i][j+1][0][0]);
-      h_var[i][j][4][t]->Divide(h_var[i][j][0][0]);
+      h_var[i][j][3][t]->Divide(h_var[i][j+1][0][t]);
+      h_var[i][j][4][t]->Divide(h_var[i][j][0][t]);
 	  
       h_var[i][j][3][t]->GetXaxis()->SetTitleSize(0.14); 
       h_var[i][j][3][t]->GetYaxis()->SetTitleSize(0.14); 
@@ -254,12 +274,12 @@ void overlay_per_sample(string sampleversion = "norm",  bool do_stack=false,bool
       pad2[i][j]->cd();
 
 
-      h_var[i][j][3][0]->SetMinimum(0.68);
-      h_var[i][j][3][0]->SetMaximum(1.32);
-      //h_var[i][j][3][0]->SetYTitle("QCD/nonQD");
-      h_var[i][j][3][0]->SetYTitle("ratio");
-      h_var[i][j][3][0]->Draw("hist");
-      h_var[i][j][4][0]->Draw("samehist");
+      h_var[i][j][3][t]->SetMinimum(0.68);
+      h_var[i][j][3][t]->SetMaximum(1.32);
+      //h_var[i][j][3][t]->SetYTitle("QCD/nonQD");
+      h_var[i][j][3][t]->SetYTitle("ratio");
+      h_var[i][j][3][t]->Draw("hist");
+      h_var[i][j][4][t]->Draw("samehist");
       pad2[i][j]->Update();
       
       /* for(int t=1;t<type.size();t++){ */

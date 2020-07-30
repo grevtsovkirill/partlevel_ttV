@@ -286,7 +286,7 @@ void cms_atl_comb(bool norm_xs_plots=false)
       else if (!norm_xs_plots) sprintf(norm_name,"n");
       
       sprintf(o_name,"Plots_90_v10_AC_%s/%s.pdf",norm_name,canvas_name);
-      canv[i][j]->Print(o_name);
+      //canv[i][j]->Print(o_name);
       //sprintf(o_name,"Plots_87_acc1_norm/%s.pdf",canvas_name);
       //sprintf(o_name,"Plots_MGvar_1/%s.pdf",canvas_name);      
 

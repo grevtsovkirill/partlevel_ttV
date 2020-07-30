@@ -243,7 +243,7 @@ void plotting(bool norm_xs_plots=false)
       //sprintf(o_name,"Plots_87_acc1_norm/%s.pdf",canvas_name);
       //sprintf(o_name,"Plots_MGvar_1/%s.pdf",canvas_name);
       
-      canv[i][j]->Print(o_name);
+      //canv[i][j]->Print(o_name);
 
       //*/
     }//j loop: variable

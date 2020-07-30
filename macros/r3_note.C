@@ -28,9 +28,13 @@ void r3_note(bool norm_xs_plots=false)
 
   vector<string> region_names={"0#tau_{had} 1#font[52]{b} #geq4#font[52]{j}", "0#tau_{had} #geq2#font[52]{b} #geq4#font[52]{j}","0#tau_{had} 1#font[52]{b} 3#font[52]{j}", "0#tau_{had} #geq2#font[52]{b} 3#font[52]{j}","1#tau_{had} #geq1#font[52]{b} #geq3#font[52]{j}"};//, "0t=3j","0tg4j","otg3g0b"};
 
-  vector<string>  nj_reg={"0"};//
-  //vector<string>  nj_reg={"0","1","2","3","4"};//,"5","6","7"};
-  //vector<string> variable={"nJets","DRll01","lep_Pt_0"};
+  //vector<string>  nj_reg={"0"};//
+  //
+  //vector<string> variable={"nJets","HT_jets"};  vector<string> variable_X={"Number of jets","#font[52]{HT}^{jets} [GeV]"};
+
+
+  //*
+    vector<string>  nj_reg={"0","1","2","3","4"};//,"5","6","7"};
   vector<string> variable={"nJets","DRll01","lep_Pt_0","lep_Pt_1",
 			   "jet_Pt_4","jet_Pt_5","jet_Pt_6",
 			   "Bjet_Pt_0","Bjet_Pt_1",
@@ -48,6 +52,9 @@ void r3_note(bool norm_xs_plots=false)
 			     "1th jet #font[52]{p}_{T} [GeV]","2nd jet #font[52]{p}_{T} [GeV]","3rd jet #font[52]{p}_{T} [GeV]"
 }; //
 
+  //*/
+
+  
   //vector<string> variable={"lep_Eta_0","lep_Eta_1","lep_Phi_0","lep_Phi_1"};
   //*
   //vector<string> type={"Sherpa","MG"}; 
@@ -63,7 +70,7 @@ void r3_note(bool norm_xs_plots=false)
   //Int_t linestyle[8]={1, 7, 1, 3,  4, 2,3,2};
   //*/
 
-  Int_t color_sample[8]={864,594,633,860,868,921,922,625};
+  Int_t color_sample[8]={864,594,633,860,868,921,922,4};//625
   Int_t linestyle[8]={1,7,1,3,3,2,2,1};
   Int_t mstyle[8]={20,24,22,1,1,1,1,1};
 
@@ -91,7 +98,9 @@ void r3_note(bool norm_xs_plots=false)
   cout <<"loop to load histos"<< endl;
   vector<string> type={"ATLAS Sherpa 228","ATLAS aMC@NLO","CMS aMC@NLO FxFx",
 		       "ATLAS Sherpa #mu_{R}0.5#mu_{F}0.5","ATLAS Sherpa #mu_{R}2#mu_{F}2",
-		       "CMS #mu_{R}0.5#mu_{F}0.5","CMS #mu_{R}2#mu_{F}2"};
+		       "CMS #mu_{R}0.5#mu_{F}0.5","CMS #mu_{R}2#mu_{F}2",
+		       //"r27"
+  };
 
   Int_t n_nom_samples = 2;
   Bool_t pdf_nom=false;
@@ -109,7 +118,9 @@ void r3_note(bool norm_xs_plots=false)
   //*/
   vector<string> type_path = {"MUR1_MUF1_PDF261000","_muR010000E+01_muF010000E+01_","dyn=___1_muR=0.10000E_01_muF=0.10000E_01",
 			      "MUR05_MUF05_PDF261000_PSMUR05_PSMUF05","MUR2_MUF2_PDF261000_PSMUR2_PSMUF2",
-			      "dyn=___1_muR=0.50000E_00_muF=0.50000E_00","dyn=___1_muR=0.20000E_01_muF=0.20000E_01"};
+			      "dyn=___1_muR=0.50000E_00_muF=0.50000E_00","dyn=___1_muR=0.20000E_01_muF=0.20000E_01",
+			      //"ttw_ttH"
+  };
   //type_path.push_back("MUR1_MUF1_PDF261000");
   //type_path.push_back("_muR010000E+01_muF010000E+01_");
   //type_path.push_back("MUR1_MUF1_PDF91400");
@@ -121,13 +132,19 @@ void r3_note(bool norm_xs_plots=false)
       type_path.push_back("MUR1_MUF1_PDF914"+to_string(ipdf));
   }
   //*/
-  file[0][0] = TFile::Open("input/r3_2020/v1_full_syst/ttW700000_scalevar.root");
+  //file[0][0] = TFile::Open("input/r3_2020/v1_full_syst/ttW700000_scalevar.root");
+  file[0][0] = TFile::Open("input/r3_2020/v3/ttW700000_scalevar_v3.root");
+      
   file[0][1] = TFile::Open("input/r3_2020/v1_full_syst/ttW410155_xsscalevar.root");
-  file[0][2] = TFile::Open("input/r3_2020/v1_full_syst/ttWCMS.root");
-  file[0][3] = TFile::Open("input/r3_2020/v1_full_syst/ttW700000_scalevar.root");
-  file[0][4] = TFile::Open("input/r3_2020/v1_full_syst/ttW700000_scalevar.root");
-  file[0][5] = TFile::Open("input/r3_2020/v1_full_syst/ttWCMS.root");  
-  file[0][6] = TFile::Open("input/r3_2020/v1_full_syst/ttWCMS.root");
+  //file[0][2] = TFile::Open("input/r3_2020/v1_full_syst/ttWCMS.root");
+  file[0][2] = TFile::Open("input/r3_2020/v1_full_syst/ttWCMS_v2.root");
+  file[0][3] = TFile::Open("input/r3_2020/v3/ttW700000_scalevar_v3.root");
+  file[0][4] = TFile::Open("input/r3_2020/v3/ttW700000_scalevar_v3.root");
+    //  file[0][3] = TFile::Open("input/r3_2020/v1_full_syst/ttW700000_scalevar.root");
+    //file[0][4] = TFile::Open("input/r3_2020/v1_full_syst/ttW700000_scalevar.root");
+  file[0][5] = TFile::Open("input/r3_2020/v1_full_syst/ttWCMS_v2.root");  
+  file[0][6] = TFile::Open("input/r3_2020/v1_full_syst/ttWCMS_v2.root");
+  //file[0][7] = TFile::Open("input/r3_2020/testR3/sh28r27.root");
 
   string do_raw="";
   //if (norm_xs_plots) do_raw = "RAW/" ;
@@ -140,7 +157,9 @@ void r3_note(bool norm_xs_plots=false)
       for(int j=0;j<variable.size();j++){
 		
 	sprintf(sf_name,"%sCMSATLAS_TTW_ttHBCKG/%s_%s[%s]",do_raw.c_str(),variable[j].c_str(),nj_reg[i].c_str(),type_path[t].c_str());
-	  
+	if(t==7)
+	  sprintf(sf_name,"ttw_ttH/%s_%s",variable[j].c_str(),nj_reg[i].c_str());
+
 	h_var[i][j][0][t] = (TH1D *)file[0][t]->Get(sf_name);			  
       
 	/* else if(t>n_nom_samples-1){ */
@@ -278,7 +297,8 @@ void r3_note(bool norm_xs_plots=false)
 	h_var[i][j][0][t]->SetLineWidth(2);
 	h_var[i][j][0][t]->SetLineStyle(linestyle[t]);
 	//if(h_var[i][j][0][t]->Integral()>0){
-	if(t<3) h_var[i][j][0][t]->Draw("E1histsame");
+	//if(t<3)
+	  h_var[i][j][0][t]->Draw("E1histsame");
 	legend[i][j]->AddEntry(h_var[i][j][0][t],(type[t]+ " ").c_str(),"LP");
 	//}//
 	sprintf(sf_name,"ratio_%s_%s_%s",variable[j].c_str(),nj_reg[i].c_str(),type[t].c_str());   
@@ -379,8 +399,8 @@ void r3_note(bool norm_xs_plots=false)
       //sprintf(o_name,"Uncertainty/Plot_s228_gen_s_%s/%s.pdf",norm_name,canvas_name);
       //sprintf(o_name,"Uncertainty/Plot_s228_pdfalpha_%s/%s.pdf",norm_name,canvas_name);
       //sprintf(o_name,"Plots_gen_rivet_12_%s/%s.pdf",norm_name,canvas_name);
-      sprintf(o_name,"P2020/v1scale/r3_v1_%s/%s.pdf",norm_name,canvas_name);
-      //canv[i][j]->Print(o_name);
+      sprintf(o_name,"P2020/v3/r3_v3_%s/%s.pdf",norm_name,canvas_name);
+      canv[i][j]->Print(o_name);
 
       //*/
     }//j loop: variable

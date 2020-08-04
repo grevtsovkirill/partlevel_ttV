@@ -25,15 +25,17 @@ void r3_note(bool norm_xs_plots=false)
   sprintf(text2,"");
   
   TH1D* h_var[10][35][20][50];
+  TGraphAsymmErrors* graph[10][35][20][50];
+  //TGraph* graph[10][35][20][50];
 
   vector<string> region_names={"0#tau_{had} 1#font[52]{b} #geq4#font[52]{j}", "0#tau_{had} #geq2#font[52]{b} #geq4#font[52]{j}","0#tau_{had} 1#font[52]{b} 3#font[52]{j}", "0#tau_{had} #geq2#font[52]{b} 3#font[52]{j}","1#tau_{had} #geq1#font[52]{b} #geq3#font[52]{j}"};//, "0t=3j","0tg4j","otg3g0b"};
 
-  //vector<string>  nj_reg={"0"};//
+  
   //
-  //vector<string> variable={"nJets","HT_jets"};  vector<string> variable_X={"Number of jets","#font[52]{HT}^{jets} [GeV]"};
+  vector<string>  nj_reg={"0"}; vector<string> variable={"nJets","HT_jets","DRll01"};  vector<string> variable_X={"Number of jets","#font[52]{HT}^{jets} [GeV]","DRll01"};
 
 
-  //*
+  /*
     vector<string>  nj_reg={"0","1","2","3","4"};//,"5","6","7"};
   vector<string> variable={"nJets","DRll01","lep_Pt_0","lep_Pt_1",
 			   "jet_Pt_4","jet_Pt_5","jet_Pt_6",
@@ -69,9 +71,9 @@ void r3_note(bool norm_xs_plots=false)
   //                 AS AM cM, Su, Sd
   //Int_t linestyle[8]={1, 7, 1, 3,  4, 2,3,2};
   //*/
-
-  Int_t color_sample[8]={864,594,633,860,868,921,922,4};//625
-  Int_t linestyle[8]={1,7,1,3,3,2,2,1};
+  //                     s  sew m  CMS Avars   Cvars
+  Int_t color_sample[8]={864,4,594,633,860,868,921,922};//625
+  Int_t linestyle[8]={1,7,1,1,3,3,2,2};
   Int_t mstyle[8]={20,24,22,1,1,1,1,1};
 
   //string var_type="Scale ";
@@ -96,7 +98,8 @@ void r3_note(bool norm_xs_plots=false)
 
   Double_t norm_hist=1;
   cout <<"loop to load histos"<< endl;
-  vector<string> type={"ATLAS Sherpa 228","ATLAS aMC@NLO","CMS aMC@NLO FxFx",
+  vector<string> type={"ATLAS Sherpa 228","ATLAS Sherpa+EWK",
+		       "ATLAS aMC@NLO","CMS aMC@NLO FxFx",
 		       "ATLAS Sherpa #mu_{R}0.5#mu_{F}0.5","ATLAS Sherpa #mu_{R}2#mu_{F}2",
 		       "CMS #mu_{R}0.5#mu_{F}0.5","CMS #mu_{R}2#mu_{F}2",
 		       //"r27"
@@ -116,7 +119,8 @@ void r3_note(bool norm_xs_plots=false)
 			    ,"MUR2_MUF2_PDF261000_PSMUR2_PSMUF2"
   };
   //*/
-  vector<string> type_path = {"MUR1_MUF1_PDF261000","_muR010000E+01_muF010000E+01_","dyn=___1_muR=0.10000E_01_muF=0.10000E_01",
+  vector<string> type_path = {"MUR1_MUF1_PDF261000","MUR1_MUF1_PDF261000_ASSEWLO1LO2LO3",
+			      "_muR010000E+01_muF010000E+01_","dyn=___1_muR=0.10000E_01_muF=0.10000E_01",
 			      "MUR05_MUF05_PDF261000_PSMUR05_PSMUF05","MUR2_MUF2_PDF261000_PSMUR2_PSMUF2",
 			      "dyn=___1_muR=0.50000E_00_muF=0.50000E_00","dyn=___1_muR=0.20000E_01_muF=0.20000E_01",
 			      //"ttw_ttH"
@@ -133,17 +137,18 @@ void r3_note(bool norm_xs_plots=false)
   }
   //*/
   //file[0][0] = TFile::Open("input/r3_2020/v1_full_syst/ttW700000_scalevar.root");
-  file[0][0] = TFile::Open("input/r3_2020/v3/ttW700000_scalevar_v3.root");
+  file[0][0] = TFile::Open("input/r3_2020/v3/ttW700000_scalevar_v31.root");
+  file[0][1] = TFile::Open("input/r3_2020/v3/ttW700000_scalevar_v31.root");
       
-  file[0][1] = TFile::Open("input/r3_2020/v1_full_syst/ttW410155_xsscalevar.root");
+  file[0][2] = TFile::Open("input/r3_2020/v1_full_syst/ttW410155_xsscalevar.root");
   //file[0][2] = TFile::Open("input/r3_2020/v1_full_syst/ttWCMS.root");
-  file[0][2] = TFile::Open("input/r3_2020/v1_full_syst/ttWCMS_v2.root");
-  file[0][3] = TFile::Open("input/r3_2020/v3/ttW700000_scalevar_v3.root");
+  file[0][3] = TFile::Open("input/r3_2020/v1_full_syst/ttWCMS_v2.root");
   file[0][4] = TFile::Open("input/r3_2020/v3/ttW700000_scalevar_v3.root");
+  file[0][5] = TFile::Open("input/r3_2020/v3/ttW700000_scalevar_v3.root");
     //  file[0][3] = TFile::Open("input/r3_2020/v1_full_syst/ttW700000_scalevar.root");
     //file[0][4] = TFile::Open("input/r3_2020/v1_full_syst/ttW700000_scalevar.root");
-  file[0][5] = TFile::Open("input/r3_2020/v1_full_syst/ttWCMS_v2.root");  
-  file[0][6] = TFile::Open("input/r3_2020/v1_full_syst/ttWCMS_v2.root");
+  file[0][6] = TFile::Open("input/r3_2020/v1_full_syst/ttWCMS_v2.root");  
+  file[0][7] = TFile::Open("input/r3_2020/v1_full_syst/ttWCMS_v2.root");
   //file[0][7] = TFile::Open("input/r3_2020/testR3/sh28r27.root");
 
   string do_raw="";
@@ -157,7 +162,7 @@ void r3_note(bool norm_xs_plots=false)
       for(int j=0;j<variable.size();j++){
 		
 	sprintf(sf_name,"%sCMSATLAS_TTW_ttHBCKG/%s_%s[%s]",do_raw.c_str(),variable[j].c_str(),nj_reg[i].c_str(),type_path[t].c_str());
-	if(t==7)
+	if(t==8)
 	  sprintf(sf_name,"ttw_ttH/%s_%s",variable[j].c_str(),nj_reg[i].c_str());
 
 	h_var[i][j][0][t] = (TH1D *)file[0][t]->Get(sf_name);			  
@@ -286,7 +291,7 @@ void r3_note(bool norm_xs_plots=false)
 	  h_var[i][j][0][t]->GetYaxis()->SetTitleSize(0.06); 
 	  h_var[i][j][0][t]->GetYaxis()->SetTitleOffset(0.7); 
 	  //h_var[i][j][0][t]->GetXaxis()->SetRangeUser(20,500);
-	  h_var[i][j][0][t]->SetMaximum(h_var[i][j][0][t]->GetMaximum()*1.8);
+	  h_var[i][j][0][t]->SetMaximum(h_var[i][j][0][t]->GetMaximum()*2);
 	  h_var[i][j][0][t]->Draw("E1");
 	}
 	
@@ -297,7 +302,7 @@ void r3_note(bool norm_xs_plots=false)
 	h_var[i][j][0][t]->SetLineWidth(2);
 	h_var[i][j][0][t]->SetLineStyle(linestyle[t]);
 	//if(h_var[i][j][0][t]->Integral()>0){
-	//if(t<3)
+	if(t<4)
 	  h_var[i][j][0][t]->Draw("E1histsame");
 	legend[i][j]->AddEntry(h_var[i][j][0][t],(type[t]+ " ").c_str(),"LP");
 	//}//
@@ -323,8 +328,8 @@ void r3_note(bool norm_xs_plots=false)
 	h_var[i][j][3][t]->SetLineWidth(2);
 
 	//Scale unc
-	h_var[i][j][3][t]->SetMinimum(0.59);
-	h_var[i][j][3][t]->SetMaximum(1.41);
+	h_var[i][j][3][t]->SetMinimum(0.55);
+	h_var[i][j][3][t]->SetMaximum(1.45);
 
 	//PDF unc
 	//h_var[i][j][3][t]->SetMinimum(0.78);
@@ -372,35 +377,91 @@ void r3_note(bool norm_xs_plots=false)
       //h_var[i][j][3][0]->SetYTitle("Ratio to AT");
       h_var[i][j][3][0]->Draw("hist");
       for(int t=1;t<type.size();t++){
-	if(t<3) h_var[i][j][3][t]->SetLineWidth(3);
-	//else if(t>2 &&t<5)	h_var[i][j][0][t]->SetLineWidth(1);
-	else h_var[i][j][3][t]->SetLineWidth(4);
 	h_var[i][j][3][t]->SetLineColor(color_sample[t]);
 	h_var[i][j][3][t]->SetMarkerColor(color_sample[t]);
 	h_var[i][j][3][t]->SetLineStyle(linestyle[t]);
-	h_var[i][j][3][t]->Draw("histsame");
+	if(t<4){
+	  h_var[i][j][3][t]->SetLineWidth(3);
+	  //h_var[i][j][3][t]->Draw("histsame");
+	}
+	//else if(t>2 &&t<5)	h_var[i][j][0][t]->SetLineWidth(1);
+	else{
+	  h_var[i][j][3][t]->SetLineWidth(4);
+	  h_var[i][j][3][t]->Draw("histsame");
+	}
 	
       }
-      /*
-      h_var[i][j][8][0]->Draw("histsame");
-      h_var[i][j][9][0]->Draw("histsame");
-      h_var[i][j][10][0]->Draw("histsame");
-      h_var[i][j][11][0]->Draw("histsame");
+
+      /* h_var[i][j][3][4]->SetFillColor(860); */
+      /* h_var[i][j][3][4]->SetFillStyle(3154); */
+      /* h_var[i][j][3][4]->Draw("histsame"); */
+      /* h_var[i][j][3][5]->SetFillColor(2); */
+      /* h_var[i][j][3][5]->Draw("histsame"); */
+
+      //graph[i][j][3][0] =  new TGraphAsymmErrors( h_var[i][j][3][0] );
+      //graph[i][j][3][0] =  new TGraphAsymmErrors( );
+
+      //*
+      nbinsx = h_var[i][j][0][0]->GetXaxis()->GetNbins();
+      const int gs = nbinsx;
+      cout << "nbinsx="<<gs<<endl;
+      cout << "Hist bin content: "<<endl;
+      Double_t xg[gs];
+      Double_t xlg[gs]; Double_t xhg[gs];   Double_t yg[gs]; Double_t ylg[gs]; Double_t yhg[gs];
+      for(int ib=1; ib<nbinsx+1;ib++){
+	double nom=h_var[i][j][3][0]->GetBinContent(ib);
+	double errUp=h_var[i][j][3][4]->GetBinContent(ib);
+	double errDown=h_var[i][j][3][5]->GetBinContent(ib);
+	double xc=h_var[i][j][0][0]->GetXaxis()->GetBinCenter(ib);
+	double xl = h_var[i][j][0][0]->GetXaxis()->GetBinLowEdge(ib);
+	double xh = h_var[i][j][0][0]->GetXaxis()->GetBinLowEdge(ib)+h_var[i][j][0][0]->GetXaxis()->GetBinWidth(ib);
+	//xg.push_back(h_var[i][j][0][0]->GetXaxis()->GetBinCenter(ib));
+	cout<<h_var[i][j][3][0]->GetBinContent(ib)<< " +  "<<errUp<< " - "<<errDown << ", xc = "<<xc <<"["<<xl<<";"<<xh<<"]" <<endl;
+	xg[ib-1]=xc;
+	xlg[ib-1]=xl;
+	xhg[ib-1]=xh;
+	yg[ib-1]=nom;
+
+	if( (nom-errUp) <0){ 
+	  yhg[ib-1]=abs(nom-errUp);
+	  ylg[ib-1]=abs(nom-errDown);
+	}
+	else{
+	  ylg[ib-1]=abs(nom-errUp);
+	  yhg[ib-1]=abs(nom-errDown);
+	}
+
+	//*
+	if (yg[ib-1]==0){
+	  yg[ib-1]=1;
+	  //yhg[ib-1]=1e-1;	  ylg[ib-1]=1e-1;
+	}
+	//*/
+	//graph[i][j][3][0]->SetPointEYhigh(i,nom-errUp);
+	//graph[i][j][3][0]->SetPointEYlow(i,nom-errDown);
+	//graph[i][j][3][0]->SetPoint(ib, h_var[i][j][0][0]->GetXaxis()->GetBinCenter(ib),errUp);
+	//graph[i][j][3][0]->SetPoint(nbinsx+ib,h_var[i][j][0][0]->GetXaxis()->GetBinCenter(nbinsx-ib-1),h_var[i][j][3][5]->GetBinContent(nbinsx-ib-1));
+	//graph[i][j][3][0]->SetPointError(ib,0,0,errUp,errDown);
+      }
+
+      graph[i][j][3][0] = new TGraphAsymmErrors(gs,xg,yg,xlg,xhg,ylg,yhg);
+      //*
+      graph[i][j][3][0]->SetFillStyle(3154);
+      graph[i][j][3][0]->SetMarkerSize(0);
+      graph[i][j][3][0]->SetFillColor( 6 );
+      graph[i][j][3][0]->SetLineColor(6);
+      //graph[i][j][3][0]->Draw("a2"); //same
+      graph[i][j][3][0]->Draw("p"); //same
+      cout << "graph[i][j][3][0]->Print(all): "<<endl;
+      graph[i][j][3][0]->Print("all");
       //*/
-      //      pad1[i][j]->RedrawAxis();
-      //pad1[i][j]->Update();
-      //pad1[i][j]->RedrawAxis();
+
 
       if (norm_xs_plots) sprintf(norm_name,"f");
       else if (!norm_xs_plots) sprintf(norm_name,"n");
       
-      //sprintf(o_name,"Plots_rivet_CMS_s228_12_%s/%s.pdf",norm_name,canvas_name);
-      //sprintf(o_name,"Plots_rivet_CMS_s228_20_%s/%s.pdf",norm_name,canvas_name);
-      //sprintf(o_name,"Uncertainty/Plot_s228_gen_s_%s/%s.pdf",norm_name,canvas_name);
-      //sprintf(o_name,"Uncertainty/Plot_s228_pdfalpha_%s/%s.pdf",norm_name,canvas_name);
-      //sprintf(o_name,"Plots_gen_rivet_12_%s/%s.pdf",norm_name,canvas_name);
       sprintf(o_name,"P2020/v3/r3_v3_%s/%s.pdf",norm_name,canvas_name);
-      canv[i][j]->Print(o_name);
+      //canv[i][j]->Print(o_name);
 
       //*/
     }//j loop: variable

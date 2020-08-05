@@ -32,7 +32,8 @@ void r3_note(bool norm_xs_plots=false)
 
   
   //
-  vector<string>  nj_reg={"0"}; vector<string> variable={"nJets","HT_jets","DRll01"};  vector<string> variable_X={"Number of jets","#font[52]{HT}^{jets} [GeV]","DRll01"};
+  //vector<string>  nj_reg={"0"}; vector<string> variable={"nJets","HT_jets","DRll01"};  vector<string> variable_X={"Number of jets","#font[52]{HT}^{jets} [GeV]","DRll01"};
+  vector<string>  nj_reg={"0"}; vector<string> variable={"nJets"};  vector<string> variable_X={"Number of jets"};
 
 
   /*
@@ -413,8 +414,8 @@ void r3_note(bool norm_xs_plots=false)
 	double errUp=h_var[i][j][3][4]->GetBinContent(ib);
 	double errDown=h_var[i][j][3][5]->GetBinContent(ib);
 	double xc=h_var[i][j][0][0]->GetXaxis()->GetBinCenter(ib);
-	double xl = h_var[i][j][0][0]->GetXaxis()->GetBinLowEdge(ib);
-	double xh = h_var[i][j][0][0]->GetXaxis()->GetBinLowEdge(ib)+h_var[i][j][0][0]->GetXaxis()->GetBinWidth(ib);
+	double xl = h_var[i][j][0][0]->GetXaxis()->GetBinWidth(ib)/2;
+	double xh = h_var[i][j][0][0]->GetXaxis()->GetBinWidth(ib)/2;
 	//xg.push_back(h_var[i][j][0][0]->GetXaxis()->GetBinCenter(ib));
 	cout<<h_var[i][j][3][0]->GetBinContent(ib)<< " +  "<<errUp<< " - "<<errDown << ", xc = "<<xc <<"["<<xl<<";"<<xh<<"]" <<endl;
 	xg[ib-1]=xc;
@@ -444,8 +445,13 @@ void r3_note(bool norm_xs_plots=false)
 	//graph[i][j][3][0]->SetPointError(ib,0,0,errUp,errDown);
       }
 
-      graph[i][j][3][0] = new TGraphAsymmErrors(gs,xg,yg,xlg,xhg,ylg,yhg);
-      //*
+      //graph[i][j][3][0] = new TGraphAsymmErrors(gs,xg,yg,xlg,xhg,ylg,yhg);
+      auto gae = new TGraphAsymmErrors(gs,xg,yg,xlg,xhg,ylg,yhg);
+      gae->SetFillColor(6);
+      //gae->SetFillStyle(3001);
+      gae->SetFillStyle(3154);
+      gae->Draw("2, same");
+      /*
       graph[i][j][3][0]->SetFillStyle(3154);
       graph[i][j][3][0]->SetMarkerSize(0);
       graph[i][j][3][0]->SetFillColor( 6 );

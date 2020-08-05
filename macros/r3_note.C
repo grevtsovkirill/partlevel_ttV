@@ -9,6 +9,44 @@
 #include "/Users/grevtsov/Documents/working_files/AtlasStyle/AtlasUtils.C"
 
 void ATLASLabel(Double_t x,Double_t y,const char* text="",Color_t color=1, Double_t tsize=0.05);
+TGraphAsymmErrors * band(TH1D *h_var,TH1D *h_var_up, TH1D * h_var_down ){
+
+  double nbinsx = h_var->GetXaxis()->GetNbins();
+  const int gs = nbinsx;
+  cout << "nbinsx="<<gs<<endl;
+  cout << "Hist bin content: "<<endl;
+  Double_t xg[gs];
+  Double_t xlg[gs]; Double_t xhg[gs];   Double_t yg[gs]; Double_t ylg[gs]; Double_t yhg[gs];
+  for(int ib=1; ib<nbinsx+1;ib++){
+    double nom=h_var->GetBinContent(ib);
+    double errUp=h_var_up->GetBinContent(ib);
+    double errDown=h_var_down->GetBinContent(ib);
+    double xc=h_var->GetXaxis()->GetBinCenter(ib);
+    double xl = h_var->GetXaxis()->GetBinWidth(ib)/2;
+    double xh = h_var->GetXaxis()->GetBinWidth(ib)/2;
+    cout<<h_var->GetBinContent(ib)<< " +  "<<errUp<< " - "<<errDown << ", xc = "<<xc <<"["<<xl<<";"<<xh<<"]" <<endl;
+    xg[ib-1]=xc;
+    xlg[ib-1]=xl;
+    xhg[ib-1]=xh;
+    yg[ib-1]=nom;
+
+    if( (nom-errUp) <0){ 
+      yhg[ib-1]=abs(nom-errUp);
+      ylg[ib-1]=abs(nom-errDown);
+    }
+    else{
+      ylg[ib-1]=abs(nom-errUp);
+      yhg[ib-1]=abs(nom-errDown);
+    }
+    if (yg[ib-1]==0){
+      yg[ib-1]=1;
+    }
+  }
+  
+  auto gae = new TGraphAsymmErrors(gs,xg,yg,xlg,xhg,ylg,yhg);
+  return gae;
+}
+
 void r3_note(bool norm_xs_plots=false)
 {
 
@@ -303,9 +341,10 @@ void r3_note(bool norm_xs_plots=false)
 	h_var[i][j][0][t]->SetLineWidth(2);
 	h_var[i][j][0][t]->SetLineStyle(linestyle[t]);
 	//if(h_var[i][j][0][t]->Integral()>0){
-	if(t<4)
+	if(t<4){
 	  h_var[i][j][0][t]->Draw("E1histsame");
-	legend[i][j]->AddEntry(h_var[i][j][0][t],(type[t]+ " ").c_str(),"LP");
+	  legend[i][j]->AddEntry(h_var[i][j][0][t],(type[t]+ " ").c_str(),"LP");
+	}
 	//}//
 	sprintf(sf_name,"ratio_%s_%s_%s",variable[j].c_str(),nj_reg[i].c_str(),type[t].c_str());   
 	cout<< "ratio name "<< sf_name<< ", t's bins = "<< h_var[i][j][0][t]->GetXaxis()->GetNbins()<< ", 0's bins = "<< h_var[i][j][0][0]->GetXaxis()->GetNbins()<< endl;
@@ -383,74 +422,30 @@ void r3_note(bool norm_xs_plots=false)
 	h_var[i][j][3][t]->SetLineStyle(linestyle[t]);
 	if(t<4){
 	  h_var[i][j][3][t]->SetLineWidth(3);
-	  //h_var[i][j][3][t]->Draw("histsame");
+	  h_var[i][j][3][t]->Draw("histsame");
 	}
 	//else if(t>2 &&t<5)	h_var[i][j][0][t]->SetLineWidth(1);
 	else{
 	  h_var[i][j][3][t]->SetLineWidth(4);
-	  h_var[i][j][3][t]->Draw("histsame");
+	  //h_var[i][j][3][t]->Draw("histsame");
 	}
 	
       }
 
-      /* h_var[i][j][3][4]->SetFillColor(860); */
-      /* h_var[i][j][3][4]->SetFillStyle(3154); */
-      /* h_var[i][j][3][4]->Draw("histsame"); */
-      /* h_var[i][j][3][5]->SetFillColor(2); */
-      /* h_var[i][j][3][5]->Draw("histsame"); */
+      auto gr = band(h_var[i][j][3][0],h_var[i][j][3][4],h_var[i][j][3][5]);
+      gr->SetLineColor(0);      gr->SetFillColor(868);
+      gr->SetFillStyle(3154);
+      gr->Print("all"); 
+      gr->Draw("2, same");
+      legend[i][j]->AddEntry(gr,"ATLAS scale variation ","F");
 
-      //graph[i][j][3][0] =  new TGraphAsymmErrors( h_var[i][j][3][0] );
-      //graph[i][j][3][0] =  new TGraphAsymmErrors( );
+      auto grCMS = band(h_var[i][j][3][3],h_var[i][j][3][6],h_var[i][j][3][7]);
+      grCMS->SetLineColor(0);      grCMS->SetFillColor(2);
+      grCMS->SetFillStyle(3154);
+      grCMS->Print("all"); 
+      grCMS->Draw("2, same");
+      legend[i][j]->AddEntry(grCMS,"CMS scale variation ","F");
 
-      //*
-      nbinsx = h_var[i][j][0][0]->GetXaxis()->GetNbins();
-      const int gs = nbinsx;
-      cout << "nbinsx="<<gs<<endl;
-      cout << "Hist bin content: "<<endl;
-      Double_t xg[gs];
-      Double_t xlg[gs]; Double_t xhg[gs];   Double_t yg[gs]; Double_t ylg[gs]; Double_t yhg[gs];
-      for(int ib=1; ib<nbinsx+1;ib++){
-	double nom=h_var[i][j][3][0]->GetBinContent(ib);
-	double errUp=h_var[i][j][3][4]->GetBinContent(ib);
-	double errDown=h_var[i][j][3][5]->GetBinContent(ib);
-	double xc=h_var[i][j][0][0]->GetXaxis()->GetBinCenter(ib);
-	double xl = h_var[i][j][0][0]->GetXaxis()->GetBinWidth(ib)/2;
-	double xh = h_var[i][j][0][0]->GetXaxis()->GetBinWidth(ib)/2;
-	//xg.push_back(h_var[i][j][0][0]->GetXaxis()->GetBinCenter(ib));
-	cout<<h_var[i][j][3][0]->GetBinContent(ib)<< " +  "<<errUp<< " - "<<errDown << ", xc = "<<xc <<"["<<xl<<";"<<xh<<"]" <<endl;
-	xg[ib-1]=xc;
-	xlg[ib-1]=xl;
-	xhg[ib-1]=xh;
-	yg[ib-1]=nom;
-
-	if( (nom-errUp) <0){ 
-	  yhg[ib-1]=abs(nom-errUp);
-	  ylg[ib-1]=abs(nom-errDown);
-	}
-	else{
-	  ylg[ib-1]=abs(nom-errUp);
-	  yhg[ib-1]=abs(nom-errDown);
-	}
-
-	//*
-	if (yg[ib-1]==0){
-	  yg[ib-1]=1;
-	  //yhg[ib-1]=1e-1;	  ylg[ib-1]=1e-1;
-	}
-	//*/
-	//graph[i][j][3][0]->SetPointEYhigh(i,nom-errUp);
-	//graph[i][j][3][0]->SetPointEYlow(i,nom-errDown);
-	//graph[i][j][3][0]->SetPoint(ib, h_var[i][j][0][0]->GetXaxis()->GetBinCenter(ib),errUp);
-	//graph[i][j][3][0]->SetPoint(nbinsx+ib,h_var[i][j][0][0]->GetXaxis()->GetBinCenter(nbinsx-ib-1),h_var[i][j][3][5]->GetBinContent(nbinsx-ib-1));
-	//graph[i][j][3][0]->SetPointError(ib,0,0,errUp,errDown);
-      }
-
-      //graph[i][j][3][0] = new TGraphAsymmErrors(gs,xg,yg,xlg,xhg,ylg,yhg);
-      auto gae = new TGraphAsymmErrors(gs,xg,yg,xlg,xhg,ylg,yhg);
-      gae->SetFillColor(6);
-      //gae->SetFillStyle(3001);
-      gae->SetFillStyle(3154);
-      gae->Draw("2, same");
       /*
       graph[i][j][3][0]->SetFillStyle(3154);
       graph[i][j][3][0]->SetMarkerSize(0);

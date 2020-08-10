@@ -111,9 +111,9 @@ void r3_note(bool norm_xs_plots=false)
   //Int_t linestyle[8]={1, 7, 1, 3,  4, 2,3,2};
   //*/
   //                     s  sew m  CMS Avars   Cvars
-  Int_t color_sample[8]={864,4,594,633,860,868,921,922};//625
-  Int_t linestyle[8]={1,7,1,1,3,3,2,2};
-  Int_t mstyle[8]={20,24,22,1,1,1,1,1};
+  Int_t color_sample[10]={864,4,594,633,860,868,921,922,860,860};//625
+  Int_t linestyle[10]={1,7,1,1,3,3,2,2,2,2};
+  Int_t mstyle[10]={20,24,22,1,1,1,1,1,1,1};
 
   //string var_type="Scale ";
   string var_type="PDF ";
@@ -128,10 +128,7 @@ void r3_note(bool norm_xs_plots=false)
   TPad * pad1[100][100];
   TPad * pad2[100][100];
   char canvas_name[1000];char p1_name[1000];  char p2_name[1000]; char o_name[1000];
-  int rebin_val=1;
 
-  Double_t xbins[] = {0,10,20,25,30,33,35,37,40,43,50,60};
-  Int_t  binnum = sizeof(xbins)/sizeof(Double_t) - 1; 
   string base_name="input/Res";  
   string file_name;
 
@@ -141,6 +138,7 @@ void r3_note(bool norm_xs_plots=false)
 		       "ATLAS aMC@NLO","CMS aMC@NLO FxFx",
 		       "ATLAS Sherpa #mu_{R}0.5#mu_{F}0.5","ATLAS Sherpa #mu_{R}2#mu_{F}2",
 		       "CMS #mu_{R}0.5#mu_{F}0.5","CMS #mu_{R}2#mu_{F}2",
+		       "AME","aME"
 		       //"r27"
   };
 
@@ -162,6 +160,8 @@ void r3_note(bool norm_xs_plots=false)
 			      "_muR010000E+01_muF010000E+01_","dyn=___1_muR=0.10000E_01_muF=0.10000E_01",
 			      "MUR05_MUF05_PDF261000_PSMUR05_PSMUF05","MUR2_MUF2_PDF261000_PSMUR2_PSMUF2",
 			      "dyn=___1_muR=0.50000E_00_muF=0.50000E_00","dyn=___1_muR=0.20000E_01_muF=0.20000E_01",
+			      "ME_ONLY_MUR05_MUF05_PDF261000_PSMUR05_PSMUF05","ME_ONLY_MUR2_MUF2_PDF261000_PSMUR2_PSMUF2",
+
 			      //"ttw_ttH"
   };
   //type_path.push_back("MUR1_MUF1_PDF261000");
@@ -176,19 +176,22 @@ void r3_note(bool norm_xs_plots=false)
   }
   //*/
   //file[0][0] = TFile::Open("input/r3_2020/v1_full_syst/ttW700000_scalevar.root");
-  file[0][0] = TFile::Open("input/r3_2020/v3/ttW700000_scalevar_v31.root");
-  file[0][1] = TFile::Open("input/r3_2020/v3/ttW700000_scalevar_v31.root");
+  file[0][0] = TFile::Open("input/r3_2020/v3/ttW700000_scalevar_v32.root");
+  file[0][1] = TFile::Open("input/r3_2020/v3/ttW700000_scalevar_v32.root");
       
-  file[0][2] = TFile::Open("input/r3_2020/v1_full_syst/ttW410155_xsscalevar.root");
+  //file[0][2] = TFile::Open("input/r3_2020/v1_full_syst/ttW410155_xsscalevar.root");
+  file[0][2] = TFile::Open("input/r3_2020/v3/ttW410155_scalevar_v32.root");
   //file[0][2] = TFile::Open("input/r3_2020/v1_full_syst/ttWCMS.root");
   file[0][3] = TFile::Open("input/r3_2020/v1_full_syst/ttWCMS_v2.root");
-  file[0][4] = TFile::Open("input/r3_2020/v3/ttW700000_scalevar_v3.root");
-  file[0][5] = TFile::Open("input/r3_2020/v3/ttW700000_scalevar_v3.root");
+  file[0][4] = TFile::Open("input/r3_2020/v3/ttW700000_scalevar_v32.root");
+  file[0][5] = TFile::Open("input/r3_2020/v3/ttW700000_scalevar_v32.root");
     //  file[0][3] = TFile::Open("input/r3_2020/v1_full_syst/ttW700000_scalevar.root");
     //file[0][4] = TFile::Open("input/r3_2020/v1_full_syst/ttW700000_scalevar.root");
   file[0][6] = TFile::Open("input/r3_2020/v1_full_syst/ttWCMS_v2.root");  
   file[0][7] = TFile::Open("input/r3_2020/v1_full_syst/ttWCMS_v2.root");
   //file[0][7] = TFile::Open("input/r3_2020/testR3/sh28r27.root");
+  file[0][8] = TFile::Open("input/r3_2020/v3/ttW700000_scalevar_v32.root");
+  file[0][9] = TFile::Open("input/r3_2020/v3/ttW700000_scalevar_v32.root");
 
   string do_raw="";
   //if (norm_xs_plots) do_raw = "RAW/" ;
@@ -201,8 +204,8 @@ void r3_note(bool norm_xs_plots=false)
       for(int j=0;j<variable.size();j++){
 		
 	sprintf(sf_name,"%sCMSATLAS_TTW_ttHBCKG/%s_%s[%s]",do_raw.c_str(),variable[j].c_str(),nj_reg[i].c_str(),type_path[t].c_str());
-	if(t==8)
-	  sprintf(sf_name,"ttw_ttH/%s_%s",variable[j].c_str(),nj_reg[i].c_str());
+	//if(t==8)
+	//  sprintf(sf_name,"ttw_ttH/%s_%s",variable[j].c_str(),nj_reg[i].c_str());
 
 	h_var[i][j][0][t] = (TH1D *)file[0][t]->Get(sf_name);			  
       
@@ -433,18 +436,29 @@ void r3_note(bool norm_xs_plots=false)
       }
 
       auto gr = band(h_var[i][j][3][0],h_var[i][j][3][4],h_var[i][j][3][5]);
-      gr->SetLineColor(0);      gr->SetFillColor(868);
-      gr->SetFillStyle(3154);
+      gr->SetLineColor(0);
+      //gr->SetFillColor(868);
+      //gr->SetFillStyle(3004); //3154
+      gr->SetFillColorAlpha(868, 0.35);
       gr->Print("all"); 
       gr->Draw("2, same");
-      legend[i][j]->AddEntry(gr,"ATLAS scale variation ","F");
+      legend[i][j]->AddEntry(gr,"ATLAS scale variation ME+PS ","F");
 
       auto grCMS = band(h_var[i][j][3][3],h_var[i][j][3][6],h_var[i][j][3][7]);
-      grCMS->SetLineColor(0);      grCMS->SetFillColor(2);
-      grCMS->SetFillStyle(3154);
+      grCMS->SetLineColor(0);
+      //grCMS->SetFillColor(2);
+      //grCMS->SetFillStyle(3006);
+      grCMS->SetFillColorAlpha(2, 0.35);
       grCMS->Print("all"); 
       grCMS->Draw("2, same");
       legend[i][j]->AddEntry(grCMS,"CMS scale variation ","F");
+
+      auto grME = band(h_var[i][j][3][0],h_var[i][j][3][8],h_var[i][j][3][9]);
+      grME->SetLineColor(0);      grME->SetFillColor(922);
+      grME->SetFillStyle(3005);
+      grME->Print("all"); 
+      grME->Draw("2, same");
+      legend[i][j]->AddEntry(grME,"ATLAS scale variation ME-only  ","F");
 
       /*
       graph[i][j][3][0]->SetFillStyle(3154);

@@ -143,7 +143,8 @@ void r3_note_syst(bool norm_xs_plots=false)
     //file_name=base_name+"_"+type[t]+".root";
     //file[0][t] = TFile::Open("input/r3_2020/v1_full_syst/ttW700000_scalevar.root");
     //file[0][t] = TFile::Open("input/r3_2020/v2_fixweights/ttW700000_scalevar_v2.root");
-    file[0][t] = TFile::Open("input/r3_2020/v3/ttW700000_scalevar_v3.root");
+    //file[0][t] = TFile::Open("input/r3_2020/v3/ttW700000_scalevar_v3.root");
+    file[0][t] = TFile::Open("input/r3_2020/v3/ttW700000_scalevar_v32.root");
     //file[0][t] = TFile::Open("input/r3_2020/testR3/sh28r27.root");
 
     for(int i=0;i<nj_reg.size();i++){
@@ -316,14 +317,14 @@ void r3_note_syst(bool norm_xs_plots=false)
 	if(norm_xs_plots){
 	  //h_var[i][j][3][t]->SetMinimum(0.78);
 	  //h_var[i][j][3][t]->SetMaximum(1.22);
-	  h_var[i][j][3][t]->SetMinimum(0.68);
-	  h_var[i][j][3][t]->SetMaximum(1.32);
+	  h_var[i][j][3][t]->SetMinimum(0.62);
+	  h_var[i][j][3][t]->SetMaximum(1.38);
 	}
 	else{
 	  //h_var[i][j][3][t]->SetMinimum(0.95);
 	  //h_var[i][j][3][t]->SetMaximum(1.05);
-	  h_var[i][j][3][t]->SetMinimum(0.91);
-	  h_var[i][j][3][t]->SetMaximum(1.09);
+	  h_var[i][j][3][t]->SetMinimum(0.89);
+	  h_var[i][j][3][t]->SetMaximum(1.11);
 	}
 	//For comparison Gen-Rivet
 	//h_var[i][j][3][t]->SetMinimum(0.91);
@@ -398,9 +399,9 @@ void r3_note_syst(bool norm_xs_plots=false)
       //
       //sprintf(o_name,"P2020/v1scale/syst/r3_v1_%s/%s.pdf",norm_name,canvas_name);
       //sprintf(o_name,"P2020/v2scale/syst/r3_v2_%s/%s.pdf",norm_name,canvas_name);
-      sprintf(o_name,"P2020/v3/syst/r3_v3_%s/%s.pdf",norm_name,canvas_name);
+      sprintf(o_name,"P2020/v3/syst/r3_v32_%s/%s.pdf",norm_name,canvas_name);
       //sprintf(o_name,"P2020/v1scale/syst/r27_v1_%s/%s.pdf",norm_name,canvas_name);
-      //canv[i][j]->Print(o_name);	
+      canv[i][j]->Print(o_name);	
 
       //*/
     }//j loop: variable

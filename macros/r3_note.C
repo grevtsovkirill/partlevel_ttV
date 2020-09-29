@@ -53,7 +53,7 @@ void r3_note(bool norm_xs_plots=false)
   gROOT->Reset();
   SetAtlasStyle();
 
-  TFile *file[10][15];
+  TFile *file[10][20];
   //file[2] = TFile::Open("Res_ttW.root");
   TLatex latex2; latex2.SetTextSize(0.06); latex2.SetNDC();
   char text[1000];  char text1[1000];  char text2[1000]; char norm_name[1000];
@@ -71,6 +71,7 @@ void r3_note(bool norm_xs_plots=false)
   
   //
   //vector<string>  nj_reg={"0"}; vector<string> variable={"nJets","HT_jets","DRll01"};  vector<string> variable_X={"Number of jets","#font[52]{HT}^{jets} [GeV]","DRll01"};
+  //
   //vector<string>  nj_reg={"0"}; vector<string> variable={"nJets"};  vector<string> variable_X={"Number of jets"};
 
 
@@ -111,9 +112,9 @@ void r3_note(bool norm_xs_plots=false)
   //Int_t linestyle[8]={1, 7, 1, 3,  4, 2,3,2};
   //*/
   //                     s  sew m  CMS Avars   Cvars
-  Int_t color_sample[10]={864,4,594,633,860,868,921,922,860,860};//625
-  Int_t linestyle[10]={1,7,1,1,3,3,2,2,2,2};
-  Int_t mstyle[10]={20,24,22,1,1,1,1,1,1,1};
+  Int_t color_sample[15]={864,4,594,633,860,868,921,922,860,860,1,1,616,1,1};//625
+  Int_t linestyle[15]={1,7,1,1,3,3,2,2,2,2,1,1,1,1,1};
+  Int_t mstyle[15]={20,24,22,1,1,1,1,1,1,1,1,1,1,1,1};
 
   //string var_type="Scale ";
   string var_type="PDF ";
@@ -134,12 +135,14 @@ void r3_note(bool norm_xs_plots=false)
 
   Double_t norm_hist=1;
   cout <<"loop to load histos"<< endl;
-  vector<string> type={"ATLAS Sherpa 228","ATLAS Sherpa+EWK",
+  vector<string> type={"ATLAS Sherpa 228","ATLAS Sherpa 228 EWK",
 		       "ATLAS aMC@NLO","CMS aMC@NLO FxFx",
 		       "ATLAS Sherpa #mu_{R}0.5#mu_{F}0.5","ATLAS Sherpa #mu_{R}2#mu_{F}2",
 		       "CMS #mu_{R}0.5#mu_{F}0.5","CMS #mu_{R}2#mu_{F}2",
 		       "AME","aME",
-		       "m05","m2"
+		       "m05","m2",
+		       //"A aMC FxFx",
+		       //"A m FxFx 05","A m FxFx 2"
 		       //"r27"
   };
 
@@ -163,6 +166,10 @@ void r3_note(bool norm_xs_plots=false)
 			      "dyn=___1_muR=0.50000E_00_muF=0.50000E_00","dyn=___1_muR=0.20000E_01_muF=0.20000E_01",
 			      "ME_ONLY_MUR05_MUF05_PDF261000_PSMUR05_PSMUF05","ME_ONLY_MUR2_MUF2_PDF261000_PSMUR2_PSMUF2",
 			      "_muR050000E+00_muF050000E+00_","_muR020000E+01_muF020000E+01_",
+			      "_dyn__-1_muR010000E+01_muF010000E+01_",
+			      "_dyn__-1_muR050000E+00_muF050000E+00_","_dyn__-1_muR020000E+01_muF020000E+01_",
+
+
 			      //"ttw_ttH"
   };
   //type_path.push_back("MUR1_MUF1_PDF261000");
@@ -195,6 +202,9 @@ void r3_note(bool norm_xs_plots=false)
   file[0][9] = TFile::Open("input/r3_2020/v3/ttW700000_scalevar_v32.root");
   file[0][10] = TFile::Open("input/r3_2020/v3/ttW410155_scalevar_v32.root");
   file[0][11] = TFile::Open("input/r3_2020/v3/ttW410155_scalevar_v32.root");
+  file[0][12] = TFile::Open("input/r3_2020/v3/ttWFXFX_scalevar_v32.root");
+  file[0][13] = TFile::Open("input/r3_2020/v3/ttWFXFX_scalevar_v32.root");
+  file[0][14] = TFile::Open("input/r3_2020/v3/ttWFXFX_scalevar_v32.root");
 
   string do_raw="";
   //if (norm_xs_plots) do_raw = "RAW/" ;
@@ -275,7 +285,7 @@ void r3_note(bool norm_xs_plots=false)
       pad1[i][j]->cd();             
 
       //legend[i][j] = new TLegend(0.6,0.6,0.9,0.9);
-      legend[i][j] = new TLegend(0.5,0.6,0.9,0.9);
+      legend[i][j] = new TLegend(0.48,0.5,0.89,0.9);
       legend[i][j]->SetTextFont(42);legend[i][j]->SetFillColor(0);  legend[i][j]->SetBorderSize(0); legend[i][j]->SetFillStyle(0);  legend[i][j]->SetTextSize(0.05);
       
 
@@ -337,7 +347,7 @@ void r3_note(bool norm_xs_plots=false)
 	  h_var[i][j][0][t]->GetYaxis()->SetTitleSize(0.06); 
 	  h_var[i][j][0][t]->GetYaxis()->SetTitleOffset(0.7); 
 	  //h_var[i][j][0][t]->GetXaxis()->SetRangeUser(20,500);
-	  h_var[i][j][0][t]->SetMaximum(h_var[i][j][0][t]->GetMaximum()*2);
+	  h_var[i][j][0][t]->SetMaximum(h_var[i][j][0][t]->GetMaximum()*2.4);
 	  h_var[i][j][0][t]->Draw("E1");
 	}
 	
@@ -348,7 +358,7 @@ void r3_note(bool norm_xs_plots=false)
 	h_var[i][j][0][t]->SetLineWidth(2);
 	h_var[i][j][0][t]->SetLineStyle(linestyle[t]);
 	//if(h_var[i][j][0][t]->Integral()>0){
-	if(t<4){
+	if(t<4 || t==12){
 	  h_var[i][j][0][t]->Draw("E1histsame");
 	  legend[i][j]->AddEntry(h_var[i][j][0][t],(type[t]+ " ").c_str(),"LP");
 	}
@@ -412,7 +422,7 @@ void r3_note(bool norm_xs_plots=false)
       
       //ATLASLabel(0.18,0.87,atl_lable,1,0.065); 
       latex2.DrawLatex(0.18, 0.87, "ATLAS+CMS Simulation");
-      latex2.DrawLatex(0.18, 0.80, "For LHCXSWG");
+      latex2.DrawLatex(0.18, 0.80, "LHC Higgs WG");
       latex2.DrawLatex(0.18, 0.73, text1);  
       latex2.DrawLatex(0.18, 0.66, text2); //latex2.DrawLatex(0.20, 0.7, "Data");
       legend[i][j]->Draw("same");
@@ -427,7 +437,7 @@ void r3_note(bool norm_xs_plots=false)
 	h_var[i][j][3][t]->SetLineColor(color_sample[t]);
 	h_var[i][j][3][t]->SetMarkerColor(color_sample[t]);
 	h_var[i][j][3][t]->SetLineStyle(linestyle[t]);
-	if(t<4){
+	if(t<4 || t==12){
 	  h_var[i][j][3][t]->SetLineWidth(3);
 	  h_var[i][j][3][t]->Draw("histsame");
 	}
@@ -447,11 +457,12 @@ void r3_note(bool norm_xs_plots=false)
       gr->SetFillColorAlpha(868, 0.35);
       gr->Print("all"); 
       gr->Draw("2, same");
-      legend[i][j]->AddEntry(gr,"ATLAS scale variation ME+PS ","F");
+      legend[i][j]->AddEntry(gr,"ATLAS Sherpa scale var ME+PS ","F");
 
 
       cout << " ==========  CMS aMC  =========== "<<'\n'<<endl;
 
+      //*
       auto grCMS = band(h_var[i][j][3][3],h_var[i][j][3][6],h_var[i][j][3][7]);
       grCMS->SetLineColor(0);
       //grCMS->SetFillColor(2);
@@ -460,7 +471,8 @@ void r3_note(bool norm_xs_plots=false)
       grCMS->Print("all"); 
       grCMS->Draw("2, same");
       legend[i][j]->AddEntry(grCMS,"CMS scale variation ","F");
-
+      //*/
+      
       /*
       cout << " ==========  sherpa MEonly  =========== "<<'\n'<<endl;
       auto grME = band(h_var[i][j][3][0],h_var[i][j][3][8],h_var[i][j][3][9]);
@@ -469,8 +481,9 @@ void r3_note(bool norm_xs_plots=false)
       grME->Print("all"); 
       grME->Draw("2, same");
       legend[i][j]->AddEntry(grME,"ATLAS scale variation ME-only  ","F");
+      //*/
 
-
+      /*
       cout << " ==========  atlas amc  =========== "<<'\n'<<endl; 
       auto grMG = band(h_var[i][j][3][2],h_var[i][j][3][10],h_var[i][j][3][11]);
       grMG->SetLineColor(0);      grMG->SetFillColor(594);
@@ -479,13 +492,23 @@ void r3_note(bool norm_xs_plots=false)
       grMG->Draw("2, same");
       legend[i][j]->AddEntry(grMG,"ATLAS aMC@NLO scale variation  ","F");
 
+      cout << " ==========  atlas amc FxFx  =========== "<<'\n'<<endl; 
+      auto grMGfxfx = band(h_var[i][j][3][12],h_var[i][j][3][13],h_var[i][j][3][14]);
+      grMGfxfx->SetLineColor(0);      grMGfxfx->SetFillColor(616);
+      grMGfxfx->SetFillStyle(3354);
+      grMGfxfx->Print("all"); 
+      grMGfxfx->Draw("2, same");
+      legend[i][j]->AddEntry(grMGfxfx,"ATLAS aMC@NLO FxFx scale var  ","F");
+
       //*/
 
       if (norm_xs_plots) sprintf(norm_name,"f");
       else if (!norm_xs_plots) sprintf(norm_name,"n");
       
 
-      sprintf(o_name,"P2020/v3/r3_v32yr4_%s/%s.pdf",norm_name,canvas_name);
+      //sprintf(o_name,"P2020/v3/r3_v32yr4_%s/%s.pdf",norm_name,canvas_name);
+      sprintf(o_name,"P2020/v3/r3_v32yr4_NN_%s/%s.pdf",norm_name,canvas_name);
+      //sprintf(o_name,"P2020/v3/r3_v32yr4fxfx_%s/%s.pdf",norm_name,canvas_name);
       canv[i][j]->Print(o_name);
 
       //*/

@@ -71,7 +71,6 @@ void r3_note(bool norm_xs_plots=false)
   
   //
   //vector<string>  nj_reg={"0"}; vector<string> variable={"nJets","HT_jets","DRll01"};  vector<string> variable_X={"Number of jets","#font[52]{HT}^{jets} [GeV]","DRll01"};
-  //
   //vector<string>  nj_reg={"0"}; vector<string> variable={"nJets"};  vector<string> variable_X={"Number of jets"};
 
 
@@ -285,7 +284,9 @@ void r3_note(bool norm_xs_plots=false)
       pad1[i][j]->cd();             
 
       //legend[i][j] = new TLegend(0.6,0.6,0.9,0.9);
-      legend[i][j] = new TLegend(0.48,0.5,0.89,0.9);
+      //legend[i][j] = new TLegend(0.48,0.5,0.89,0.9);
+      //after removal of For LHC HG and long name:
+      legend[i][j] = new TLegend(0.48,0.5,0.89,0.85);
       legend[i][j]->SetTextFont(42);legend[i][j]->SetFillColor(0);  legend[i][j]->SetBorderSize(0); legend[i][j]->SetFillStyle(0);  legend[i][j]->SetTextSize(0.05);
       
 
@@ -340,12 +341,13 @@ void r3_note(bool norm_xs_plots=false)
 	  else if (!norm_xs_plots) h_var[i][j][0][t]->SetYTitle("Arbitrary Units"); 
 
 	  h_var[i][j][0][t]->GetXaxis()->SetLabelOffset(0.015);
+
 	  //if(variable[i].find("nJets")!= std::string::npos) h_var[i][j][0][t]->GetXaxis()->SetNdivisions(500, kTRUE);
 
 	  //||variable[i].find("nBtagJets")
 	  h_var[i][j][0][t]->SetXTitle((variable_X[j]).c_str());
 	  h_var[i][j][0][t]->GetYaxis()->SetTitleSize(0.06); 
-	  h_var[i][j][0][t]->GetYaxis()->SetTitleOffset(0.7); 
+	  h_var[i][j][0][t]->GetYaxis()->SetTitleOffset(0.9);
 	  //h_var[i][j][0][t]->GetXaxis()->SetRangeUser(20,500);
 	  h_var[i][j][0][t]->SetMaximum(h_var[i][j][0][t]->GetMaximum()*2.4);
 	  h_var[i][j][0][t]->Draw("E1");
@@ -421,10 +423,10 @@ void r3_note(bool norm_xs_plots=false)
       sprintf(text2,"2#font[52]{l}SS %s ",region_names[i].c_str());
       
       //ATLASLabel(0.18,0.87,atl_lable,1,0.065); 
-      latex2.DrawLatex(0.18, 0.87, "ATLAS+CMS Simulation");
-      latex2.DrawLatex(0.18, 0.80, "LHC Higgs WG");
-      latex2.DrawLatex(0.18, 0.73, text1);  
-      latex2.DrawLatex(0.18, 0.66, text2); //latex2.DrawLatex(0.20, 0.7, "Data");
+      latex2.DrawLatex(0.18, 0.87, "ATLAS and CMS Generator Level Internal");
+      //latex2.DrawLatex(0.18, 0.80, "LHC Higgs WG");
+      latex2.DrawLatex(0.18, 0.80, text1); //73
+      latex2.DrawLatex(0.18, 0.73, text2); //0.66
       legend[i][j]->Draw("same");
       
       pad2[i][j]->cd();
@@ -507,7 +509,7 @@ void r3_note(bool norm_xs_plots=false)
       
 
       //sprintf(o_name,"P2020/v3/r3_v32yr4_%s/%s.pdf",norm_name,canvas_name);
-      sprintf(o_name,"P2020/v3/r3_v32yr4_NN_%s/%s.pdf",norm_name,canvas_name);
+      sprintf(o_name,"P2020/v3/r3_v32yr4_NN1_%s/%s.pdf",norm_name,canvas_name);
       //sprintf(o_name,"P2020/v3/r3_v32yr4fxfx_%s/%s.pdf",norm_name,canvas_name);
       canv[i][j]->Print(o_name);
 

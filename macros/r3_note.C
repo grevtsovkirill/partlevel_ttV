@@ -70,7 +70,7 @@ void r3_note(bool norm_xs_plots=false)
 
   
   //
-  vector<string>  nj_reg={"0"}; vector<string> variable={"nJets","HT_jets"};  vector<string> variable_X={"Number of jets","#font[52]{H_T}^{jets} [GeV]","DRll01"};
+  vector<string>  nj_reg={"0"}; vector<string> variable={"nJets","HT_jets"};  vector<string> variable_X={"Number of jets","#font[52]{H_{T}}^{jets} [GeV]","DRll01"};
   vector<string> variable_label={"#font[52]{N}_{jet}","#font[52]{HT}^{jets}"}; vector<string> variable_unit={"","/GeV"};
   //
   //vector<string>  nj_reg={"0"}; vector<string> variable={"nJets"};  vector<string> variable_X={"Number of jets"};
@@ -495,7 +495,7 @@ void r3_note(bool norm_xs_plots=false)
       grCMS->SetFillColorAlpha(2, 0.35);
       grCMS->Print("all"); 
       grCMS->Draw("2, same");
-      legend[i][j]->AddEntry(grCMS,"CMS scale variation ","F");
+      legend[i][j]->AddEntry(grCMS,"CMS scale variation ME-only","F");
       //*/
       
       /*

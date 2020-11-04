@@ -28,9 +28,10 @@ void r3_note_syst(bool norm_xs_plots=false)
 
   vector<string> region_names={"0#tau_{had} 1#font[52]{b} #geq4#font[52]{j}", "0#tau_{had} #geq2#font[52]{b} #geq4#font[52]{j}","0#tau_{had} 1#font[52]{b} 3#font[52]{j}", "0#tau_{had} #geq2#font[52]{b} 3#font[52]{j}","1#tau_{had} #geq1#font[52]{b} #geq3#font[52]{j}"};//, "0t=3j","0tg4j","otg3g0b"};
 
-  vector<string>  nj_reg={"0"};//
+  vector<string>  nj_reg={"0","1"};//
   //vector<string>  nj_reg={"0","1","2","3","4"};//,"5","6","7"};
   vector<string> variable={"nJets","HT_jets"};  vector<string> variable_X={"Number of jets","#font[52]{HT}^{jets} [GeV]"};
+  vector<string> variable_label={"#font[52]{N}_{jet}","#font[52]{HT}^{jets}"}; vector<string> variable_unit={"","/GeV"};
   //vector<string> variable={"nJets","DRll01","lep_Pt_0"};
   /*
   vector<string> variable={"nJets","DRll01","lep_Pt_0","lep_Pt_1",
@@ -96,7 +97,7 @@ void r3_note_syst(bool norm_xs_plots=false)
 
   Double_t norm_hist=1;
   cout <<"loop to load histos"<< endl;
-  vector<string> type={"ATLAS Sherpa 228", //,"ATLAS aMC@NLO","CMS aMC@NLO FxFx",
+  vector<string> type={"ATLAS Sherpa 2.2.8", //,"ATLAS aMC@NLO","CMS aMC@NLO FxFx",
 		       "ATLAS Sherpa #mu_{R}0.5#mu_{F}0.5","ATLAS Sherpa #mu_{R}2#mu_{F}2",
 		       "ATLAS Sherpa #mu_{R}1#mu_{F}0.5","ATLAS Sherpa #mu_{R}1#mu_{F}2",
 		       "ATLAS Sherpa #mu_{R}0.5#mu_{F}1","ATLAS Sherpa #mu_{R}2#mu_{F}1",
@@ -167,7 +168,8 @@ void r3_note_syst(bool norm_xs_plots=false)
 	
 	if (!norm_xs_plots) norm_hist = h_var[i][j][0][t]->GetSumOfWeights();
 	else{
-	  norm_hist = 1;
+	  //norm_hist = 1;
+	  norm_hist = 589.2/600.8 / 1000;
 	}
 	
 	h_var[i][j][0][t]->Scale(1/norm_hist);
@@ -211,7 +213,8 @@ void r3_note_syst(bool norm_xs_plots=false)
       pad1[i][j]->cd();             
 
       //legend[i][j] = new TLegend(0.6,0.6,0.9,0.9);
-      legend[i][j] = new TLegend(0.5,0.6,0.9,0.9);
+      //legend[i][j] = new TLegend(0.48,0.5,0.89,0.9);
+      legend[i][j] = new TLegend(0.41,0.5,0.89,0.85);
       legend[i][j]->SetTextFont(42);legend[i][j]->SetFillColor(0);  legend[i][j]->SetBorderSize(0); legend[i][j]->SetFillStyle(0);  legend[i][j]->SetTextSize(0.05);
       
 
@@ -261,9 +264,12 @@ void r3_note_syst(bool norm_xs_plots=false)
 	  //if (variable[j]!="nBtagJets") h_var[i][j][k][t]->SetYTitle("Normalized");
 	  //else h_var[i][j][k][t]->SetYTitle("Events");
 	  //h_var[i][j][0][t]->SetYTitle("Events"); 
-	  if (norm_xs_plots) 	  h_var[i][j][0][t]->SetYTitle("#sigma_{fid} [pb]"); 
+	  //if (norm_xs_plots) 	  h_var[i][j][0][t]->SetYTitle("#sigma_{fid} [pb]");
+	  if (norm_xs_plots){
+	   	  h_var[i][j][0][t]->SetYTitle(("#font[52]{d}#sigma_{fid}/#font[52]{d}"+variable_label[j]+" 1/ bin size [fb]"+variable_unit[j]).c_str());
+	  }
 	  //h_var[i][j][0][t]->SetYTitle("Normalized"); 
-	  else if (!norm_xs_plots) h_var[i][j][0][t]->SetYTitle("Arbitrary Units"); 
+	  else if (!norm_xs_plots) h_var[i][j][0][t]->SetYTitle("Normalised to unit area");
 
 	  h_var[i][j][0][t]->GetXaxis()->SetLabelOffset(0.015);
 	  //if(variable[i].find("nJets")!= std::string::npos) h_var[i][j][0][t]->GetXaxis()->SetNdivisions(500, kTRUE);
@@ -273,7 +279,7 @@ void r3_note_syst(bool norm_xs_plots=false)
 	  h_var[i][j][0][t]->GetYaxis()->SetTitleSize(0.06); 
 	  h_var[i][j][0][t]->GetYaxis()->SetTitleOffset(0.7); 
 	  //h_var[i][j][0][t]->GetXaxis()->SetRangeUser(20,500);
-	  h_var[i][j][0][t]->SetMaximum(h_var[i][j][0][t]->GetMaximum()*1.8);
+	  h_var[i][j][0][t]->SetMaximum(h_var[i][j][0][t]->GetMaximum()*2.4);
 	  h_var[i][j][0][t]->Draw("E1");
 	}
 	
@@ -323,8 +329,8 @@ void r3_note_syst(bool norm_xs_plots=false)
 	else{
 	  //h_var[i][j][3][t]->SetMinimum(0.95);
 	  //h_var[i][j][3][t]->SetMaximum(1.05);
-	  h_var[i][j][3][t]->SetMinimum(0.89);
-	  h_var[i][j][3][t]->SetMaximum(1.11);
+	  h_var[i][j][3][t]->SetMinimum(0.79);
+	  h_var[i][j][3][t]->SetMaximum(1.21);
 	}
 	//For comparison Gen-Rivet
 	//h_var[i][j][3][t]->SetMinimum(0.91);
@@ -353,12 +359,12 @@ void r3_note_syst(bool norm_xs_plots=false)
       
       //ATLASLabel(0.18,0.87,atl_lable,1,0.065); 
       //latex2.DrawLatex(0.18, 0.87, "ATLAS+CMS Simulation");
-      latex2.DrawLatex(0.18, 0.87, "ATLAS Simulation");
+      latex2.DrawLatex(0.16, 0.87, "ATLAS Generator Level Internal");
       //latex2.DrawLatex(0.18, 0.80, "For LHCXSWG");
       //latex2.DrawLatex(0.18, 0.80, "rivet 2.7");
-      latex2.DrawLatex(0.18, 0.80, "rivet 3");
-      latex2.DrawLatex(0.18, 0.73, text1);  
-      latex2.DrawLatex(0.18, 0.66, text2); //latex2.DrawLatex(0.20, 0.7, "Data");
+       //latex2.DrawLatex(0.18, 0.80, "LHC Higgs WG");
+      latex2.DrawLatex(0.16, 0.80, text1); //73
+      latex2.DrawLatex(0.16, 0.73, text2); //0.66
       legend[i][j]->Draw("same");
       
       pad2[i][j]->cd();
@@ -401,7 +407,7 @@ void r3_note_syst(bool norm_xs_plots=false)
       //sprintf(o_name,"P2020/v2scale/syst/r3_v2_%s/%s.pdf",norm_name,canvas_name);
       sprintf(o_name,"P2020/v3/syst/r3_v32_%s/%s.pdf",norm_name,canvas_name);
       //sprintf(o_name,"P2020/v1scale/syst/r27_v1_%s/%s.pdf",norm_name,canvas_name);
-      canv[i][j]->Print(o_name);	
+      canv[i][j]->Print(o_name);
 
       //*/
     }//j loop: variable

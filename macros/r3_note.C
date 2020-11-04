@@ -70,9 +70,11 @@ void r3_note(bool norm_xs_plots=false)
 
   
   //
-  //vector<string>  nj_reg={"0"}; vector<string> variable={"nJets","HT_jets","DRll01"};  vector<string> variable_X={"Number of jets","#font[52]{HT}^{jets} [GeV]","DRll01"};
+  vector<string>  nj_reg={"0"}; vector<string> variable={"nJets","HT_jets"};  vector<string> variable_X={"Number of jets","#font[52]{H_T}^{jets} [GeV]","DRll01"};
+  vector<string> variable_label={"#font[52]{N}_{jet}","#font[52]{HT}^{jets}"}; vector<string> variable_unit={"","/GeV"};
   //
-  vector<string>  nj_reg={"0"}; vector<string> variable={"nJets"};  vector<string> variable_X={"Number of jets"};
+  //vector<string>  nj_reg={"0"}; vector<string> variable={"nJets"};  vector<string> variable_X={"Number of jets"};
+  //vector<string> variable_label={"#font[52]{N}_{jet}"}; vector<string> variable_unit={""};
 
 
   /*
@@ -84,12 +86,28 @@ void r3_note(bool norm_xs_plots=false)
 			   "HT_jets","HT_leps","HT",
 			   "nBtagJets","MET","lep_Eta_0","lep_Eta_1","lep_Phi_0","lep_Phi_1","lep_dPhi","jet_Pt_1","jet_Pt_2","jet_Pt_3"}; //
 
+  vector<string> variable_label={"#font[52]{N}_{jet}","#font[52]{#Delta R_{l_{0},l_{1}}}",
+                 "#font[52]{p}_{T}"," lepton #font[52]{p}_{T}",
+			     "#font[52]{p}_{T}","#font[52]{p}_{T}","#font[52]{p}_{T}",
+			     "#font[52]{p}_{T}","#font[52]{p}_{T}",
+			     "#font[52]{min} #Delta R_{l_{0},jet}","#font[52]{min} #Delta R_{l_{1},jet}",
+			     "#font[52]{max} |#eta _{l}|",
+			     "#font[52]{HT}^{jets}","#font[52]{HT}^{lep}","#font[52]{HT}",
+			     "#font[52]{N}_{#font[52]{b}-jet}","#font[52]{E}_{T}^{miss}","#eta","#eta","#phi","#phi","#Delta #phi ^{ll}",
+			     "#font[52]{p}_{T}","#font[52]{p}_{T}","#font[52]{p}_{T}"}; //
+  vector<string> variable_unit={"","","/GeV","/GeV",
+			   "/GeV","/GeV","/GeV",
+			   "/GeV","/GeV",
+			   "","","",
+			   "/GeV","/GeV","/GeV",
+			   "","/GeV","","","","","","/GeV","/GeV","/GeV"}; //
+
   vector<string> variable_X={"Number of jets","#Delta R_{l_{0},l_{1}}","Leading lepton #font[52]{p}_{T} [GeV]","Subeading lepton #font[52]{p}_{T} [GeV]",
 			     "4th jet #font[52]{p}_{T} [GeV]","5th jet #font[52]{p}_{T} [GeV]","6th jet #font[52]{p}_{T} [GeV]",
 			     "Leading #font[52]{b}-jet #font[52]{p}_{T} [GeV]","Subleading #font[52]{b}-jet #font[52]{p}_{T} [GeV]",
 			     "#font[52]{min} #Delta R_{l_{0},jet}","#font[52]{min} #Delta R_{l_{1},jet}",
 			     "#font[52]{max} |#eta _{l}|",
-			     "#font[52]{HT}^{jets} [GeV]","#font[52]{HT}^{lep} [GeV]","#font[52]{HT} [GeV]",
+			     "#font[52]{H_T}^{jets} [GeV]","#font[52]{H_T}^{lep} [GeV]","#font[52]{H_T} [GeV]",
 			     "Number of #font[52]{b}-jets","#font[52]{E}_{T}^{miss}","Leading lepton #eta","Subleading lepton #eta","Leading lepton #phi","Subleading lepton #phi","#Delta #phi ^{ll}",
 			     "1th jet #font[52]{p}_{T} [GeV]","2nd jet #font[52]{p}_{T} [GeV]","3rd jet #font[52]{p}_{T} [GeV]"
 }; //
@@ -339,9 +357,11 @@ void r3_note(bool norm_xs_plots=false)
 	  //if (variable[j]!="nBtagJets") h_var[i][j][k][t]->SetYTitle("Normalized");
 	  //else h_var[i][j][k][t]->SetYTitle("Events");
 	  //h_var[i][j][0][t]->SetYTitle("Events"); 
-	  if (norm_xs_plots) 	  h_var[i][j][0][t]->SetYTitle("#sigma_{fid} [fb]");
+	  if (norm_xs_plots){
+	   	  h_var[i][j][0][t]->SetYTitle(("#font[52]{d}#sigma_{fid}/#font[52]{d}"+variable_label[j]+" 1/ bin size [fb]"+variable_unit[j]).c_str());
+	  }
 	  //h_var[i][j][0][t]->SetYTitle("Normalized"); 
-	  else if (!norm_xs_plots) h_var[i][j][0][t]->SetYTitle("Arbitrary Units"); 
+	  else if (!norm_xs_plots) h_var[i][j][0][t]->SetYTitle("Normalised to unit area");
 
 	  h_var[i][j][0][t]->GetXaxis()->SetLabelOffset(0.015);
 

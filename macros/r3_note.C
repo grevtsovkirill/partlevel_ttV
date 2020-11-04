@@ -71,10 +71,11 @@ void r3_note(bool norm_xs_plots=false)
   
   //
   //vector<string>  nj_reg={"0"}; vector<string> variable={"nJets","HT_jets","DRll01"};  vector<string> variable_X={"Number of jets","#font[52]{HT}^{jets} [GeV]","DRll01"};
-  //vector<string>  nj_reg={"0"}; vector<string> variable={"nJets"};  vector<string> variable_X={"Number of jets"};
+  //
+  vector<string>  nj_reg={"0"}; vector<string> variable={"nJets"};  vector<string> variable_X={"Number of jets"};
 
 
-  //*
+  /*
     vector<string>  nj_reg={"0","1","2","3","4"};//,"5","6","7"};
   vector<string> variable={"nJets","DRll01","lep_Pt_0","lep_Pt_1",
 			   "jet_Pt_4","jet_Pt_5","jet_Pt_6",
@@ -134,7 +135,7 @@ void r3_note(bool norm_xs_plots=false)
 
   Double_t norm_hist=1;
   cout <<"loop to load histos"<< endl;
-  vector<string> type={"ATLAS Sherpa 228","ATLAS Sherpa 228 EWK",
+  vector<string> type={"ATLAS Sherpa 2.2.8","ATLAS Sherpa 2.2.8 QCD+tree-level EW",
 		       "ATLAS aMC@NLO","CMS aMC@NLO FxFx",
 		       "ATLAS Sherpa #mu_{R}0.5#mu_{F}0.5","ATLAS Sherpa #mu_{R}2#mu_{F}2",
 		       "CMS #mu_{R}0.5#mu_{F}0.5","CMS #mu_{R}2#mu_{F}2",
@@ -239,7 +240,7 @@ void r3_note(bool norm_xs_plots=false)
 	if (!norm_xs_plots) norm_hist = h_var[i][j][0][t]->GetSumOfWeights();
 	else{
 	  norm_hist = 1;
-	  if(t==0 ||t==1 || t==4 ||t==5) norm_hist = 589.2/600.8;
+	  if(t==0 ||t==1 || t==4 ||t==5) norm_hist = 589.2/600.8 ;
 	  else if (t==2) norm_hist = 548.30/600.8;
 	}
 	
@@ -286,7 +287,7 @@ void r3_note(bool norm_xs_plots=false)
       //legend[i][j] = new TLegend(0.6,0.6,0.9,0.9);
       //legend[i][j] = new TLegend(0.48,0.5,0.89,0.9);
       //after removal of For LHC HG and long name:
-      legend[i][j] = new TLegend(0.48,0.5,0.89,0.85);
+      legend[i][j] = new TLegend(0.41,0.5,0.89,0.85);
       legend[i][j]->SetTextFont(42);legend[i][j]->SetFillColor(0);  legend[i][j]->SetBorderSize(0); legend[i][j]->SetFillStyle(0);  legend[i][j]->SetTextSize(0.05);
       
 
@@ -347,7 +348,7 @@ void r3_note(bool norm_xs_plots=false)
 	  //||variable[i].find("nBtagJets")
 	  h_var[i][j][0][t]->SetXTitle((variable_X[j]).c_str());
 	  h_var[i][j][0][t]->GetYaxis()->SetTitleSize(0.06); 
-	  h_var[i][j][0][t]->GetYaxis()->SetTitleOffset(0.9);
+	  h_var[i][j][0][t]->GetYaxis()->SetTitleOffset(0.7);
 	  //h_var[i][j][0][t]->GetXaxis()->SetRangeUser(20,500);
 	  h_var[i][j][0][t]->SetMaximum(h_var[i][j][0][t]->GetMaximum()*2.4);
 	  h_var[i][j][0][t]->Draw("E1");
@@ -423,10 +424,10 @@ void r3_note(bool norm_xs_plots=false)
       sprintf(text2,"2#font[52]{l}SS %s ",region_names[i].c_str());
       
       //ATLASLabel(0.18,0.87,atl_lable,1,0.065); 
-      latex2.DrawLatex(0.18, 0.87, "ATLAS and CMS Generator Level Internal");
+      latex2.DrawLatex(0.16, 0.87, "ATLAS and CMS Generator Level Internal");
       //latex2.DrawLatex(0.18, 0.80, "LHC Higgs WG");
-      latex2.DrawLatex(0.18, 0.80, text1); //73
-      latex2.DrawLatex(0.18, 0.73, text2); //0.66
+      latex2.DrawLatex(0.16, 0.80, text1); //73
+      latex2.DrawLatex(0.16, 0.73, text2); //0.66
       legend[i][j]->Draw("same");
       
       pad2[i][j]->cd();

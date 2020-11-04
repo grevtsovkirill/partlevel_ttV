@@ -240,8 +240,10 @@ void r3_note(bool norm_xs_plots=false)
 	if (!norm_xs_plots) norm_hist = h_var[i][j][0][t]->GetSumOfWeights();
 	else{
 	  norm_hist = 1;
-	  if(t==0 ||t==1 || t==4 ||t==5) norm_hist = 589.2/600.8 ;
-	  else if (t==2) norm_hist = 548.30/600.8;
+	  double factor = 1/1000.;
+	  if(t==0 ||t==1 || t==4 ||t==5) norm_hist = 589.2/600.8*factor ;
+	  else if (t==2) norm_hist = 548.30/600.8*factor;
+	  else if (t==3 || t==6 || t==7) norm_hist = factor;
 	}
 	
 	h_var[i][j][0][t]->Scale(1/norm_hist);
@@ -337,7 +339,7 @@ void r3_note(bool norm_xs_plots=false)
 	  //if (variable[j]!="nBtagJets") h_var[i][j][k][t]->SetYTitle("Normalized");
 	  //else h_var[i][j][k][t]->SetYTitle("Events");
 	  //h_var[i][j][0][t]->SetYTitle("Events"); 
-	  if (norm_xs_plots) 	  h_var[i][j][0][t]->SetYTitle("#sigma_{fid} [pb]"); 
+	  if (norm_xs_plots) 	  h_var[i][j][0][t]->SetYTitle("#sigma_{fid} [fb]");
 	  //h_var[i][j][0][t]->SetYTitle("Normalized"); 
 	  else if (!norm_xs_plots) h_var[i][j][0][t]->SetYTitle("Arbitrary Units"); 
 

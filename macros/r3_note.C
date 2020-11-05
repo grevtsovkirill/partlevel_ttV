@@ -69,15 +69,14 @@ void r3_note(bool norm_xs_plots=false)
   vector<string> region_names={"0#tau_{had} 1#font[52]{b} #geq4#font[52]{j}", "0#tau_{had} #geq2#font[52]{b} #geq4#font[52]{j}","0#tau_{had} 1#font[52]{b} 3#font[52]{j}", "0#tau_{had} #geq2#font[52]{b} 3#font[52]{j}","1#tau_{had} #geq1#font[52]{b} #geq3#font[52]{j}"};//, "0t=3j","0tg4j","otg3g0b"};
 
   
-  //
-  vector<string>  nj_reg={"0"}; vector<string> variable={"nJets","HT_jets"};  vector<string> variable_X={"Number of jets","#font[52]{H_{T}}^{jets} [GeV]","DRll01"};
-  vector<string> variable_label={"#font[52]{N}_{jet}","#font[52]{HT}^{jets}"}; vector<string> variable_unit={"","/GeV"};
+  //  vector<string>  nj_reg={"0"}; vector<string> variable={"nJets","HT_jets"};  vector<string> variable_X={"Number of jets","#font[52]{H_{T}}^{jets} [GeV]","DRll01"};
+  //vector<string> variable_label={"#font[52]{N}_{jet}","#font[52]{H_{T}}^{jets}"}; vector<string> variable_unit={"","/GeV"};
   //
   //vector<string>  nj_reg={"0"}; vector<string> variable={"nJets"};  vector<string> variable_X={"Number of jets"};
   //vector<string> variable_label={"#font[52]{N}_{jet}"}; vector<string> variable_unit={""};
 
 
-  /*
+  //*
     vector<string>  nj_reg={"0","1","2","3","4"};//,"5","6","7"};
   vector<string> variable={"nJets","DRll01","lep_Pt_0","lep_Pt_1",
 			   "jet_Pt_4","jet_Pt_5","jet_Pt_6",
@@ -87,12 +86,12 @@ void r3_note(bool norm_xs_plots=false)
 			   "nBtagJets","MET","lep_Eta_0","lep_Eta_1","lep_Phi_0","lep_Phi_1","lep_dPhi","jet_Pt_1","jet_Pt_2","jet_Pt_3"}; //
 
   vector<string> variable_label={"#font[52]{N}_{jet}","#font[52]{#Delta R_{l_{0},l_{1}}}",
-                 "#font[52]{p}_{T}"," lepton #font[52]{p}_{T}",
-			     "#font[52]{p}_{T}","#font[52]{p}_{T}","#font[52]{p}_{T}",
-			     "#font[52]{p}_{T}","#font[52]{p}_{T}",
+                 "#font[52]{p}_{T}^{l_0}"," lepton #font[52]{p}_{T}^{l_1}",
+			     "#font[52]{p}_{T}^{j_{4}}","#font[52]{p}_{T}","#font[52]{p}_{T}",
+			     "#font[52]{p}_{T}^{b_{0}}","#font[52]{p}_{T}",
 			     "#font[52]{min} #Delta R_{l_{0},jet}","#font[52]{min} #Delta R_{l_{1},jet}",
 			     "#font[52]{max} |#eta _{l}|",
-			     "#font[52]{HT}^{jets}","#font[52]{HT}^{lep}","#font[52]{HT}",
+			     "#font[52]{H_{T}}^{jets}","#font[52]{H_{T}}^{lep}","#font[52]{H_{T}}",
 			     "#font[52]{N}_{#font[52]{b}-jet}","#font[52]{E}_{T}^{miss}","#eta","#eta","#phi","#phi","#Delta #phi ^{ll}",
 			     "#font[52]{p}_{T}","#font[52]{p}_{T}","#font[52]{p}_{T}"}; //
   vector<string> variable_unit={"","","/GeV","/GeV",
@@ -102,12 +101,13 @@ void r3_note(bool norm_xs_plots=false)
 			   "/GeV","/GeV","/GeV",
 			   "","/GeV","","","","","","/GeV","/GeV","/GeV"}; //
 
-  vector<string> variable_X={"Number of jets","#Delta R_{l_{0},l_{1}}","Leading lepton #font[52]{p}_{T} [GeV]","Subeading lepton #font[52]{p}_{T} [GeV]",
+  vector<string> variable_X={"Number of jets","#Delta R_{l_{0},l_{1}}",
+                 "Leading lepton #font[52]{p}_{T} [GeV]","Subeading lepton #font[52]{p}_{T} [GeV]",
 			     "4th jet #font[52]{p}_{T} [GeV]","5th jet #font[52]{p}_{T} [GeV]","6th jet #font[52]{p}_{T} [GeV]",
 			     "Leading #font[52]{b}-jet #font[52]{p}_{T} [GeV]","Subleading #font[52]{b}-jet #font[52]{p}_{T} [GeV]",
 			     "#font[52]{min} #Delta R_{l_{0},jet}","#font[52]{min} #Delta R_{l_{1},jet}",
 			     "#font[52]{max} |#eta _{l}|",
-			     "#font[52]{H_T}^{jets} [GeV]","#font[52]{H_T}^{lep} [GeV]","#font[52]{H_T} [GeV]",
+			     "#font[52]{H_{T}}^{jets} [GeV]","#font[52]{H_{T}}^lep} [GeV]","#font[52]{H_{T}} [GeV]",
 			     "Number of #font[52]{b}-jets","#font[52]{E}_{T}^{miss}","Leading lepton #eta","Subleading lepton #eta","Leading lepton #phi","Subleading lepton #phi","#Delta #phi ^{ll}",
 			     "1th jet #font[52]{p}_{T} [GeV]","2nd jet #font[52]{p}_{T} [GeV]","3rd jet #font[52]{p}_{T} [GeV]"
 }; //
@@ -132,7 +132,7 @@ void r3_note(bool norm_xs_plots=false)
   //                     s  sew m  CMS Avars   Cvars
   Int_t color_sample[15]={864,4,921,633,860,868,921,922,860,860,1,1,616,1,1};//625
   Int_t linestyle[15]={1,7,1,1,3,3,2,2,2,2,1,1,1,1,1};
-  Int_t mstyle[15]={20,24,22,24,1,1,1,1,1,1,1,1,1,1,1};
+  Int_t mstyle[15]={20,24,22,25,1,1,1,1,1,1,1,1,1,1,1};
 
   //string var_type="Scale ";
   string var_type="PDF ";
@@ -358,7 +358,7 @@ void r3_note(bool norm_xs_plots=false)
 	  //else h_var[i][j][k][t]->SetYTitle("Events");
 	  //h_var[i][j][0][t]->SetYTitle("Events"); 
 	  if (norm_xs_plots){
-	   	  h_var[i][j][0][t]->SetYTitle(("#font[52]{d}#sigma_{fid} /#font[52]{d}"+variable_label[j]+" [fb"+variable_unit[j]+"]").c_str());
+	   	  h_var[i][j][0][t]->SetYTitle(("#font[52]{d}#sigma_{fid }/#font[52]{d}"+variable_label[j]+" [fb"+variable_unit[j]+"]").c_str());
 	  }
 	  //h_var[i][j][0][t]->SetYTitle("Normalized"); 
 	  else if (!norm_xs_plots) h_var[i][j][0][t]->SetYTitle("Normalised to unit area");

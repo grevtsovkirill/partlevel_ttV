@@ -274,7 +274,7 @@ void r3_note_syst(bool norm_xs_plots=false)
 	  else if (!norm_xs_plots) h_var[i][j][0][t]->SetYTitle("Normalised to unit area");
 
 	  h_var[i][j][0][t]->GetXaxis()->SetLabelOffset(0.015);
-	  //if(variable[i].find("nJets")!= std::string::npos) h_var[i][j][0][t]->GetXaxis()->SetNdivisions(500, kTRUE);
+
 
 	  //||variable[i].find("nBtagJets")
 	  h_var[i][j][0][t]->SetXTitle((variable_X[j]).c_str());
@@ -282,6 +282,10 @@ void r3_note_syst(bool norm_xs_plots=false)
 	  h_var[i][j][0][t]->GetYaxis()->SetTitleOffset(0.7); 
 	  //h_var[i][j][0][t]->GetXaxis()->SetRangeUser(20,500);
 	  h_var[i][j][0][t]->SetMaximum(h_var[i][j][0][t]->GetMaximum()*2.4);
+	  //if(variable[i]=="nJets") {
+	  //  cout<< "    ====================================== "<<'\n'<<endl;
+	  //  h_var[i][j][0][t]->GetXaxis()->SetNdivisions(505, kTRUE);
+	  //}
 	  h_var[i][j][0][t]->Draw("E1");
 	}
 	

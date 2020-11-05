@@ -30,8 +30,10 @@ void r3_note_syst(bool norm_xs_plots=false)
 
   vector<string>  nj_reg={"0","1"};//
   //vector<string>  nj_reg={"0","1","2","3","4"};//,"5","6","7"};
-  vector<string> variable={"nJets","HT_jets"};  vector<string> variable_X={"Number of jets","#font[52]{HT}^{jets} [GeV]"};
-  vector<string> variable_label={"#font[52]{N}_{jet}","#font[52]{HT}^{jets}"}; vector<string> variable_unit={"","/GeV"};
+
+   vector<string> variable={"nJets","HT_jets"};  vector<string> variable_X={"Number of jets","#font[52]{H_{T}}^{jets} [GeV]"};
+  vector<string> variable_label={"#font[52]{N}_{jet}","#font[52]{H_{T}}^{jets}"}; vector<string> variable_unit={"","/GeV"};
+
   //vector<string> variable={"nJets","DRll01","lep_Pt_0"};
   /*
   vector<string> variable={"nJets","DRll01","lep_Pt_0","lep_Pt_1",
@@ -266,7 +268,7 @@ void r3_note_syst(bool norm_xs_plots=false)
 	  //h_var[i][j][0][t]->SetYTitle("Events"); 
 	  //if (norm_xs_plots) 	  h_var[i][j][0][t]->SetYTitle("#sigma_{fid} [pb]");
 	  if (norm_xs_plots){
-	   	  h_var[i][j][0][t]->SetYTitle(("#font[52]{d}#sigma_{fid}/#font[52]{d}"+variable_label[j]+" 1/ bin size [fb]"+variable_unit[j]).c_str());
+	   	  h_var[i][j][0][t]->SetYTitle(("#font[52]{d}#sigma_{fid }/#font[52]{d}"+variable_label[j]+" [fb"+variable_unit[j]+"]").c_str());
 	  }
 	  //h_var[i][j][0][t]->SetYTitle("Normalized"); 
 	  else if (!norm_xs_plots) h_var[i][j][0][t]->SetYTitle("Normalised to unit area");

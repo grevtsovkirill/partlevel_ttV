@@ -216,7 +216,8 @@ void r3_note_syst(bool norm_xs_plots=false)
 
       //legend[i][j] = new TLegend(0.6,0.6,0.9,0.9);
       //legend[i][j] = new TLegend(0.48,0.5,0.89,0.9);
-      legend[i][j] = new TLegend(0.41,0.5,0.89,0.85);
+      legend[i][j] = new TLegend(0.41,0.4,0.89,0.85);
+
       legend[i][j]->SetTextFont(42);legend[i][j]->SetFillColor(0);  legend[i][j]->SetBorderSize(0); legend[i][j]->SetFillStyle(0);  legend[i][j]->SetTextSize(0.05);
       
 

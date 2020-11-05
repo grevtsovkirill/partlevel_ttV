@@ -132,7 +132,7 @@ void r3_note(bool norm_xs_plots=false)
   //                     s  sew m  CMS Avars   Cvars
   Int_t color_sample[15]={864,4,921,633,860,868,921,922,860,860,1,1,616,1,1};//625
   Int_t linestyle[15]={1,7,1,1,3,3,2,2,2,2,1,1,1,1,1};
-  Int_t mstyle[15]={20,24,22,1,1,1,1,1,1,1,1,1,1,1,1};
+  Int_t mstyle[15]={20,24,22,24,1,1,1,1,1,1,1,1,1,1,1};
 
   //string var_type="Scale ";
   string var_type="PDF ";
@@ -358,7 +358,7 @@ void r3_note(bool norm_xs_plots=false)
 	  //else h_var[i][j][k][t]->SetYTitle("Events");
 	  //h_var[i][j][0][t]->SetYTitle("Events"); 
 	  if (norm_xs_plots){
-	   	  h_var[i][j][0][t]->SetYTitle(("#font[52]{d}#sigma_{fid}/#font[52]{d}"+variable_label[j]+" 1/ bin size [fb]"+variable_unit[j]).c_str());
+	   	  h_var[i][j][0][t]->SetYTitle(("#font[52]{d}#sigma_{fid} /#font[52]{d}"+variable_label[j]+" [fb"+variable_unit[j]+"]").c_str());
 	  }
 	  //h_var[i][j][0][t]->SetYTitle("Normalized"); 
 	  else if (!norm_xs_plots) h_var[i][j][0][t]->SetYTitle("Normalised to unit area");

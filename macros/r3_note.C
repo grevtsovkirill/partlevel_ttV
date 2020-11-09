@@ -446,7 +446,7 @@ void r3_note(bool norm_xs_plots=false)
       sprintf(text2,"2#font[52]{l}SS %s ",region_names[i].c_str());
       
       //ATLASLabel(0.18,0.87,atl_lable,1,0.065); 
-      latex2.DrawLatex(0.16, 0.87, "ATLAS and CMS Generator Level Internal");
+      latex2.DrawLatex(0.16, 0.87, "ATLAS and CMS Generator Level");
       //latex2.DrawLatex(0.18, 0.80, "LHC Higgs WG");
       latex2.DrawLatex(0.16, 0.80, text1); //73
       latex2.DrawLatex(0.16, 0.73, text2); //0.66

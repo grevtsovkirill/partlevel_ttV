@@ -366,7 +366,7 @@ void r3_note_syst(bool norm_xs_plots=false)
       
       //ATLASLabel(0.18,0.87,atl_lable,1,0.065); 
       //latex2.DrawLatex(0.18, 0.87, "ATLAS+CMS Simulation");
-      latex2.DrawLatex(0.16, 0.87, "ATLAS Generator Level Internal");
+      latex2.DrawLatex(0.16, 0.87, "ATLAS Generator Level");
       //latex2.DrawLatex(0.18, 0.80, "For LHCXSWG");
       //latex2.DrawLatex(0.18, 0.80, "rivet 2.7");
        //latex2.DrawLatex(0.18, 0.80, "LHC Higgs WG");
